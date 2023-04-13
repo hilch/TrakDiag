@@ -1,3 +1,9 @@
+/*
+
+https://github.com/hilch/TrackDiag
+
+Helper Library for ACOOStrak diagnosis
+
 MIT License
 
 Copyright (c) 2022 https://github.com/hilch
@@ -19,3 +25,34 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
+*/
+
+#include <bur/plctypes.h>
+#ifdef __cplusplus
+	extern "C"
+	{
+#endif
+	#include "TrakDiag.h"
+#ifdef __cplusplus
+	};
+#endif
+
+#include <ctime>
+
+/* returns ASCII timestring for DT */
+plcbit TD_ascDT(plcdt DT1, unsigned long pString, unsigned char maxSize )
+{
+
+	if( pString == 0 || maxSize == 0 )
+		return 0; /* error */
+
+	std::time_t rawtime = DT1;
+	strftime( reinterpret_cast<char*>(pString), maxSize, "%a %b %e   %H:%M:%S", std::localtime(&rawtime) );
+
+	return 1; /* ok */
+}
+
+
+
+
+

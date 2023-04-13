@@ -1,0 +1,32 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<?AutomationStudio Version=4.7.5.60 SP?>
+<Library Version="2.00.0" SubType="ANSIC" xmlns="http://br-automation.co.at/AS/Library">
+  <Files>
+    <File Description="Exported data types">TrakDiagTypes.typ</File>
+    <File Description="Exported constants">TrakDiagConstants.var</File>
+    <File Description="Exported functions and function blocks">TrakDiag.fun</File>
+    <File>TD_ascDT.cpp</File>
+    <File>TD_filenameDT.cpp</File>
+    <File>TD_LogWrite.cpp</File>
+    <File>TD_LogWatchBOOL.cpp</File>
+    <File>TD_LogWatchDINT.cpp</File>
+    <File>TD_LogWatchSTRING.cpp</File>
+    <File>TD_LogWatch8Flags.cpp</File>
+    <File>TD_CrashReport.cpp</File>
+    <File>TD_SegCommandError.cpp</File>
+    <File>TD_LoggerReadEntry.cpp</File>
+    <File>TD_Recorder.cpp</File>
+    <File>TD_Recorder.h</File>
+  </Files>
+  <Dependencies>
+    <Dependency ObjectName="ArEventLog" />
+    <Dependency ObjectName="astime" />
+    <Dependency ObjectName="DataObj" />
+    <Dependency ObjectName="McAcpTrak" FromVersion="5.21.1" />
+    <Dependency ObjectName="standard" />
+    <Dependency ObjectName="McBase" />
+    <Dependency ObjectName="sys_lib" />
+    <Dependency ObjectName="brsystem" />
+    <Dependency ObjectName="FileIO" />
+  </Dependencies>
+</Library>
