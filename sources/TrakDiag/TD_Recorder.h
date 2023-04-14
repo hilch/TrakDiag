@@ -3,7 +3,7 @@
 
 const char* HTML_HEADER = ""
 "\xef\xbb\xbf<!DOCTYPE html><html>\n"
-"<head><!-- created with https://github.com/hilch/TrackDiag V " STRINGIFY(_TrakDiag_VERSION) " - TD_Recorder.cpp -->\n"
+"<head><!-- created with https://github.com/hilch/TrakDiag V " STRINGIFY(_TrakDiag_VERSION) " - TD_Recorder.cpp -->\n"
 "\t<title>%s</title>\n"
 /* styles */
 "\t<style type=\"text/css\" media=\"screen\">\n"
