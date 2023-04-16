@@ -1,6 +1,6 @@
 /*
 
-https://github.com/hilch/TrackDiag
+https://github.com/hilch/TrakDiag
 
 Helper Library for ACOOStrak diagnosis
 
