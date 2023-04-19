@@ -252,7 +252,7 @@ PROGRAM _CYCLIC
 	MC_BR_AsmReadInfo_AcpTrak_0();
 
 	TD_Recorder_0.Enable  := MC_BR_AsmReadInfo_AcpTrak_0.AssemblyInfo.PowerOn;
-	TD_Recorder_0.Trigger := MC_BR_AsmReadInfo_AcpTrak_0.AssemblyInfo.SegmentsInErrorStopCount <> 0;
+	TD_Recorder_0.Trigger := MC_BR_AsmReadInfo_AcpTrak_0.AssemblyInfo.ShuttlesInErrorStopCount <> 0;
 
 	TD_Recorder_0();	 
 END_PROGRAM
