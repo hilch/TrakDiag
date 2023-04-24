@@ -1,0 +1,2 @@
+V2.0.1
+- TD_Recorder: correct shuttle's segment position shown in Quickinfo dialog.
