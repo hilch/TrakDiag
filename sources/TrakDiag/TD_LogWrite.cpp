@@ -2,7 +2,7 @@
 
 https://github.com/hilch/TrakDiag
 
-Helper Library for ACOOStrak diagnosis
+Helper Library for ACOPOStrak diagnosis
 
 MIT License
 
