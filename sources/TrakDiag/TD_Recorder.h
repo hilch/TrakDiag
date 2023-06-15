@@ -371,8 +371,8 @@ const char* HTML_FOOTER = ""
 "</html>\n";
 
 
-#define RECORDING_TIME_MS		5000
-#define RECORDING_CYCLE_MS		100
+#define RECORDING_TIME_US		5000000
+#define DEFAULT_CYCLE_US		50000
 #define BUFFER_SIZE				16384
 
 #define STARTUP					0
@@ -382,8 +382,7 @@ const char* HTML_FOOTER = ""
 #define GET_SEGMENT_LIST		40
 #define GET_SEGMENT_INFO		50
 #define START_RECORDING			60
-#define W_REFRESH				100
-#define RECORDING				110
+#define RECORDING				100
 #define CREATE_FILE				200
 #define WRITE_HTML_HEADER		210
 #define WRITE_SEGMENT_INFO		220

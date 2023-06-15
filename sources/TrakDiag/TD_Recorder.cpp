@@ -50,6 +50,7 @@ SOFTWARE.
 void TD_Recorder(struct TD_Recorder* inst)
 {
 	if( inst->Enable ){
+
 		switch( inst->step ){
 			case STARTUP:
 				inst->Valid = false;
@@ -63,8 +64,13 @@ void TD_Recorder(struct TD_Recorder* inst)
 					/* */
 					inst->fbRtInfo.enable = true;
 					RTInfo( &inst->fbRtInfo );
-					inst->maxRecords = RECORDING_TIME_MS / RECORDING_CYCLE_MS; /* max. number of records */
-					inst->refreshCycles = (RECORDING_CYCLE_MS * 1000) / inst->fbRtInfo.cycle_time; /* cycles when a new record must be saved */
+					if( inst->NumberOfCycles == 0 ){
+						inst->refreshCycles = DEFAULT_CYCLE_US / inst->fbRtInfo.cycle_time;
+					}
+					else {
+						inst->refreshCycles = inst->NumberOfCycles;
+					}
+					inst->maxRecords = RECORDING_TIME_US / (inst->refreshCycles * inst->fbRtInfo.cycle_time); /* max. number of records */
 	
 					/* */
 					inst->fbGetSegment.Assembly = inst->pAssembly;
@@ -130,7 +136,7 @@ void TD_Recorder(struct TD_Recorder* inst)
 					DatObjInfo( &inst->fbDatObjInfo );
 					inst->step = CHECK_DATA_OBJ;
 
-					inst->tonTriggerDelay.PT = 2* RECORDING_CYCLE_MS;
+					inst->tonTriggerDelay.PT = 200;
 				}
 				else {
 					inst->Error = true;
@@ -290,18 +296,12 @@ void TD_Recorder(struct TD_Recorder* inst)
 			break;
 
 			
-			case W_REFRESH:
-			if( ++inst->cycleCounter >= inst->refreshCycles ){
+			case RECORDING:  /* recording and waiting for a trigger */	
+			if( (inst->cycleCounter >= inst->refreshCycles) && ! inst->fbCopyShuttleData.Execute ){
 				inst->cycleCounter = 0;
 				inst->fbCopyShuttleData.Execute = true; /* start fb */
 				MC_BR_AsmCopyShuttleData_AcpTrak( &inst->fbCopyShuttleData );
-				inst->step = RECORDING;
 			}
-			break;
-
-
-			case RECORDING:  /* recording and waiting for a trigger */
-			++inst->cycleCounter;
 			inst->tonTriggerDelay.IN = inst->Trigger;
 			TON( &inst->tonTriggerDelay );
 			if( inst->fbCopyShuttleData.Done ){
@@ -319,7 +319,6 @@ void TD_Recorder(struct TD_Recorder* inst)
 						inst->Valid = true;
 						inst->fbCopyShuttleData.AdvancedParameters.DataAddress = inst->pDataObject;
 					}
-					inst->step = W_REFRESH;
 				}
 				else if( inst->tonTriggerDelay.Q and inst->Valid ) { /* we got a trigger and now we save everything */
 					TD_filenameDT( (UDINT) "TD_Recorder_", (UDINT) &inst->OutputFileName, sizeof(inst->OutputFileName)-1 );
@@ -343,6 +342,7 @@ void TD_Recorder(struct TD_Recorder* inst)
 			else { /* busy */
 				MC_BR_AsmCopyShuttleData_AcpTrak( &inst->fbCopyShuttleData );
 			}
+			++inst->cycleCounter;
 			break;
 
 			
@@ -754,7 +754,7 @@ void TD_Recorder(struct TD_Recorder* inst)
 			case INTERNAL_ERROR_FILEREAD:
 			break;
 
-		}
+		} /* end of switch() */
 	}
 	else {
 		inst->step = STARTUP;
@@ -762,5 +762,5 @@ void TD_Recorder(struct TD_Recorder* inst)
 		inst->Error = false;
 		inst->Valid = false;
 		inst->Busy = false;
-	}
+	} 
 }
