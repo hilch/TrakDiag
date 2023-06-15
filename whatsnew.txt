@@ -6,3 +6,4 @@ V2.1.0
 - TD_Recorder: adapted for new SvgData generation in mapp 5.23
 - TD_Recorder: new input 'NumberOfCycles' 
 - Reduce default refresh cycle to 50 milliseconds
+- Fix wrong shuttle positions
