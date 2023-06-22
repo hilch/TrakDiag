@@ -245,3 +245,45 @@ type of McAcpTrakShuttleData[] if no shuttle user data is defined, see MC_BR_Asm
 		pTimestamps : UDINT;
 	END_VAR
 END_FUNCTION_BLOCK
+
+{REDUND_ERROR} FUNCTION_BLOCK TD_WebServices (*Trak web services*) (*$GROUP=User,$CAT=User,$GROUPICON=User.png,$CATICON=User.png*)
+	VAR_INPUT
+		Enable : BOOL;
+		AssemblyName : {REDUND_UNREPLICABLE} STRING[32]; (*name of the assembly*)
+		DataAddress : UDINT; (*address of shuttle data array*)
+		DataSize : UDINT; (*sizeo of shuttle data array*)
+		UserDataSize : USINT; (*shuttle user data size in bytes*)
+		DataObjectName : STRING[10]; (*optional: temporary data object for memory allocation*)
+	END_VAR
+	VAR_OUTPUT
+		Valid : BOOL;
+		Busy : BOOL;
+		Error : BOOL;
+		ErrorID : DINT;
+		SegInfo : TD_ServicesSegInfoType; (*segment information*)
+		ShuttleInfo : TD_ServicesShuttlesType; (*cyclic shuttle information*)
+	END_VAR
+	VAR
+		svgFileName : STRING[32];
+		infoSvgFile : fiFILE_INFO;
+		acpTrakVersion : STRING[10];
+		step : UINT;
+		n : UINT;
+		tempudint : UDINT;
+		refreshTimer : UDINT;
+		hashShuttleInfo : UDINT;
+		webData : TD_HttpServiceType;
+		pDataObject : UDINT;
+		fbDatObjInfo : DatObjInfo;
+		fbDatObjCreate : DatObjCreate;
+		fbDatObjDelete : DatObjDelete;
+		fbFileInfo : FileInfo;
+		fbFileClose : FileClose;
+		fbFileOpen : FileOpen;
+		fbFileRead : FileReadEx;
+		fbGetSegment : MC_BR_AsmGetSegment_AcpTrak;
+		fbSegGetInfo : MC_BR_SegGetInfo_AcpTrak;
+		pAssembly : REFERENCE TO McAssemblyType;
+		fbRtInfo : RTInfo;
+	END_VAR
+END_FUNCTION_BLOCK

@@ -17,6 +17,8 @@
     <File>TD_LoggerReadEntry.cpp</File>
     <File>TD_Recorder.cpp</File>
     <File>TD_Recorder.h</File>
+    <File>TD_WebServices.cpp</File>
+    <File>TD_WebServices.h</File>	
   </Files>
   <Dependencies>
     <Dependency ObjectName="ArEventLog" />
@@ -28,5 +30,6 @@
     <Dependency ObjectName="sys_lib" />
     <Dependency ObjectName="brsystem" />
     <Dependency ObjectName="FileIO" />
+    <Dependency ObjectName="AsHttp" />
   </Dependencies>
 </Library>

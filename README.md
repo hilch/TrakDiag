@@ -16,6 +16,7 @@ Library for ACOPOStrak diagnosis
 - sys_lib
 - brsystem
 - FileIO
+- AsHttp
 
 A recommendation is to also use AsArSdm to have a system dump with included loggers available in case of an error.
 
@@ -262,6 +263,43 @@ output:
 
 ![example_crash_recorder](https://github.com/hilch/TrakDiag/blob/main/example_recorder.png)
 
+
+## TD_WebServices
+
+(>= V2.1.x)
+Provides some information about Trak system via web based services
+
+### <IP>/TrakWebApi/index.html
+
+HTML page with assembly's SvgData and shuttle positions
+
+### <IP>/TrakWebApi/info
+
+JSON with Basic information
+
+### <IP>/TrakWebApi/positions
+
+JSON with shuttle information
+
+we return an array of pairs of two UDINT:
+- [0] Bit 0-31  : shuttle index
+- [1] Bit 0-7   : PLCopen state
+- [1] Bit 8     : active shuttle
+- [1] Bit 9     : virtual shuttle
+- [1] Bit 10-20 : segment index (11 Bit)
+- [1] Bit 21-27 : segment position in % (7 Bit)
+
+### <IP>/TrakWebApi/shuttle?
+
+Deliver detailed JSON about certain shuttle
+
+### <IP>/TrakWebApi/segments
+
+Deliver JSON with list of assembly's segments
+
+### <IP>/TrakWebApi/svgdata
+
+Deliver assembly's generated SvgData (SVG)
 
 
 
