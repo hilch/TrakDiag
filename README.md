@@ -261,7 +261,9 @@ END_PROGRAM
 
 output:
 
-![example_recorder](https://github.com/hilch/TrakDiag/blob/main/examples/TD_Recorder_2023-06-27T09_26_05)
+![example_recorder](https://github.com/hilch/TrakDiag/blob/main/examples/screenshot_recorder)
+
+[download this example and open it in your browser](https://github.com/hilch/TrakDiag/blob/main/examples/TD_Recorder_2023-06-27T09_26_05)
 
 
 ## TD_WebServices
