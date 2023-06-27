@@ -229,8 +229,8 @@ void TD_WebServices(struct TD_WebServices* inst)
 
 					/* deliver summarized information */		
 					if( std::strcmp( (char*) inst->webData.uri, "TrakWebApi/info") == 0 ){
-						sprintf( (char*) inst->webData.responseData, "{\"TrakWeb-version\" : \"" STRINGIFY(_TrakWeb_VERSION) "\","
-																	 "\"McAcpTrak-version\" : \"%s\""
+						sprintf( (char*) inst->webData.responseData, "{\"TrakDiag\" : \"" STRINGIFY(_TrakDiag_VERSION) "\","
+																	 "\"McAcpTrak\" : \"%s\""
 																	 "}", inst->acpTrakVersion );
 						
 						inst->webData.fbHttpService.responseDataLen = std::strlen( (char*) inst->webData.responseData );

@@ -306,7 +306,7 @@ Simply embedd this path into mappView's WebViewer widget.
 JSON with Basic information
 
 ```
-{"TrakWeb-version" : "_TrakWeb_VERSION","McAcpTrak-version" : "V5.22.1"}
+{"TrakDiag" : "2.02.0","McAcpTrak" : "V5.22.1"}
 ```
 
 ### /TrakWebApi/positions
