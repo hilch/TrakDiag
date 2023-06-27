@@ -75,7 +75,12 @@ void TD_WebServices(struct TD_WebServices* inst)
 					inst->fbGetSegment.AdvancedParameters.SelectionMode = mcACPTRAK_GET_SEG_ALL;
 					inst->fbGetSegment.Next = false;
 					inst->fbGetSegment.Enable = false; /* reset fb */
-					MC_BR_AsmGetSegment_AcpTrak( &inst->fbGetSegment );		
+					MC_BR_AsmGetSegment_AcpTrak( &inst->fbGetSegment );	
+
+					/* */
+					inst->fbAsmReadInfo.Assembly = inst->pAssembly;
+					inst->fbAsmReadInfo.Enable = true;
+
 	
 					/* */
 					inst->fbSegGetInfo.Execute = false; /* reset fb */
@@ -232,6 +237,45 @@ void TD_WebServices(struct TD_WebServices* inst)
 						sprintf( (char*) inst->webData.responseData, "{\"TrakDiag\" : \"" STRINGIFY(_TrakDiag_VERSION) "\","
 																	 "\"McAcpTrak\" : \"%s\""
 																	 "}", inst->acpTrakVersion );
+						
+						inst->webData.fbHttpService.responseDataLen = std::strlen( (char*) inst->webData.responseData );
+						std::strcpy( (char*) inst->webData.responseHeader.contentType, "application/json; charset=iso-8859-1");
+						inst->webData.responseHeader.contentLength = inst->webData.fbHttpService.responseDataLen;
+						std::strcpy( (char*) inst->webData.responseHeader.connection, "close" );
+						std::strcpy( (char*) inst->webData.responseHeader.keepAlive, "timeout=20, max=5" );
+						inst->webData.fbHttpService.send = true;
+						inst->step = HTTP_SERV_RESPONSE;
+					}
+
+					/* deliver assembly information */		
+					else if( std::strcmp( (char*) inst->webData.uri, "TrakWebApi/assembly") == 0 ){
+// not available in 5.21
+//						int plcOpen = inst->AssemblyInfo.PLCopenState;
+//						if( plcOpen > mcACPTRAK_INVALID_CONFIGURATION ){
+//							plcOpen = mcACPTRAK_INVALID_CONFIGURATION;
+//						}
+						sprintf( (char*) inst->webData.responseData, 
+								"{"
+//								"\"PLCopen\" : \"%s\"," // not available in 5.21
+								"\"CommunicationReady\" : %s,"
+								"\"ReadyForPowerOn\" : %s,"
+								"\"PowerOn\" : %s,"
+								"\"SegmentsInDisabledCount\" : %d,"
+								"\"SegmentsInStoppingCount\" : %d,"
+								"\"SegmentsInErrorStopCount\" : %d,"
+								"\"ShuttlesCount\" : %d,"
+								"\"ShuttlesInErrorStopCount\" : %d"
+								"}", 
+//								AcpTrakPLCopenState[plcOpen], // not available in 5.21
+								JavascriptBoolean[inst->AssemblyInfo.CommunicationReady],
+								JavascriptBoolean[inst->AssemblyInfo.ReadyForPowerOn],
+								JavascriptBoolean[inst->AssemblyInfo.PowerOn],
+								inst->AssemblyInfo.SegmentsInDisabledCount,
+								inst->AssemblyInfo.SegmentsInStoppingCount,
+								inst->AssemblyInfo.SegmentsInErrorStopCount,
+								inst->AssemblyInfo.ShuttlesCount,
+								inst->AssemblyInfo.ShuttlesInErrorStopCount
+						);
 						
 						inst->webData.fbHttpService.responseDataLen = std::strlen( (char*) inst->webData.responseData );
 						std::strcpy( (char*) inst->webData.responseHeader.contentType, "application/json; charset=iso-8859-1");
@@ -610,6 +654,14 @@ void TD_WebServices(struct TD_WebServices* inst)
 
 		}
 
+		/* assembly information */
+		MC_BR_AsmReadInfo_AcpTrak( &inst->fbAsmReadInfo );
+		if( inst->fbAsmReadInfo.Valid ){
+			std::memcpy( &inst->AssemblyInfo, &inst->fbAsmReadInfo.AssemblyInfo, sizeof(inst->AssemblyInfo) );
+		}
+		else {
+			std::memset( &inst->AssemblyInfo, 0, sizeof(inst->AssemblyInfo ));	
+		}
 
 
 	}

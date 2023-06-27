@@ -366,4 +366,5 @@ const char* INDEX_HTML = ""
 #define INTERNAL_ERROR_FREEMEMORY			9011
 
 
-
+const char* AcpTrakPLCopenState[] = { "Disabled", "Homing", "Ready", "Stopping", "Errorstop", "Startup", "Invalid Configuration" };
+const char* JavascriptBoolean[] = { "false", "true" };

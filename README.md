@@ -325,6 +325,15 @@ we return an array of pairs of two UDINT:
 [[1,197149959],[2,102778119],[3,10503431],[4,121636103],[5,6291719],[6,98566407],[7,182454535],[8,90179847],[9,207621383],[10,113249543]]
 ```
 
+### /TrakWebApi/assembly
+
+assembly information (>= V2.2.x)
+
+```
+{"CommunicationReady" : true,"ReadyForPowerOn" : true,"PowerOn" : true,"SegmentsInDisabledCount" : 0,"SegmentsInStoppingCount" : 0,"SegmentsInErrorStopCount" : 0,"ShuttlesCount" : 10,"ShuttlesInErrorStopCount" : 0}
+```
+
+
 
 ### /TrakWebApi/segments
 
@@ -337,8 +346,6 @@ Deliver JSON with list of assembly's segments.
 ### /TrakWebApi/svgdata
 
 Deliver assembly's generated SvgData (SVG).
-
-
 
 
 

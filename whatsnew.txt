@@ -5,6 +5,10 @@ V2.0.1
 V2.1.0
 - TD_Recorder: adapted for new SvgData generation in mapp 5.23
 - TD_Recorder: new input 'NumberOfCycles'
-- TD Recorder: Reduce default refresh cycle to 50 milliseconds
-- TD Recordder: Fix wrong shuttle positions
+- TD_Recorder: Reduce default refresh cycle to 50 milliseconds
+- TD_Recorder: Fix wrong shuttle positions
 - New FB: TD_WebServices
+
+V2.2.0
+- TD_WebServices: fix /TrakWebApi/info
+- TD_WebServices: add /TrakWebApi/assembly
