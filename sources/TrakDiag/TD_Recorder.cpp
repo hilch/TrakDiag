@@ -385,7 +385,7 @@ void TD_Recorder(struct TD_Recorder* inst)
 				char temp[256];
 				std::strcpy( (char*) inst->pBuffer, head );
 				for( int i = 0; i < inst->SegInfo.numberOfSegments; ++i ){
-					int len = std::sprintf( temp, "%s new Segment( %d, \"%s\", %1.8f, \"%s.ST%d\" )  /* [%d] */", i ? "\n\t\t\t," : "\t\t\t ", 
+					int len = std::sprintf( temp, "%s new Segment( %d, \"%s\", %1.8f, \"%s.ST%lu\" )  /* [%d] */", i ? "\n\t\t\t," : "\t\t\t ", 
 								inst->SegInfo.segmentInfo[i].ID, 
 								inst->SegInfo.segmentInfo[i].Name, 
 								inst->SegInfo.segmentInfo[i].Length,
