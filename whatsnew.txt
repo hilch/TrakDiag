@@ -12,3 +12,5 @@ V2.1.0
 V2.2.0
 - TD_WebServices: fix /TrakWebApi/info
 - TD_WebServices: add /TrakWebApi/assembly
+- TD_WebServices: bugfix: shuttles disappeared when disabled
+
