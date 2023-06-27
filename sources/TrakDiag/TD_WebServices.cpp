@@ -325,27 +325,6 @@ void TD_WebServices(struct TD_WebServices* inst)
 						inst->step = HTTP_SERV_RESPONSE;
 					}
 
-					/* deliver detailed info about certain shuttle */
-					else if( std::strncmp( (char*) inst->webData.uri, "TrakWebApi/shuttle?", 19 ) == 0 ) { 
-						inst->webData.fbGetParamUrl.enable = false;
-						httpGetParamUrl( &inst->webData.fbGetParamUrl ); /* reset fb */
-						inst->webData.fbGetParamUrl.enable = true;
-						inst->webData.fbGetParamUrl.pSrc = (UDINT) &inst->webData.uri;
-						inst->webData.fbGetParamUrl.pParam = (UDINT) "index";
-						inst->webData.fbGetParamUrl.pValue = (UDINT) &inst->webData.urlParamBuffer;
-						inst->webData.fbGetParamUrl.valueSize = sizeof(inst->webData.urlParamBuffer);
-						if( inst->webData.fbGetParamUrl.status == 0 ){
-							inst->webData.tempDINT = std::atol( (char*) inst->webData.urlParamBuffer );
-						}
-						inst->webData.fbHttpService.responseDataLen = std::strlen( (char*) inst->webData.responseData );
-						std::strcpy( inst->webData.responseHeader.contentType, "application/json; charset=iso-8859-1" );
-						inst->webData.responseHeader.contentLength = inst->webData.fbHttpService.responseDataLen;
-						std::strcpy( inst->webData.responseHeader.connection, "close" );
-						std::strcpy( inst->webData.responseHeader.keepAlive, "" );
-						inst->webData.fbHttpService.send = true;
-						inst->step = HTTP_SERV_RESPONSE;
-					}
-
 					/* deliver list of segments */
 					else if( std::strcmp( (char*) inst->webData.uri, "TrakWebApi/segments") == 0 ){
 						std::strcpy( (char*) inst->webData.responseData, "[ " ); /* start JSON */
