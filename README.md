@@ -2,10 +2,16 @@
 [![Made For B&R](https://github.com/hilch/BandR-badges/blob/main/Made-For-BrAutomation.svg)](https://www.br-automation.com)
 
 # TrakDiag
-Library for ACOPOStrak diagnosis
+Library for ACOPOStrak diagnosis.
+Included are some function blocks that can be used to easily make entries in application specific loggers. 
+In the event of an error, internal states (state machines, internal statuses, shuttle user data) can thus be brought into connection with the 'Motion' logger.
+(in this case the automatic saving of a system dump after the occurrence of an error is very helpful, see library AsArSdm ).
 
+As a further aid, a 'flight recorder' is available, which graphically displays the last seconds before an error.
 
-## Dependencies
+Finally, a web-based diagnostic interface can be generated with this library, which continuously displays the shuttle positions.
+
+## Dependencies / Preconditions
 
 - ArEventLog
 - astime
@@ -18,7 +24,9 @@ Library for ACOPOStrak diagnosis
 - FileIO
 - AsHttp
 
-A recommendation is to also use AsArSdm to have a system dump with included loggers available in case of an error.
+GCC >= V6.3.0
+
+
 
 # Functions / function blocks
 
@@ -230,7 +238,9 @@ Read logger entry (internal use).
 
 Scene Viewer like shuttle 'flight recorder'.
 Records shuttle data cyclically. If 'Trigger' is set a html file containing the 'SvgData' with shuttle movements is created.
-In combination with AsArSdm the period **before** the trigger event becomes visible.
+
+A recommendation is to also use AsArSdm to have a system dump with included loggers available in case of an error.
+In combination with SdmSystemDump() the period **before** the trigger event becomes visible.
 
 
 Since MC_BR_AsmCopyShuttleData_AcpTrak is used internally and only one instance of this FB is allowed in
