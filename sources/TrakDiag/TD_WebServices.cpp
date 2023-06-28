@@ -250,7 +250,7 @@ void TD_WebServices(struct TD_WebServices* inst)
 					/* deliver assembly information */		
 					else if( std::strcmp( (char*) inst->webData.uri, "TrakWebApi/assembly") == 0 ){
 // not available in 5.21
-//						int plcOpen = inst->AssemblyInfo.PLCopenState;
+//						int plcOpen = inst->asmInfo.PLCopenState;
 //						if( plcOpen > mcACPTRAK_INVALID_CONFIGURATION ){
 //							plcOpen = mcACPTRAK_INVALID_CONFIGURATION;
 //						}
@@ -267,14 +267,14 @@ void TD_WebServices(struct TD_WebServices* inst)
 								"\"ShuttlesInErrorStopCount\" : %d"
 								"}", 
 //								AcpTrakPLCopenState[plcOpen], // not available in 5.21
-								JavascriptBoolean[inst->AssemblyInfo.CommunicationReady],
-								JavascriptBoolean[inst->AssemblyInfo.ReadyForPowerOn],
-								JavascriptBoolean[inst->AssemblyInfo.PowerOn],
-								inst->AssemblyInfo.SegmentsInDisabledCount,
-								inst->AssemblyInfo.SegmentsInStoppingCount,
-								inst->AssemblyInfo.SegmentsInErrorStopCount,
-								inst->AssemblyInfo.ShuttlesCount,
-								inst->AssemblyInfo.ShuttlesInErrorStopCount
+								JavascriptBoolean[inst->asmInfo.CommunicationReady],
+								JavascriptBoolean[inst->asmInfo.ReadyForPowerOn],
+								JavascriptBoolean[inst->asmInfo.PowerOn],
+								inst->asmInfo.SegmentsInDisabledCount,
+								inst->asmInfo.SegmentsInStoppingCount,
+								inst->asmInfo.SegmentsInErrorStopCount,
+								inst->asmInfo.ShuttlesCount,
+								inst->asmInfo.ShuttlesInErrorStopCount
 						);
 						
 						inst->webData.fbHttpService.responseDataLen = std::strlen( (char*) inst->webData.responseData );
@@ -636,10 +636,10 @@ void TD_WebServices(struct TD_WebServices* inst)
 		/* assembly information */
 		MC_BR_AsmReadInfo_AcpTrak( &inst->fbAsmReadInfo );
 		if( inst->fbAsmReadInfo.Valid ){
-			std::memcpy( &inst->AssemblyInfo, &inst->fbAsmReadInfo.AssemblyInfo, sizeof(inst->AssemblyInfo) );
+			std::memcpy( &inst->asmInfo, &inst->fbAsmReadInfo.AssemblyInfo, sizeof(inst->asmInfo) );
 		}
 		else {
-			std::memset( &inst->AssemblyInfo, 0, sizeof(inst->AssemblyInfo ));	
+			std::memset( &inst->asmInfo, 0, sizeof(inst->asmInfo ));	
 		}
 
 

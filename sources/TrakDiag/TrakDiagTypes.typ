@@ -18,6 +18,7 @@ TYPE
 		numberOfSegments : UINT;
 		segment : ARRAY[0..TD_MAX_SUPPORTED_SEGMENTS_ASM]OF McSegmentType;
 		segmentInfo : ARRAY[0..TD_MAX_SUPPORTED_SEGMENTS_ASM]OF McAcpTrakSegGetInfoType;
+		segmentCyclicInfo : ARRAY[0..TD_MAX_SUPPORTED_SEGMENTS_ASM]OF McAcpTrakSegInfoType;
 	END_STRUCT;
 	TD_ServicesShuttleType : 	STRUCT 
 		index : UDINT; (*internal shuttle index*)

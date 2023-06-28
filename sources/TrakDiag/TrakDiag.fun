@@ -262,7 +262,6 @@ END_FUNCTION_BLOCK
 		ErrorID : DINT;
 		SegInfo : TD_ServicesSegInfoType; (*segment information*)
 		ShuttleInfo : TD_ServicesShuttlesType; (*cyclic shuttle information*)
-		AssemblyInfo : McAcpTrakAsmInfoType; (*assembly information*)
 	END_VAR
 	VAR
 		svgFileName : STRING[32];
@@ -288,5 +287,6 @@ END_FUNCTION_BLOCK
 		fbSegReadInfo : MC_BR_SegReadInfo_AcpTrak;
 		pAssembly : REFERENCE TO McAssemblyType;
 		fbRtInfo : RTInfo;
+		asmInfo : McAcpTrakAsmInfoType; (*assembly information*)
 	END_VAR
 END_FUNCTION_BLOCK
