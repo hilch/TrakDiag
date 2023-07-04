@@ -284,7 +284,7 @@ END_FUNCTION_BLOCK
 		fbGetSegment : MC_BR_AsmGetSegment_AcpTrak;
 		fbSegGetInfo : MC_BR_SegGetInfo_AcpTrak;
 		fbAsmReadInfo : MC_BR_AsmReadInfo_AcpTrak;
-		fbSegReadInfo : MC_BR_SegReadInfo_AcpTrak;
+		fbSegReadInfo : ARRAY[0..TD_MAX_SUPPORTED_SEGMENTS_ASM] OF MC_BR_SegReadInfo_AcpTrak;
 		pAssembly : REFERENCE TO McAssemblyType;
 		fbRtInfo : RTInfo;
 		asmInfo : McAcpTrakAsmInfoType; (*assembly information*)

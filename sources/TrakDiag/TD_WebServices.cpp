@@ -162,6 +162,7 @@ void TD_WebServices(struct TD_WebServices* inst)
 					inst->n = 0;
 					inst->fbSegGetInfo.Execute = true; /* start fb */
 					inst->fbSegGetInfo.Segment = &inst->SegInfo.segment[inst->n];
+					inst->fbSegReadInfo[inst->n].Segment = &inst->SegInfo.segment[inst->n];
 					MC_BR_SegGetInfo_AcpTrak( &inst->fbSegGetInfo );
 					inst->step = GET_SEGMENT_INFO;
 				}
@@ -191,11 +192,13 @@ void TD_WebServices(struct TD_WebServices* inst)
 			if( inst->fbSegGetInfo.Done ){
 				std::memcpy( &inst->SegInfo.segmentInfo[inst->n], &inst->fbSegGetInfo.SegmentInfo, sizeof(McAcpTrakSegGetInfoType) ); /* save segment infos */
 				inst->fbSegGetInfo.Execute = false; /* reset fb */
+				inst->fbSegReadInfo[inst->n].Enable = true; /* enable fb */
 				MC_BR_SegGetInfo_AcpTrak( &inst->fbSegGetInfo );
 				++inst->n;
 				if( inst->n < inst->SegInfo.numberOfSegments ){ /* there are still some segments left */
 					inst->fbSegGetInfo.Execute = true; /* start fb */
 					inst->fbSegGetInfo.Segment = &inst->SegInfo.segment[inst->n];
+					inst->fbSegReadInfo[inst->n].Segment = &inst->SegInfo.segment[inst->n];
 					MC_BR_SegGetInfo_AcpTrak( &inst->fbSegGetInfo );
 				}
 				else { /* all segments processed. */
@@ -350,6 +353,39 @@ void TD_WebServices(struct TD_WebServices* inst)
 						inst->webData.fbHttpService.send = true;
 						inst->step = HTTP_SERV_RESPONSE;
 					}
+
+
+					/* cyclic segment information */		
+					else if( std::strcmp( (char*) inst->webData.uri, "TrakWebApi/segment_status") == 0 ){
+						std::strcpy( (char*) inst->webData.responseData, "[ " ); /* start JSON */
+						size_t length = 2;
+						for( int n = 0; n < inst->SegInfo.numberOfSegments; ++n ){
+							char s[256];
+							unsigned int flags =  0;
+							if( inst->fbSegReadInfo[n].Valid ){
+								McAcpTrakSegInfoType * i = &inst->fbSegReadInfo[n].SegmentInfo;
+								flags =  (!!i->CommunicationReady)
+										 | (!!i->ReadyForPowerOn << 1)
+										 | (!!i->PowerOn << 2)
+										 | (!!i->SegmentEnable << 3); 
+							}
+ 							length += static_cast<size_t>(std::sprintf( s, "%s%d", n == 0 ? "" : ",", flags	));
+							if( length < sizeof(inst->webData.responseData) ){
+								std::strcat( (char*) inst->webData.responseData, s ); /* copy segment info */
+							}
+							else
+								break;
+						} 
+						std::strcat( (char*) inst->webData.responseData, "]" ); /* close JSON */
+						inst->webData.fbHttpService.responseDataLen = std::strlen( (char*) inst->webData.responseData );
+						std::strcpy( (char*) inst->webData.responseHeader.contentType, "application/json; charset=iso-8859-1");
+						inst->webData.responseHeader.contentLength = inst->webData.fbHttpService.responseDataLen;
+						std::strcpy( (char*) inst->webData.responseHeader.connection, "close" );
+						std::strcpy( (char*) inst->webData.responseHeader.keepAlive, "timeout=20, max=5" );
+						inst->webData.fbHttpService.send = true;
+						inst->step = HTTP_SERV_RESPONSE;
+					}
+
 
 					/* deliver svgdata */
 					else if( std::strcmp( (char*) inst->webData.uri, "TrakWebApi/svgdata") == 0 ){
@@ -642,6 +678,10 @@ void TD_WebServices(struct TD_WebServices* inst)
 			std::memset( &inst->asmInfo, 0, sizeof(inst->asmInfo ));	
 		}
 
+		/* segment information */
+		for( int n = 0; n < inst->SegInfo.numberOfSegments; ++n ){
+			MC_BR_SegReadInfo_AcpTrak( &inst->fbSegReadInfo[n] );
+		}
 
 	}
 	else {
