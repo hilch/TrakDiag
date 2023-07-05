@@ -17,5 +17,6 @@ V2.2.0
 V2.3.0
 - TD_WebServices: add /TrakWebApi/segment_status
 - TD_Webservices: /TrakWebApi/index.html: add displaying segment status
+- TD_Webservices: /TrakWebApi/index.html: exchange pop-up dialog with status line
 
 
