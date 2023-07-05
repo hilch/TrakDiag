@@ -18,5 +18,9 @@ V2.3.0
 - TD_WebServices: add /TrakWebApi/segment_status
 - TD_Webservices: /TrakWebApi/index.html: add displaying segment status
 - TD_Webservices: /TrakWebApi/index.html: exchange pop-up dialog with status line
+- TD_Webservices: Adjust SVG viewbox
+- TD_Recorder: Adjust SVG viewbox
+- TD_Recorder: Recalculate position of hover dialog to avoid page re-rendering
+
 
 
