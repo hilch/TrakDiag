@@ -325,6 +325,13 @@ const char* HTML_HEADER_END = ""
 "\t\t\t\t\tworkspace.remove();\n"
 "\t\t\t\t\tsegment.forEach( s => s.findElementV1(container));\n"
 "\t\t\t}\n"
+/* adjust view box */
+"\t\t\t\tconst svg = document.querySelector('#svgData svg');\n"
+"\t\t\t\tsvg.viewBox.baseVal.x = svg.getBBox().x-0.02;\n"
+"\t\t\t\tsvg.viewBox.baseVal.width = svg.getBBox().width+0.04;\n"
+"\t\t\t\tsvg.viewBox.baseVal.y = svg.getBBox().y-0.02;\n"
+"\t\t\t\tsvg.viewBox.baseVal.height = svg.getBBox().height+0.04;\n"
+
 "\t\t\trecord.forEach( r => r.createSVG());\n"
 "\t\t\tthis.sliderTime.min = 0;\n"
 "\t\t\tthis.sliderTime.max = record.length-1;\n"
