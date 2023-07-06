@@ -273,7 +273,7 @@ output:
 
 ![example_recorder](https://github.com/hilch/TrakDiag/blob/main/examples/screenshot_recorder.png)
 
-[download this example and open it in your browser](https://github.com/hilch/TrakDiag/blob/main/examples/TD_Recorder_2023-06-27T09_26_05.html)
+[download this example and open it in your browser](https://github.com/hilch/TrakDiag/blob/main/examples/TD_Recorder_2023-07-06T13_40_34.html)
 
 
 ## TD_WebServices
