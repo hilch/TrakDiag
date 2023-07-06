@@ -343,14 +343,20 @@ assembly information (>= V2.2.x)
 {"CommunicationReady" : true,"ReadyForPowerOn" : true,"PowerOn" : true,"SegmentsInDisabledCount" : 0,"SegmentsInStoppingCount" : 0,"SegmentsInErrorStopCount" : 0,"ShuttlesCount" : 10,"ShuttlesInErrorStopCount" : 0}
 ```
 
-
-
 ### /TrakWebApi/segments
 
 Deliver JSON with list of assembly's segments.
 
 ```
 [ { "name": "gSegB7", "ID": 31, "length": 0.450642056481534 },{ "name": "gSegB6", "ID": 30, "length": 0.450642056481534 },{ "name": "gSegB8", "ID": 29, "length": 0.450642056481534 },{ "name": "gSegB9", "ID": 28, "length": 0.450642056481534 },{ "name": "gSegB10", "ID": 27, "length": 0.450642056481534 },{ "name": "gSegB11", "ID": 26, "length": 0.240000000000000 },{ "name": "gSegB12", "ID": 25, "length": 0.240000000000000 },{ "name": "gSegB13", "ID": 24, "length": 0.240000000000000 },{ "name": "gSegB14", "ID": 23, "length": 0.450642056481534 },{ "name": "gSegB16", "ID": 22, "length": 0.450642056481534 },{ "name": "gSegB15", "ID": 21, "length": 0.450642056481534 },{ "name": "gSegB17", "ID": 20, "length": 0.450642056481534 },{ "name": "gSegB18", "ID": 19, "length": 0.450642056481534 },{ "name": "gSegB1", "ID": 18, "length": 0.450642056481534 },{ "name": "gSegB2", "ID": 17, "length": 0.240000000000000 },{ "name": "gSegB3", "ID": 16, "length": 0.240000000000000 },{ "name": "gSegB4", "ID": 15, "length": 0.240000000000000 },{ "name": "gSegB5", "ID": 14, "length": 0.450642056481534 },{ "name": "gSegA2", "ID": 13, "length": 0.660000000000000 },{ "name": "gSegA3", "ID": 12, "length": 0.450642056481534 },{ "name": "gSegA4", "ID": 11, "length": 0.240000000000000 },{ "name": "gSegA5", "ID": 10, "length": 0.240000000000000 },{ "name": "gSegA6", "ID": 9, "length": 0.240000000000000 },{ "name": "gSegA7", "ID": 8, "length": 0.450642056481534 },{ "name": "gSegA8", "ID": 7, "length": 0.660000000000000 },{ "name": "gSegA9", "ID": 6, "length": 0.660000000000000 },{ "name": "gSegA10", "ID": 5, "length": 0.450642056481534 },{ "name": "gSegA11", "ID": 4, "length": 0.240000000000000 },{ "name": "gSegA12", "ID": 3, "length": 0.240000000000000 },{ "name": "gSegA13", "ID": 2, "length": 0.240000000000000 },{ "name": "gSegA14", "ID": 1, "length": 0.450642056481534 },{ "name": "gSegA1", "ID": 0, "length": 0.660000000000000 }]
+```
+
+### /TrakWebApi/segment_status
+
+returns segments' status (bit coded).
+
+```
+[ 7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7]
 ```
 
 ### /TrakWebApi/svgdata
