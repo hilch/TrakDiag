@@ -78,7 +78,9 @@ void TD_WebServices(struct TD_WebServices* inst)
 					MC_BR_AsmGetSegment_AcpTrak( &inst->fbGetSegment );	
 
 					/* */
+					inst->fbAsmReadInfo.Enable = false;
 					inst->fbAsmReadInfo.Assembly = inst->pAssembly;
+					MC_BR_AsmReadInfo_AcpTrak( &inst->fbAsmReadInfo ); /* reset fb */
 					inst->fbAsmReadInfo.Enable = true;
 
 	
@@ -310,12 +312,13 @@ void TD_WebServices(struct TD_WebServices* inst)
 											+ (static_cast<UDINT>(shuttle->flags &0x3) << 8)
 											+ (static_cast<UDINT>(shuttle->segmentID & 0x7ff) << 10)
 										 	+ (static_cast<UDINT>(shuttle->segmentPosition & 0x7f) << 21); 
-
-							lengthOfJSON += sprintf( s, "%s[%ld,%ld]" , n == 0 ? "" : ",", first, second );
-							if( lengthOfJSON < sizeof(inst->webData.responseData) ){
-								std::strcat( (char*) inst->webData.responseData, s );
+							if( !inst->fbAsmReadInfo.AssemblyInfo.PowerOn || (shuttle->flags & 0x01) ){ /* don't return deleted shuttles when assembly is powered on */
+								lengthOfJSON += sprintf( s, "%s[%ld,%ld]" , n == 0 ? "" : ",", first, second );
+								if( lengthOfJSON < sizeof(inst->webData.responseData) ){
+									std::strcat( (char*) inst->webData.responseData, s );
+								}
+								else break;
 							}
-							else break;
 						}
 						std::strcat( (char*) inst->webData.responseData, "]" ); /* close JSON */
 
