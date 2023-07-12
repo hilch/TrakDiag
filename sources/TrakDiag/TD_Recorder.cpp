@@ -136,6 +136,14 @@ void TD_Recorder(struct TD_Recorder* inst)
 					DatObjInfo( &inst->fbDatObjInfo );
 					inst->step = CHECK_DATA_OBJ;
 
+					/*  */
+					inst->fbSystemDump.enable = false; 
+					inst->fbSystemDump.configuration = sdm_SYSTEMDUMP_DATA;
+					inst->fbSystemDump.pDevice = (UDINT) &inst->FileDeviceName;
+					inst->fbSystemDump.pFile = (UDINT) &inst->DumpFileName;
+					inst->fbSystemDump.pParam = 0;
+					SdmSystemDump( &inst->fbSystemDump ); /* reset fb */
+
 					inst->tonTriggerDelay.PT = 200;
 				}
 				else {
@@ -323,6 +331,8 @@ void TD_Recorder(struct TD_Recorder* inst)
 				else if( inst->tonTriggerDelay.Q and inst->Valid ) { /* we got a trigger and now we save everything */
 					TD_filenameDT( (UDINT) "TD_Recorder_", (UDINT) &inst->OutputFileName, sizeof(inst->OutputFileName)-1 );
 					std::strcat( (char*) &inst->OutputFileName, (char*) ".html" );
+					TD_filenameDT( (UDINT) "TD_Recorder_Dump_", (UDINT) &inst->DumpFileName, sizeof(inst->DumpFileName)-1 );
+					std::strcat( (char*) &inst->DumpFileName, (char*) ".tar.gz" );
 					inst->Valid = false;
 					inst->Busy = true;
 					inst->Saved = false;
@@ -712,7 +722,9 @@ void TD_Recorder(struct TD_Recorder* inst)
 			if( inst->fbFileClose.status == 0 ){ /* successful */
 				inst->fbFileClose.enable = false; /* reset fb */
 				FileClose( &inst->fbFileClose );
-				inst->step = W_RESTART;
+				inst->fbSystemDump.enable = true;
+				SdmSystemDump( &inst->fbSystemDump );
+				inst->step = W_SYSTEMDUMP;
 			}
 			else if( inst->fbFileClose.status != 65535 ) {  /* error */
 				inst->ErrorID = inst->fbFileClose.status ;
@@ -724,6 +736,23 @@ void TD_Recorder(struct TD_Recorder* inst)
 			}
 			else { /* busy */
 				FileClose( &inst->fbFileClose );
+			}
+			break;
+
+
+			case W_SYSTEMDUMP:
+			if( inst->fbSystemDump.status == 0 ){ /* successful */
+				inst->fbSystemDump.enable = false; /* reset fb */
+				SdmSystemDump( &inst->fbSystemDump );
+				inst->step = W_RESTART;
+			}
+			else if( inst->fbSystemDump.status != 65535 ){  /* busy */
+				inst->fbSystemDump.enable = false; /* reset fb */
+				SdmSystemDump( &inst->fbSystemDump );
+				inst->step = INTERNAL_ERROR_SYSTEMDUMP;
+			}
+			else {  /* busy */
+				SdmSystemDump( &inst->fbSystemDump );
 			}
 			break;
 

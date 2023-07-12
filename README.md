@@ -5,7 +5,6 @@
 Library for ACOPOStrak diagnosis.
 Included are some function blocks that can be used to easily make entries in application specific loggers. 
 In the event of an error, internal states (state machines, internal statuses, shuttle user data) can thus be brought into connection with the 'Motion' logger.
-(in this case the automatic saving of a system dump after the occurrence of an error is very helpful, see library AsArSdm ).
 
 As a further aid, a 'flight recorder' is available, which graphically displays the last seconds before an error.
 
@@ -23,6 +22,7 @@ Finally, a web-based diagnostic interface can be generated with this library, wh
 - brsystem
 - FileIO
 - AsHttp
+- AsArSdm
 
 GCC >= V6.3.0
 
@@ -237,11 +237,9 @@ Read logger entry (internal use).
 ## TD_Recorder
 
 Scene Viewer like shuttle 'flight recorder'.
-Records shuttle data cyclically. If 'Trigger' is set a html file containing the 'SvgData' with shuttle movements is created.
+Records shuttle data cyclically. 
 
-A recommendation is to also use AsArSdm to have a system dump with included loggers available in case of an error.
-In combination with SdmSystemDump() the period **before** the trigger event becomes visible.
-
+If 'Trigger' is set a html file containing the 'SvgData' with shuttle movements and a system dump file is created.
 
 Since MC_BR_AsmCopyShuttleData_AcpTrak is used internally and only one instance of this FB is allowed in
 project one can use the shuttle data provided by 'DataAddress'/'DataSize' for own usage instead.

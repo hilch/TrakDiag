@@ -216,6 +216,7 @@ type of McAcpTrakShuttleData[] if no shuttle user data is defined, see MC_BR_Asm
 		ErrorID : DINT;
 		SegInfo : TD_RecorderSegInfoType; (*segment information*)
 		OutputFileName : STRING[255]; (*name of output file*)
+		DumpFileName : STRING[255];
 	END_VAR
 	VAR
 		svgFileName : STRING[32];
@@ -236,6 +237,7 @@ type of McAcpTrakShuttleData[] if no shuttle user data is defined, see MC_BR_Asm
 		fbCopyShuttleData : MC_BR_AsmCopyShuttleData_AcpTrak;
 		fbGetSegment : MC_BR_AsmGetSegment_AcpTrak;
 		fbSegGetInfo : MC_BR_SegGetInfo_AcpTrak;
+		fbSystemDump : SdmSystemDump;
 		pAssembly : REFERENCE TO McAssemblyType;
 		tonTriggerDelay : TON;
 		fbRtInfo : RTInfo;

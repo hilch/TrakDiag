@@ -22,5 +22,11 @@ V2.3.0
 - TD_Recorder: Adjust SVG viewbox
 - TD_Recorder: Recalculate position of hover dialog to avoid page re-rendering
 
+V2.4.0
+- TD_Webservices: /TrakWebApi/positions: not returning deleted shuttles when assembly is powered
+- TD_Webservices: show info when web server is not responding
+- TD_Recorder: create a systemdump file on trigger
+
+
 
 
