@@ -19,6 +19,7 @@
     <File>TD_Recorder.h</File>
     <File>TD_WebServices.cpp</File>
     <File>TD_WebServices.h</File>
+	<Object Type="Package">TrakWebApi</Object>
   </Files>
   <Dependencies>
     <Dependency ObjectName="ArEventLog" />

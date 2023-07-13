@@ -27,41 +27,33 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
+#ifdef __cplusplus
+	extern "C"
+	{
+#endif
+	#include "TrakDiag.h"
+#ifdef __cplusplus
+	};
+#endif
 
+#define STR(x) #x
+#define STRINGIFY(x) STR(x)
 
-
-#include "TrakWebApi/responses.h"
-#include "TrakWebApi/utils.h"
-
-#define STARTUP					0
-#define GET_SEGMENT_LIST		10
-#define GET_SEGMENT_INFO		20
-#define W_HTTP_REQUESTS			100
-#define HTTP_SERV_RESPONSE		110
-#define INFO_SVG_FILE			120
-#define CHECK_DATA_OBJ			130
-#define CREATE_DATA_OBJ			140
-#define DELETE_DATA_OBJ			150
-#define OPEN_SVG_FILE			160
-#define READ_SVG_DATA			170
-#define CLOSE_SVG_FILE			180
-#define SEND_SVGDATA			190			
-#define FREE_UP_MEMORY			200
-
-
-#define INTERNAL_ERROR						9000
-#define INTERNAL_ERROR_GETSEGMENT			9001
-#define INTERNAL_ERROR_PVXGETADR			9002
-#define INTERNAL_ERROR_HTTP					9003
-#define INTERNAL_ERROR_FILEINFO_SVG			9004
-#define INTERNAL_ERROR_FILEOPEN_SVG			9005
-#define INTERNAL_ERROR_FILEREAD_SVG			9006
-#define INTERNAL_ERROR_FILECLOSE_SVG		9007
-#define INTERNAL_ERROR_DATOBJINFO			9008
-#define INTERNAL_ERROR_DATOBJDELETE			9009	
-#define INTERNAL_ERROR_DATOBJCREATE			9010
-#define INTERNAL_ERROR_FREEMEMORY			9011
-
-
-const char* AcpTrakPLCopenState[] = { "Disabled", "Homing", "Ready", "Stopping", "Errorstop", "Startup", "Invalid Configuration" };
+const char* INDEX_HTML = ""
+"\xef\xbb\xbf<!DOCTYPE html><html>\n"
+"<head><!-- created by https://github.com/hilch/TrakDiag V " STRINGIFY(_TrakDiag_VERSION) " - TD_WebServices.cpp -->\n"
+"\t<title>%s</title>\n"
+"\t<link rel=\"stylesheet\" href=\"index.css\">\n"
+"\t<script src=\"index.js\"></script>\n"
+"</head>\n"
+"\n"
+/* body */
+"<body>\n"
+"\t<h2 id=\"hoverInfo\"></h2>\n"
+"\t<div id=\"svgParent\"></div>\n"
+"\t<div id=\"timeoutBox\"><h2>Error: Server is not responding !</h2></div>\n"
+"</body>\n"
+"\n"
+"</html>\n"
+"";
 
