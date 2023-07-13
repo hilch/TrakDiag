@@ -30,3 +30,6 @@
 *.exe
 *.out
 *.app
+
+# Visual Studio Code
+tools/codegen/.vscode/launch.json

@@ -39,15 +39,14 @@ SOFTWARE.
 #define STR(x) #x
 #define STRINGIFY(x) STR(x)
 
-const char* INDEX_HTML = ""
-"\xef\xbb\xbf<!DOCTYPE html><html>\n"
-"<head><!-- created by https://github.com/hilch/TrakDiag V " STRINGIFY(_TrakDiag_VERSION) " - TD_WebServices.cpp -->\n"
-"\t<title>%s</title>\n"
+const char* INDEX_HTML= "\xef\xbb\xbf"
+"<!DOCTYPE html><html>\n"
+"<head><!-- created by https://github.com/hilch/TrakDiag V " STRINGIFY(_TrakDiag_VERSION) "- TD_WebServices.cpp -->\n"
+"\t<title>Assembly</title>\n"
 "\t<link rel=\"stylesheet\" href=\"index.css\">\n"
 "\t<script src=\"index.js\"></script>\n"
 "</head>\n"
 "\n"
-/* body */
 "<body>\n"
 "\t<h2 id=\"hoverInfo\"></h2>\n"
 "\t<div id=\"svgParent\"></div>\n"
@@ -55,5 +54,4 @@ const char* INDEX_HTML = ""
 "</body>\n"
 "\n"
 "</html>\n"
-"";
-
+;

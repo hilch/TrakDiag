@@ -27,12 +27,24 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-const char *INDEX_JS = ""
+#ifdef __cplusplus
+	extern "C"
+	{
+#endif
+	#include "TrakDiag.h"
+#ifdef __cplusplus
+	};
+#endif
+
+#define STR(x) #x
+#define STRINGIFY(x) STR(x)
+
+const char* INDEX_JS= "\xef\xbb\xbf"
 "\"use strict\";\n"
 "\n"
-/* class Segment */
+"/* created by https://github.com/hilch/TrakDiag V " STRINGIFY(_TrakDiag_VERSION) "- TD_WebServices.cpp */\n"
+"\n"
 "class Segment {\n"
-/* Segment.constructor */
 "\tconstructor(ID, name, length) {\n"
 "\t\tthis.ID = ID;\n"
 "\t\tthis.name = name;\n"
@@ -42,13 +54,11 @@ const char *INDEX_JS = ""
 "\t\tthis.segmentBody2 = undefined;\n"
 "\t}\n"
 "\n"
-/* Segment.addEvents() */
 "\taddEvents(segmentParent) {\n"
 "\t\tsegmentParent.addEventListener('mouseover', (event) => {\n"
 "\t\t\tconst hoverInfo = document.getElementById('hoverInfo');\n"
 "\t\t\thoverInfo.innerHTML = 'name: ' + this.name + ' / length: ' + this.length.toFixed(3)\n"
 "\t\t\t\t+ ' / ID: ' + this.ID\n"
-//"\t\t\t\t+ '<br />' + 'PLC address: ' + this.plcAddress;\n"
 "\t\t\thoverInfo.style.visibility='visible';\n"
 "\t\t\tthis.segmentBody.classList.add('highlightSegment');\n"
 "\t\t\tthis.segmentBody2.classList.add('highlightSegment');\n"
@@ -61,45 +71,37 @@ const char *INDEX_JS = ""
 "\t\t});\n"
 "\t}\n"
 "\n"
-/* Segment.findElementsV1 */
 "\tfindElementsV1(container) { /* < 5.23 */\n"
 "\t\tthis.segmentBody = container.querySelector(`g polygon[id]#${this.name}`);\n"
 "\t\tthis.segmentBody.style.fill = '';\n"
-"\t\tthis.segmentBody2 = this.segmentBody.nextElementSibling;"
-"\t\tthis.segmentBody2.style.fill = '';\n"
+"\t\tthis.segmentBody2 = this.segmentBody.nextElementSibling;\t\tthis.segmentBody2.style.fill = '';\n"
 "\t\tconst segmentParent = this.segmentBody.parentElement;\n"
 "\t\tthis.segmentPath = segmentParent.querySelector('polyline');\n"
 "\t\tthis.addEvents(segmentParent);\n"
 "\t}\n"
 "\n"
-/* Segment.findElementsV2 */
 "\tfindElementsV2(container) { /* >= 5.23 */\n"
 "\t\tthis.segmentBody = container.querySelector(`#pgsg_${this.name}`);\n"
 "\t\tthis.segmentBody.style.fill = '';\n"
-"\t\tthis.segmentBody2 = this.segmentBody.nextElementSibling;"
-"\t\tthis.segmentBody2.style.fill = '';\n"
+"\t\tthis.segmentBody2 = this.segmentBody.nextElementSibling;\t\tthis.segmentBody2.style.fill = '';\n"
 "\t\tconst segmentParent = container.querySelector(`#gsg_${this.name}`);\n"
 "\t\tthis.segmentPath = container.querySelector(`#plsg_${this.name}`);\t\t\t\t\n"
 "\t\tthis.addEvents(segmentParent);\n"
 "\t}\n"
 "\n"
-/* Segments.xy */
 "\txy(percentage) { /* get coords from percentage position */\n"
 "\t\tconst linepos = (percentage / 100.0) * this.segmentPath.getTotalLength();\n"
 "\t\treturn this.segmentPath.getPointAtLength(linepos);\n"
 "\t}\n"
 "\n"
-/* Segments.paintShuttle */
 "\tpaintShuttle(svg) {\n"
 "\t\tthis.segmentPath.parentElement.appendChild(svg);\n"
 "\t}\n"
 "\n"
-/* Segments.segmentPosition */
 "\tsegmentPosition(percentage) {\n"
 "\t\treturn ((percentage/100)*this.length).toFixed(3);\n"
 "\t}\n"
 "\n"
-/* Segment.setStatus */
 "\tsetStatus(flags) {\n"
 "\t\tconst commReady = !!(flags &0x01);\n"
 "\t\tconst ready = !!(flags & 0x02);\n"
@@ -132,9 +134,7 @@ const char *INDEX_JS = ""
 "}\n"
 "\n"
 "\n"
-/* class Shuttle */
 "class Shuttle {\n"
-/* Shuttle.constructor */
 "\tconstructor(index, active, PLCopen, segment, pos ) {\n"
 "\t\tthis.index = index;\n"
 "\t\tthis.active = active;\n"
@@ -143,13 +143,11 @@ const char *INDEX_JS = ""
 "\t\tthis.pos = pos; /* [%%] */\n"
 "\t}\n"
 "\n"
-/* Shuttle.plcOpenStatus */
 "\tplcOpenStatus() {\n"
 "\t\treturn ['disabled', 'standstill', 'homing', 'stopping', 'discrete motion', 'continous motion',\n"
 "\t\t\t'synchronized motion', 'error stop', 'startup', 'invalid configuration'][this.PLCopen];\n"
 "\t}\n"
 "\n"
-/* Shuttle.createSVG */
 "\tcreateSVG() {\n"
 "\t\tconst { x, y } = this.segment.xy(this.pos);\n"
 "\t\tthis.svg = document.createElementNS('http://www.w3.org/2000/svg', 'circle');\n"
@@ -197,29 +195,24 @@ const char *INDEX_JS = ""
 "\t\t});\n"
 "\t}\n"
 "\n"
-/* Shuttle.paint */
 "\tpaint() {\n"
 "\t\tthis.segment.paintShuttle(this.svg);\n"
 "\t}\n"
 "}\n"
 "\n"
 "\n"
-/* class Assembly */
 "class Assembly {\n"
 "\n"
-/* Assembly.constructor */
 "\tconstructor() {\n"
 "\t\tthis.segment = [];\n"
 "\t\tthis.offline = true;\n"
 "\t}\n"
 "\n"
-/* Assembly.wait */
 "\twait = async (milliseconds) => {  /* wait x ms */\n"
 "\t\tconst promise = new Promise(res => setTimeout(() => res(), milliseconds));\n"
 "\t\treturn promise;\n"
 "\t}\n"
 "\n"
-/* Assembly.load */
 "\tload = async () => {\n"
 "\t\t/* load segment data */\n"
 "\t\tconst hoverInfo = document.getElementById('hoverInfo');\n"
@@ -267,7 +260,6 @@ const char *INDEX_JS = ""
 "\t\t\tworkspace.remove();\n"
 "\t\t\tthis.segment.forEach(s => s.findElementsV1(container));\n"
 "\t\t}\n"
-/* adjust view box */
 "\t\tdocument.querySelector('#svgParent').replaceWith(svgParent);\n"
 "\t\tsvg.viewBox.baseVal.x = svg.getBBox().x-0.02;\n"
 "\t\tsvg.viewBox.baseVal.width = svg.getBBox().width+0.04;\n"
@@ -276,7 +268,6 @@ const char *INDEX_JS = ""
 "\t\thoverInfo.style.visibility='hidden';\n"
 "\t}\n"
 "\n"
-/* Assembly.removeAllShuttles */
 "\tremoveAllShuttles = () => {\n"
 "\t\tconst shuttles = document.querySelectorAll('.shuttle');\n"
 "\t\tif (shuttles.length != 0) {\n"
@@ -284,7 +275,6 @@ const char *INDEX_JS = ""
 "\t\t}\n"
 "\t}\n"
 "\n"
-/* Assembly.readShuttlePositions */
 "\t/* read shuttle positions */\n"
 "\tasync readShuttlePositions() {\n"
 "\t\ttry {\n"
@@ -319,7 +309,6 @@ const char *INDEX_JS = ""
 "\t\t}\n"
 "\t}\n"
 "\n"
-/* Assembly.readSegmentFlags */
 "\t/* read segment flags */\n"
 "\tasync readSegmentFlags() {\n"
 "\t\ttry {\n"
@@ -331,7 +320,6 @@ const char *INDEX_JS = ""
 "\t\t} catch(err){}\n"
 "\t}\n"
 "\n"
-/* Assembly.cyclicRefresh */
 "\t/* cyclic refresh */\n"
 "\tasync cyclicRefresh(assembly) {\n"
 "\t\tlet cycles = 10;\n"
@@ -349,11 +337,9 @@ const char *INDEX_JS = ""
 "}\n"
 "\n"
 "\n"
-/* document.addEventListener */
 "document.addEventListener('DOMContentLoaded', async () => {\n"
 "\tconst assembly = new Assembly();\n"
 "\tawait assembly.load();\n"
 "\tawait assembly.cyclicRefresh();\n"
 "})\n"
-"\n"
-"\n";
+;

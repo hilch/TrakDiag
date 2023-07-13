@@ -1,0 +1,59 @@
+/* @ */
+@keyframes blinkerOffline { 50% { fill: red; } }
+@keyframes blinkerNotReady { 50% { fill: lightgray; } }
+
+.shuttleDisabled {
+	fill: grey;
+	stroke: black;
+	stroke-width: 0.01;
+}
+
+.shuttleReady {
+	fill: white;
+	stroke: black;
+	stroke-width: 0.01;
+}
+
+.shuttleErrorStop {
+	fill: red;
+	stroke: black;
+	stroke-width: 0.01;
+}
+
+.shuttleDeleted {
+	stroke-width: 0.001;
+	opacity: 10;
+}
+
+.highlightShuttle {
+	stroke: orange !important;
+	fill: orange !important;
+}
+
+.segReady {
+	fill: lightgray;
+}
+
+.segNotReadyForPowerOn {
+	animation: blinkerNotReady 2s step-start 0s infinite;
+}
+
+.segDisabled {
+	fill: dimgray;
+}
+
+.segOffline {
+	animation: blinkerOffline 2s step-start 0s infinite;
+}
+
+.highlightSegment {
+	fill: orange !important;
+}
+
+#hoverInfo { padding: 0px 1em 0px 1em; margin: auto; border: none; background-color: orange;}
+#timeoutBox { position : fixed; top: 0; left : 0; width: 100%; height: 100%; border: none; background-color: rgba(0,0,0,0.4); display : none }
+#timeoutBox h2 { padding: 0px 1em 0px 1em; margin: auto; color: red }
+h1,h2,h3,h4,h5,h6 { font-family: "Segoe UI",Arial,sans-serif; font-weight: 400; margin: 10px 0 }
+h1 { font-size: 30px }
+h2 { font-size: 24px }
+

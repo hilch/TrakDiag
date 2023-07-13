@@ -27,12 +27,23 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-const char* INDEX_CSS = ""
-/* animation */
-"@keyframes blinkerOffline { 50%% { fill: red; } }\n"
-"@keyframes blinkerNotReady { 50%% { fill: lightgray; } }\n"
+#ifdef __cplusplus
+	extern "C"
+	{
+#endif
+	#include "TrakDiag.h"
+#ifdef __cplusplus
+	};
+#endif
+
+#define STR(x) #x
+#define STRINGIFY(x) STR(x)
+
+const char* INDEX_CSS= "\xef\xbb\xbf"
+"/* created by https://github.com/hilch/TrakDiag V " STRINGIFY(_TrakDiag_VERSION) "- TD_WebServices.cpp */\n"
+"created by https://github.com/hilch/TrakDiag V " STRINGIFY(_TrakDiag_VERSION) "- TD_WebServices.cppkeyframes blinkerOffline { 50%% { fill: red; } }\n"
+"created by https://github.com/hilch/TrakDiag V " STRINGIFY(_TrakDiag_VERSION) "- TD_WebServices.cppkeyframes blinkerNotReady { 50%% { fill: lightgray; } }\n"
 "\n"
-/* styles for shuttles */
 ".shuttleDisabled {\n"
 "\tfill: grey;\n"
 "\tstroke: black;\n"
@@ -61,7 +72,6 @@ const char* INDEX_CSS = ""
 "\tfill: orange !important;\n"
 "}\n"
 "\n"
-/* styles for segments */
 ".segReady {\n"
 "\tfill: lightgray;\n"
 "}\n"
@@ -82,13 +92,11 @@ const char* INDEX_CSS = ""
 "\tfill: orange !important;\n"
 "}\n"
 "\n"
-/* styles for hover info */
 "#hoverInfo { padding: 0px 1em 0px 1em; margin: auto; border: none; background-color: orange;}\n"
-/* styles for timeout box */
 "#timeoutBox { position : fixed; top: 0; left : 0; width: 100%%; height: 100%%; border: none; background-color: rgba(0,0,0,0.4); display : none }\n"
 "#timeoutBox h2 { padding: 0px 1em 0px 1em; margin: auto; color: red }\n"
-/* styles for header */
 "h1,h2,h3,h4,h5,h6 { font-family: \"Segoe UI\",Arial,sans-serif; font-weight: 400; margin: 10px 0 }\n"
 "h1 { font-size: 30px }\n"
 "h2 { font-size: 24px }\n"
-"\n";
+"\n"
+;
