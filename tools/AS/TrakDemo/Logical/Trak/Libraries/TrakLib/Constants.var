@@ -1,0 +1,3 @@
+VAR CONSTANT
+	TL_MAX_SHUTTLE : UINT := 199; (* *) (* *) (*#OMIT*)
+END_VAR

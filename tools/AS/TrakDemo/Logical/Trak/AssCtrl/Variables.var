@@ -1,0 +1,20 @@
+VAR
+	fbStartShuttles : TL_StartShuttlesInSector;
+	fbLogResetStep : TD_LogWatchSTRING;
+	fbLogStep : TD_LogWatchSTRING;
+	fbAddSimShuttle : MC_BR_SecAddShuttle_AcpTrak;
+	fbPowerOff : MC_BR_AsmPowerOff_AcpTrak;
+	fbPowerOn : MC_BR_AsmPowerOn_AcpTrak;
+	fbGetInfo : MC_BR_AsmGetInfo_AcpTrak;
+	fbReadInfo : MC_BR_AsmReadInfo_AcpTrak;
+	fbReadStatus : MC_BR_AsmReadStatus_AcpTrak;
+	fbWebServices : TD_WebServices;
+	fbCatchShuttle : TL_CatchShuttle;
+	fbRecorder : TD_Recorder;
+	step : AssemblyStepEnum;
+	fbAsmReset : MC_BR_AsmReset_AcpTrak;
+	fbSegCommandError : TD_SegCommandError;
+	assemblyCtrl : AssemblyType;
+	shuttleData : ARRAY[0..49] OF McAcpTrakShuttleData;
+	shuttleCounter : DINT;
+END_VAR

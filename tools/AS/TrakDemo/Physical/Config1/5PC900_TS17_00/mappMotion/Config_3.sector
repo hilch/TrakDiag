@@ -1,0 +1,115 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<?AutomationStudio FileVersion="4.9"?>
+<Configuration>
+  <Element ID="gSecOvalA" Type="sector">
+    <Selector ID="Type" Value="Composed">
+      <Group ID="StartSegment">
+        <Property ID="SegmentRef" Value="::gSegA1" />
+      </Group>
+      <Group ID="IntermediateSegments">
+        <Property ID="SegmentRef[1]" Value="::gSegA14" />
+        <Property ID="SegmentRef[2]" Value="::gSegA13" />
+        <Property ID="SegmentRef[3]" Value="::gSegA12" />
+        <Property ID="SegmentRef[4]" Value="::gSegA11" />
+        <Property ID="SegmentRef[5]" Value="::gSegA10" />
+        <Property ID="SegmentRef[6]" Value="::gSegA9" />
+        <Property ID="SegmentRef[7]" Value="::gSegA8" />
+        <Property ID="SegmentRef[8]" Value="::gSegA7" />
+        <Property ID="SegmentRef[9]" Value="::gSegA6" />
+        <Property ID="SegmentRef[10]" Value="::gSegA5" />
+        <Property ID="SegmentRef[11]" Value="::gSegA4" />
+        <Property ID="SegmentRef[12]" Value="::gSegA3" />
+      </Group>
+      <Group ID="EndSegment">
+        <Property ID="SegmentRef" Value="::gSegA2" />
+        <Property ID="PositionRelativeTo" Value="FromEnd" />
+      </Group>
+    </Selector>
+    <Selector ID="Alarms" Value="None" />
+  </Element>
+  <Element ID="gSecOvalB" Type="sector">
+    <Selector ID="Type" Value="Composed">
+      <Group ID="StartSegment">
+        <Property ID="SegmentRef" Value="::gSegB1" />
+        <Property ID="PositionRelativeTo" Value="FromEnd" />
+      </Group>
+      <Group ID="IntermediateSegments">
+        <Property ID="SegmentRef[1]" Value="::gSegB2" />
+        <Property ID="SegmentRef[2]" Value="::gSegB3" />
+        <Property ID="SegmentRef[3]" Value="::gSegB4" />
+        <Property ID="SegmentRef[4]" Value="::gSegB5" />
+        <Property ID="SegmentRef[5]" Value="::gSegB6" />
+        <Property ID="SegmentRef[6]" Value="::gSegB7" />
+        <Property ID="SegmentRef[7]" Value="::gSegB8" />
+        <Property ID="SegmentRef[8]" Value="::gSegB9" />
+        <Property ID="SegmentRef[9]" Value="::gSegB10" />
+        <Property ID="SegmentRef[10]" Value="::gSegB11" />
+        <Property ID="SegmentRef[11]" Value="::gSegB12" />
+        <Property ID="SegmentRef[12]" Value="::gSegB13" />
+        <Property ID="SegmentRef[13]" Value="::gSegB14" />
+        <Property ID="SegmentRef[14]" Value="::gSegB15" />
+        <Property ID="SegmentRef[15]" Value="::gSegB16" />
+        <Property ID="SegmentRef[16]" Value="::gSegB17" />
+      </Group>
+      <Group ID="EndSegment">
+        <Property ID="SegmentRef" Value="::gSegB18" />
+      </Group>
+    </Selector>
+    <Selector ID="Alarms" Value="None" />
+  </Element>
+  <Element ID="gSecCompleteLoop" Type="sector">
+    <Selector ID="Type" Value="Composed">
+      <Group ID="StartSegment">
+        <Property ID="SegmentRef" Value="::gSegA1" />
+      </Group>
+      <Group ID="IntermediateSegments">
+        <Property ID="SegmentRef[1]" Value="::gSegA14" />
+        <Property ID="SegmentRef[2]" Value="::gSegA13" />
+        <Property ID="SegmentRef[3]" Value="::gSegA12" />
+        <Property ID="SegmentRef[4]" Value="::gSegA11" />
+        <Property ID="SegmentRef[5]" Value="::gSegA10" />
+        <Property ID="SegmentRef[6]" Value="::gSegA9" />
+        <Property ID="SegmentRef[7]" Value="::gSegA8" />
+        <Property ID="SegmentRef[8]" Value="::gSegA7" />
+        <Property ID="SegmentRef[9]" Value="::gSegA6" />
+        <Property ID="SegmentRef[10]" Value="::gSegA5" />
+        <Property ID="SegmentRef[11]" Value="::gSegA4" />
+        <Property ID="SegmentRef[12]" Value="::gSegA3" />
+        <Property ID="SegmentRef[13]" Value="::gSegA2" />
+        <Property ID="SegmentRef[14]" Value="::gSegB1" />
+        <Property ID="SegmentRef[15]" Value="::gSegB2" />
+        <Property ID="SegmentRef[16]" Value="::gSegB3" />
+        <Property ID="SegmentRef[17]" Value="::gSegB4" />
+        <Property ID="SegmentRef[18]" Value="::gSegB5" />
+        <Property ID="SegmentRef[19]" Value="::gSegB6" />
+        <Property ID="SegmentRef[20]" Value="::gSegB7" />
+        <Property ID="SegmentRef[21]" Value="::gSegB8" />
+        <Property ID="SegmentRef[22]" Value="::gSegB9" />
+        <Property ID="SegmentRef[23]" Value="::gSegB10" />
+        <Property ID="SegmentRef[24]" Value="::gSegB11" />
+        <Property ID="SegmentRef[25]" Value="::gSegB12" />
+        <Property ID="SegmentRef[26]" Value="::gSegB13" />
+        <Property ID="SegmentRef[27]" Value="::gSegB14" />
+        <Property ID="SegmentRef[28]" Value="::gSegB15" />
+        <Property ID="SegmentRef[29]" Value="::gSegB16" />
+        <Property ID="SegmentRef[30]" Value="::gSegB17" />
+      </Group>
+      <Group ID="EndSegment">
+        <Property ID="SegmentRef" Value="::gSegB18" />
+      </Group>
+    </Selector>
+    <Selector ID="Alarms" Value="None" />
+  </Element>
+  <Element ID="gSecB7" Type="sector">
+    <Selector ID="Type" Value="Composed">
+      <Group ID="StartSegment">
+        <Property ID="SegmentRef" Value="::gSegB7" />
+      </Group>
+      <Group ID="EndSegment">
+        <Property ID="SegmentRef" Value="::gSegB7" />
+        <Property ID="PositionRelativeTo" Value="FromEnd" />
+      </Group>
+    </Selector>
+    <Selector ID="Alarms" Value="None" />
+  </Element>
+</Configuration>

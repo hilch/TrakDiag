@@ -1,0 +1,3 @@
+VAR
+	fbLogWrite : TD_LogWrite;
+END_VAR

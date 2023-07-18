@@ -1,0 +1,16 @@
+VAR
+	gSegA1 : McSegmentType;
+	gSegA2 : McSegmentType;
+	gSegA3 : McSegmentType;
+	gSegA4 : McSegmentType;
+	gSegA5 : McSegmentType;
+	gSegA6 : McSegmentType;
+	gSegA7 : McSegmentType;
+	gSegA8 : McSegmentType;
+	gSegA9 : McSegmentType;
+	gSegA10 : McSegmentType;
+	gSegA11 : McSegmentType;
+	gSegA12 : McSegmentType;
+	gSegA13 : McSegmentType;
+	gSegA14 : McSegmentType;
+END_VAR
