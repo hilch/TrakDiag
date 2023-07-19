@@ -288,7 +288,7 @@ class Assembly {
 				await this.readSegmentFlags()
 			}
 			await this.readShuttlePositions(assembly);
-			//await Assembly.wait(1000);
+			await this.wait(50);
 		}
 	}
 
