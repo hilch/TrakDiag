@@ -5,7 +5,6 @@
     <Object Type="File">Assembly.typ</Object>
     <Object Type="Package">Libraries</Object>
     <Object Type="File" Private="true">TrakConstants.var</Object>
-    <Object Type="File">Segments.var</Object>
     <Object Type="Program" Language="IEC">TrakInit</Object>
     <Object Type="Program" Language="IEC">AssCtrl</Object>
   </Objects>
