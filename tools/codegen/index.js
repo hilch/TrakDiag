@@ -297,6 +297,7 @@ class Assembly {
 
 document.addEventListener('DOMContentLoaded', async () => {
 	const assembly = new Assembly();
-	await assembly.load();
-	await assembly.cyclicRefresh();
+	if( await assembly.load() ){
+		await assembly.cyclicRefresh();
+	}
 })
