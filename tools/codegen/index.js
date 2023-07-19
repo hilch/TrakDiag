@@ -176,54 +176,70 @@ class Assembly {
 		const hoverInfo = document.getElementById('hoverInfo');
 		hoverInfo.innerText='loading SVG...';
 		hoverInfo.style.visibility='visible';
-		let request = fetch('/TrakWebApi/segments');
-		let response = await request;
-		let segmentInfo = await response.json()
-		segmentInfo.forEach(item => this.segment.push(new Segment(item.ID, item.name, item.length)));
+		try {
+			let response = await fetch('/TrakWebApi/segments');
+			let segmentInfo = await response.json()
+			segmentInfo.forEach(item => this.segment.push(new Segment(item.ID, item.name, item.length)));
+		}
+		catch( err ){
+			document.getElementById('timeoutBox').style.display = 'block';
+			this.offline = true;
+			return false;
+		}
 
 		/* load SvgData */
 		const svgParent = document.createElement('div');
 		svgParent.setAttribute('id', 'svgParent');
-		request = fetch('/TrakWebApi/svgdata');
-		response = await request;
-		if (response.status !== 200)
-			throw new Error(`Error fetching ${response.url}`);
-		svgParent.innerHTML = await response.text();
-		const svg = svgParent.querySelector('svg');
+		let response = undefined;
+		try {
+			response = await fetch('/TrakWebApi/svgdata');
+			if (response.status !== 200)
+				throw new Error(`Error fetching ${response.url}`);
+			svgParent.innerHTML = await response.text();
+			const svg = svgParent.querySelector('svg');
 
-		const workspace = svgParent.querySelector('#workspace');
-		const container = workspace.parentElement;
-		const segmentObjects = container.querySelector('#segments');
-		if (segmentObjects) { /* >= 5.23 */
-			segmentObjects.querySelector('#sg_legend').remove();
-			container.querySelector('#sectors').remove();
-			container.querySelector('#barriers').remove();
-			container.querySelector('#workspace').remove();
-			this.segment.forEach(s => s.findElementsV2(segmentObjects.querySelector('#sg_layout')));
+			const workspace = svgParent.querySelector('#workspace');
+			const container = workspace.parentElement;
+			const segmentObjects = container.querySelector('#segments');
+			if (segmentObjects) { /* >= 5.23 */
+				segmentObjects.querySelector('#sg_legend').remove();
+				container.querySelector('#sectors').remove();
+				container.querySelector('#barriers').remove();
+				container.querySelector('#workspace').remove();
+				container.querySelector('#processpoints').remove();
+				this.segment.forEach(s => s.findElementsV2(segmentObjects.querySelector('#sg_layout')));
+			}
+			else { /* < 5.23 */
+				/* remove all sectors */
+				container.querySelectorAll('#sector').forEach((e) => { e.remove(); })
+
+				/* remove triggerpoints and barriers */
+				container.querySelectorAll('#triggerpoint').forEach((e) => { e.remove(); })
+				container.querySelectorAll('polyline[stroke="darkorange"]').forEach((e) => { e.remove(); })
+				container.querySelectorAll('polyline[stroke="purple"]').forEach((e) => { e.remove(); })
+				/* remove all legend tables */
+				svgParent.querySelectorAll('text').forEach((e) => {
+					if (e.innerHTML == ' Sectors' || e.textContent == ' Segments')
+						e.parentElement.parentElement.remove();
+					else if (/Process\s*points/.test(e.innerHTML))
+						e.parentElement.parentElement.remove();
+				})
+				workspace.remove();
+				this.segment.forEach(s => s.findElementsV1(container));
+			}
+			document.querySelector('#svgParent').replaceWith(svgParent);
+			svg.viewBox.baseVal.x = svg.getBBox().x-0.02;
+			svg.viewBox.baseVal.width = svg.getBBox().width+0.04;
+			svg.viewBox.baseVal.y = svg.getBBox().y-0.02;
+			svg.viewBox.baseVal.height = svg.getBBox().height+0.04;
+			hoverInfo.style.visibility='hidden';
+			return true;
 		}
-		else { /* < 5.23 */
-			/* remove all sectors */
-			container.querySelectorAll('#sector').forEach((e) => { e.remove(); })
-			/* remove triggerpoints and barriers */
-			container.querySelectorAll('#triggerpoint').forEach((e) => { e.remove(); })
-			container.querySelectorAll('polyline[stroke="darkorange"]').forEach((e) => { e.remove(); })
-			container.querySelectorAll('polyline[stroke="purple"]').forEach((e) => { e.remove(); })
-			/* remove all legend tables */
-			svgParent.querySelectorAll('text').forEach((e) => {
-				if (e.innerHTML == ' Sectors' || e.textContent == ' Segments')
-					e.parentElement.parentElement.remove();
-				else if (/Process\s*points/.test(e.innerHTML))
-					e.parentElement.parentElement.remove();
-			})
-			workspace.remove();
-			this.segment.forEach(s => s.findElementsV1(container));
+		catch( err ){
+			document.getElementById('timeoutBox').style.display = 'block';	
+			this.offline = true		
+			return false;
 		}
-		document.querySelector('#svgParent').replaceWith(svgParent);
-		svg.viewBox.baseVal.x = svg.getBBox().x-0.02;
-		svg.viewBox.baseVal.width = svg.getBBox().width+0.04;
-		svg.viewBox.baseVal.y = svg.getBBox().y-0.02;
-		svg.viewBox.baseVal.height = svg.getBBox().height+0.04;
-		hoverInfo.style.visibility='hidden';
 	}
 
 	removeAllShuttles = () => {
