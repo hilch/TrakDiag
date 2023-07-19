@@ -489,7 +489,7 @@ void TD_Recorder(struct TD_Recorder* inst)
 						}
 						if( indexOfSegment >= 0 ){ 
 							int len = sprintf( temp, "%s new Shuttle( %lu, %d, 0x%x, %i, %lf )", !validEntriesFound ? "" : "\n\t\t\t\t,", 
-																			pEntry->Index,
+																			(unsigned long) pEntry->Index,
 																			pEntry->Active,
 																			pEntry->PLCopenState,
 																			indexOfSegment, pEntry->SegmentPosition );
