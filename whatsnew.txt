@@ -31,6 +31,8 @@ V2.4.1
 - TD_Webservices: Bugfix: mappView WebView could be blocked
 - TD_Webservices/ TD_Recorder: Table 'process points' was visible
 
+V2.4.2
+- TD_Webservices: Bugfix: /TrakWebApi/info blocked everything
 
 
 
