@@ -203,10 +203,13 @@ class Assembly {
 			const segmentObjects = container.querySelector('#segments');
 			if (segmentObjects) { /* >= 5.23 */
 				segmentObjects.querySelector('#sg_legend').remove();
-				container.querySelector('#sectors').remove();
-				container.querySelector('#barriers').remove();
+				const sectors = container.querySelector('#sectors');
+					if( sectors ) sectors.remove();
+				const barriers = container.querySelector('#barriers');
+					if( barriers ) barriers.remove();
 				container.querySelector('#workspace').remove();
-				container.querySelector('#processpoints').remove();
+				const processpoints = container.querySelector('#processpoints');
+					if( processpoints ) processpoints.remove();
 				this.segment.forEach(s => s.findElementsV2(segmentObjects.querySelector('#sg_layout')));
 			}
 			else { /* < 5.23 */
