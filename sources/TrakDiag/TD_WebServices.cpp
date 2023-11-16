@@ -120,6 +120,10 @@ void TD_WebServices(struct TD_WebServices* inst)
 				}
 				else { /* all segments processed. */
 					inst->webData.fbHttpService.enable = true; /* switch on web services */
+					inst->stepTimeout.PT = 10000;
+					inst->stepTimeout.IN = false;
+					TON( &inst->stepTimeout );
+					inst->stepTimeout.IN = true;
 					inst->step = W_HTTP_REQUESTS;
 				}
 			}
@@ -135,6 +139,7 @@ void TD_WebServices(struct TD_WebServices* inst)
 
 
 			case W_HTTP_REQUESTS: /* waiting for http requests */
+			TON( &inst->stepTimeout );
 			if( (inst->refreshTimer += inst->fbRtInfo.cycle_time) > 100000 ){
 //				UDINT hash = Djb2( (USINT*) &inst->ShuttleInfo, sizeof(inst->ShuttleInfo) );
 //				if( hash != inst->hashShuttleInfo ){
@@ -172,31 +177,72 @@ void TD_WebServices(struct TD_WebServices* inst)
 							}
 						}
 						inst->webData.fbHttpService.send = true;
+						inst->stepTimeout.PT = 10000;
+						inst->stepTimeout.IN = false;
+						TON( &inst->stepTimeout );
+						inst->stepTimeout.IN = true;
 						inst->step = HTTP_SERV_RESPONSE;	
 					}
 				}
 			}
-			else if( inst->webData.fbHttpService.status != 65535 ){
+			else if( inst->webData.fbHttpService.status != 65535 && inst->webData.fbHttpService.status != httpERR_SYSTEM){
+				inst->ErrorID = inst->webData.fbHttpService.status;
+				inst->Error = true;
 				inst->webData.lastError = inst->webData.fbHttpService.status;
 				inst->webData.fbHttpService.enable = false;
 				inst->step = INTERNAL_ERROR_HTTP;
 			}
+			else if( inst->stepTimeout.Q ) { /* busy */
+				inst->webData.fbHttpService.send = false;
+				inst->webData.fbHttpService.abort = true;
+				inst->step = ABORT_RESPONSE;	
+			}			
 			break;
 
 			
 			case HTTP_SERV_RESPONSE: /* send http response */
+			TON( &inst->stepTimeout );
 			httpService( &inst->webData.fbHttpService); 
 			if( inst->webData.fbHttpService.status == 0 ){
 				if( inst->webData.fbHttpService.phase == httpPHASE_WAITING ){
 					inst->webData.fbHttpService.send = false;
+					httpService( &inst->webData.fbHttpService);
 					inst->step = W_HTTP_REQUESTS;	
 				}
 			}
-			else if( inst->webData.fbHttpService.status != 65535 ){
+			else if( inst->webData.fbHttpService.status != 65535 && inst->webData.fbHttpService.status != httpERR_SYSTEM ){
 				inst->webData.lastError = inst->webData.fbHttpService.status;
 				inst->webData.fbHttpService.enable = false;
 				inst->step = INTERNAL_ERROR_HTTP;
+			}
+			else if( inst->stepTimeout.Q ) { /* busy */
+				inst->webData.fbHttpService.send = false;
+				inst->webData.fbHttpService.abort = true;
+				inst->step = ABORT_RESPONSE;	
 			}			
+			break;
+
+
+			case ABORT_RESPONSE: /* abort Http- Response */
+			httpService( &inst->webData.fbHttpService);
+			if( inst->webData.fbHttpService.status == 0 || inst->webData.fbHttpService.status == httpERR_SYSTEM ){
+					inst->stepTimeout.PT = 10000;
+					inst->stepTimeout.IN = false;
+					TON( &inst->stepTimeout );
+					inst->stepTimeout.IN = true;
+					inst->webData.fbHttpService.send = false;
+					inst->webData.fbHttpService.abort = false;
+					httpService( &inst->webData.fbHttpService);
+					inst->step = W_HTTP_REQUESTS;	
+			}
+			else if( inst->webData.fbHttpService.status != 65535 ){
+				inst->Error = true;
+				inst->webData.lastError = inst->webData.fbHttpService.status;
+				inst->webData.fbHttpService.enable = false;
+				inst->webData.fbHttpService.send = false;
+				inst->webData.fbHttpService.abort = false;
+				inst->step = INTERNAL_ERROR_HTTP;
+			}
 			break;
 
 

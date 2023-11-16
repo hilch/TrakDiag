@@ -290,5 +290,6 @@ END_FUNCTION_BLOCK
 		pAssembly : REFERENCE TO McAssemblyType;
 		fbRtInfo : RTInfo;
 		asmInfo : McAcpTrakAsmInfoType; (*assembly information*)
+		stepTimeout : TON;
 	END_VAR
 END_FUNCTION_BLOCK
