@@ -43,6 +43,7 @@ SOFTWARE.
 #include "responses.h"
 #include "index_css.h"
 #include "index_js.h"
+#include "panzoom_js.h"
 #include "index_html.h"
 
 
@@ -207,6 +208,17 @@ void SendResponse_IndexJs(struct TD_WebServices* inst){
 	std::strcpy( (char*) inst->webData.responseHeader.connection, "close" );
 	std::strcpy( (char*) inst->webData.responseHeader.keepAlive, "timeout=20, max=5" );
 }
+
+
+void SendResponse_PanZoomJs(struct TD_WebServices* inst){
+	std::sprintf( (char*) inst->webData.responseData, PANZOOM_JS, "Assembly" );
+	inst->webData.fbHttpService.responseDataLen = std::strlen( (char*) inst->webData.responseData );
+	std::strcpy( (char*) inst->webData.responseHeader.contentType, "text/javascript; charset=iso-8859-1");
+	inst->webData.responseHeader.contentLength = inst->webData.fbHttpService.responseDataLen;
+	std::strcpy( (char*) inst->webData.responseHeader.connection, "close" );
+	std::strcpy( (char*) inst->webData.responseHeader.keepAlive, "timeout=20, max=5" );
+}
+
 
 
 void SendResponse_IndexHtml(struct TD_WebServices* inst){

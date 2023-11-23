@@ -6,6 +6,7 @@ void SendResponse_SegmentList(struct TD_WebServices* inst);
 void SendResponse_SegmentStatus(struct TD_WebServices* inst);
 void SendResponse_IndexCss(struct TD_WebServices* inst);
 void SendResponse_IndexJs(struct TD_WebServices* inst);
+void SendResponse_PanZoomJs(struct TD_WebServices* inst);
 void SendResponse_IndexHtml(struct TD_WebServices* inst);
 void SendResponse_Svgdata(struct TD_WebServices *inst);
 void SendResponse_404(struct TD_WebServices* inst);
@@ -22,5 +23,6 @@ const struct ResponseType {
 	{ "TrakWebApi/index.html", SendResponse_IndexHtml },
 	{ "TrakWebApi/index.css", SendResponse_IndexCss },
 	{ "TrakWebApi/index.js", SendResponse_IndexJs },
+	{ "TrakWebApi/panzoom.js", SendResponse_PanZoomJs },
 	{ 0, SendResponse_404 }
 };

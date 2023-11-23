@@ -7,7 +7,8 @@
 	<File>responses.h</File>
 	<File>responses.cpp</File>
     <File>index_css.h</File>
-    <File>index_js.h</File>	  	  
+    <File>index_js.h</File>
+	<File>panzoom_js.h</File>		
     <File>index_html.h</File>
   </Objects>
 </Package>

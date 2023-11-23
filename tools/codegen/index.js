@@ -236,6 +236,7 @@ class Assembly {
 			svg.viewBox.baseVal.y = svg.getBBox().y-0.02;
 			svg.viewBox.baseVal.height = svg.getBBox().height+0.04;
 			hoverInfo.style.visibility='hidden';
+			panzoom( svg );
 			return true;
 		}
 		catch( err ){
