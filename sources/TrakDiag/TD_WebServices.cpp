@@ -123,7 +123,6 @@ void TD_WebServices(struct TD_WebServices* inst)
 					inst->stepTimeout.PT = 10000;
 					inst->stepTimeout.IN = false;
 					TON( &inst->stepTimeout );
-					inst->stepTimeout.IN = true;
 					inst->step = W_HTTP_REQUESTS;
 				}
 			}
@@ -177,7 +176,7 @@ void TD_WebServices(struct TD_WebServices* inst)
 							}
 						}
 						inst->webData.fbHttpService.send = true;
-						inst->stepTimeout.PT = 10000;
+						inst->stepTimeout.PT = 30000;
 						inst->stepTimeout.IN = false;
 						TON( &inst->stepTimeout );
 						inst->stepTimeout.IN = true;
@@ -192,10 +191,18 @@ void TD_WebServices(struct TD_WebServices* inst)
 				inst->webData.fbHttpService.enable = false;
 				inst->step = INTERNAL_ERROR_HTTP;
 			}
-			else if( inst->stepTimeout.Q ) { /* busy */
-				inst->webData.fbHttpService.send = false;
-				inst->webData.fbHttpService.abort = true;
-				inst->step = ABORT_RESPONSE;	
+			else { /* busy */
+				if( inst->webData.fbHttpService.method == httpMETHOD_GET && inst->webData.fbHttpService.phase == httpPHASE_RECEIVED ){
+					inst->stepTimeout.IN = true;
+				}
+				if( inst->stepTimeout.Q ) { /* busy */
+					inst->webData.fbHttpService.send = false;
+					inst->webData.fbHttpService.abort = true;
+					inst->stepTimeout.IN = false;
+					TON( &inst->stepTimeout );
+					inst->stepTimeout.IN = true;
+					inst->step = ABORT_RESPONSE;	
+				}
 			}			
 			break;
 
@@ -218,15 +225,21 @@ void TD_WebServices(struct TD_WebServices* inst)
 			else if( inst->stepTimeout.Q ) { /* busy */
 				inst->webData.fbHttpService.send = false;
 				inst->webData.fbHttpService.abort = true;
+				inst->stepTimeout.PT = 30000;
+				inst->stepTimeout.IN = false;
+				TON( &inst->stepTimeout );
+				inst->stepTimeout.IN = true;
 				inst->step = ABORT_RESPONSE;	
 			}			
 			break;
 
 
 			case ABORT_RESPONSE: /* abort Http- Response */
+			TON( &inst->stepTimeout );
 			httpService( &inst->webData.fbHttpService);
-			if( inst->webData.fbHttpService.status == 0 || inst->webData.fbHttpService.status == httpERR_SYSTEM ){
-					inst->stepTimeout.PT = 10000;
+			if( inst->webData.fbHttpService.status == 0 || inst->webData.fbHttpService.status == httpERR_SYSTEM ||
+					( inst->webData.fbHttpService.status == 65535 && inst->stepTimeout.Q )	){
+					inst->stepTimeout.PT = 30000;
 					inst->stepTimeout.IN = false;
 					TON( &inst->stepTimeout );
 					inst->stepTimeout.IN = true;
