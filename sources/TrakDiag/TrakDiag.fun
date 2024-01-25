@@ -195,6 +195,30 @@ FUNCTION_BLOCK TD_LoggerReadEntry (*(internal use)*)
 	END_VAR
 END_FUNCTION_BLOCK
 
+FUNCTION_BLOCK TD_ShuttleErrorTexts (*Read last error records of a shuttle given by ID or Axis reference*)
+	VAR_INPUT
+		Execute : BOOL;
+		Assembly : REFERENCE TO McAssemblyType;
+		Axis : REFERENCE TO McAxisType; (*Shuttle Axis reference*)
+		ID : UDINT; (*Shuttles ID (if Axis is 0)*)
+		Language : McLanguageEnum;
+	END_VAR
+	VAR_OUTPUT
+		Done : BOOL;
+		Busy : BOOL;
+		Error : BOOL;
+		StatusID : DINT;
+		NumberOfRecords : UINT;
+		Records : McErrorRecordsType;
+	END_VAR
+	VAR
+		step : UINT;
+		axis : McAxisType;
+		fbAsmGetShuttle : MC_BR_AsmGetShuttle_AcpTrak;
+		fbReadErrorText : MC_BR_ReadErrorText;
+	END_VAR
+END_FUNCTION_BLOCK
+
 {REDUND_ERROR} FUNCTION_BLOCK TD_Recorder (*Shuttle 'flight recorder'*) (*$GROUP=User,$CAT=User,$GROUPICON=User.png,$CATICON=User.png*)
 	VAR_INPUT
 		Enable : BOOL;
