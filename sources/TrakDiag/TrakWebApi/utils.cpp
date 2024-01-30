@@ -56,22 +56,19 @@ void InitalizeInstance(struct TD_WebServices* inst){
 	std::strncpy( (char*) inst->acpTrakVersion, (char*) moverstruc.version, sizeof(inst->acpTrakVersion)-1 );
 
 	/* */
-	inst->fbGetSegment.Assembly = inst->pAssembly;
-	inst->fbGetSegment.AdvancedParameters.SelectionMode = mcACPTRAK_GET_SEG_ALL;
-	inst->fbGetSegment.Next = false;
-	inst->fbGetSegment.Enable = false; /* reset fb */
-	MC_BR_AsmGetSegment_AcpTrak( &inst->fbGetSegment );	
+	inst->fbSegmentsInfo.Assembly = inst->pAssembly;
+	inst->fbSegmentsInfo.MaxCount = sizeof(inst->SegInfo.segment)/sizeof(inst->SegInfo.segment[0]);
+	inst->fbSegmentsInfo.Segments = &inst->SegInfo.segment[0];
+	inst->fbSegmentsInfo.SegmentsInfo = &inst->SegInfo.segmentInfo[0];
+	inst->fbSegmentsInfo.Execute = false; /* reset fb */
+	TD_SegmentsInfo( &inst->fbSegmentsInfo );
+	inst->fbSegmentsInfo.Execute = true;
 
 	/* */
 	inst->fbAsmReadInfo.Enable = false;
 	inst->fbAsmReadInfo.Assembly = inst->pAssembly;
 	MC_BR_AsmReadInfo_AcpTrak( &inst->fbAsmReadInfo ); /* reset fb */
 	inst->fbAsmReadInfo.Enable = true;
-
-
-	/* */
-	inst->fbSegGetInfo.Execute = false; /* reset fb */
-	MC_BR_SegGetInfo_AcpTrak( &inst->fbSegGetInfo );
 
 	/* */
 	std::strcpy( inst->webData.serviceName, "TrakWebApi" );
@@ -87,12 +84,6 @@ void InitalizeInstance(struct TD_WebServices* inst){
 	inst->webData.fbHttpService.pResponseData = (UDINT) &inst->webData.responseData;
 	inst->webData.fbHttpService.responseDataLen = sizeof(inst->webData.responseData),
 	inst->webData.fbHttpService.pStatistics = (UDINT) &inst->webData.statistics;
-
-
-	/* */
-	inst->fbGetSegment.Enable = true; /* start fb */
-	MC_BR_AsmGetSegment_AcpTrak( &inst->fbGetSegment );	
-
 
 	/* */
 	inst->fbDatObjInfo.enable = false; /* reset fb */
@@ -213,5 +204,7 @@ void CollectAssemblyInformation(struct TD_WebServices* inst){
 void CollectSegmentInformation(struct TD_WebServices* inst){
 	for( int n = 0; n < inst->SegInfo.numberOfSegments; ++n ){
 		MC_BR_SegReadInfo_AcpTrak( &inst->fbSegReadInfo[n] );
+		inst->SegInfo.segmentCyclicInfo[n] = inst->fbSegReadInfo[n].SegmentInfo;
+		//std::memcpy( &inst->SegInfo.segmentCyclicInfo[n], &inst->fbSegReadInfo[n].SegmentInfo, sizeof(inst->SegInfo.segmentCyclicInfo[n]) );
 	}
 }

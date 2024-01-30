@@ -20,6 +20,7 @@
     <Object Type="File">TD_WebServices.cpp</Object>
     <Object Type="File">TD_WebServices.h</Object>
 	<Object Type="File">TD_ShuttleErrorTexts.cpp</Object>
+	<Object Type="File">TD_SegmentsInfo.cpp</Object>	
     <Object Type="Package">TrakWebApi</Object>
   </Objects>
   <Dependencies>

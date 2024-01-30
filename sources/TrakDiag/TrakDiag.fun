@@ -219,6 +219,29 @@ FUNCTION_BLOCK TD_ShuttleErrorTexts (*Read last error records of a shuttle given
 	END_VAR
 END_FUNCTION_BLOCK
 
+FUNCTION_BLOCK TD_SegmentsInfo (*Gets information about all segments in assembly*)
+	VAR_INPUT
+		Execute : BOOL;
+		Assembly : REFERENCE TO McAssemblyType;
+		MaxCount : UINT; (*max. permitted number of segments in Segments resp. SegmentsInfo*)
+		Segments : REFERENCE TO McSegmentType; (*pointer to array of McSegmentType*)
+		SegmentsInfo : REFERENCE TO McAcpTrakSegGetInfoType; (*pointer to array of McAcpTrakSegGetInfoType*)
+	END_VAR
+	VAR_OUTPUT
+		Done : BOOL;
+		Busy : BOOL;
+		Error : BOOL;
+		StatusID : DINT;
+		Count : UINT;
+	END_VAR
+	VAR
+		step : UINT;
+		fbGetSegment : MC_BR_AsmGetSegment_AcpTrak;
+		fbSegGetInfo : MC_BR_SegGetInfo_AcpTrak;
+		n : UINT;
+	END_VAR
+END_FUNCTION_BLOCK
+
 {REDUND_ERROR} FUNCTION_BLOCK TD_Recorder (*Shuttle 'flight recorder'*) (*$GROUP=User,$CAT=User,$GROUPICON=User.png,$CATICON=User.png*)
 	VAR_INPUT
 		Enable : BOOL;
@@ -307,8 +330,7 @@ END_FUNCTION_BLOCK
 		fbFileClose : FileClose;
 		fbFileOpen : FileOpen;
 		fbFileRead : FileReadEx;
-		fbGetSegment : MC_BR_AsmGetSegment_AcpTrak;
-		fbSegGetInfo : MC_BR_SegGetInfo_AcpTrak;
+		fbSegmentsInfo : TD_SegmentsInfo;
 		fbAsmReadInfo : MC_BR_AsmReadInfo_AcpTrak;
 		fbSegReadInfo : ARRAY[0..TD_MAX_SUPPORTED_SEGMENTS_ASM] OF MC_BR_SegReadInfo_AcpTrak;
 		pAssembly : REFERENCE TO McAssemblyType;

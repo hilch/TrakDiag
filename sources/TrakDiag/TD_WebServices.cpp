@@ -58,8 +58,7 @@ void TD_WebServices(struct TD_WebServices* inst)
 				if( inst->ErrorID == 0 ){					
 					inst->Busy = true;
 					InitalizeInstance( inst );
-					inst->n = 0;
-					inst->step = GET_SEGMENT_LIST;
+					inst->step = GET_SEGMENT_INFO;
 				}
 				else {
 					inst->Error = true;
@@ -68,71 +67,30 @@ void TD_WebServices(struct TD_WebServices* inst)
 			break;
 
 
-			case GET_SEGMENT_LIST: /* get a list of all segments in this assembly */
-			if( inst->fbGetSegment.Valid ){
-				inst->SegInfo.numberOfSegments = inst->fbGetSegment.TotalCount; /* save the number of segments */
-				inst->SegInfo.segment[inst->n] = inst->fbGetSegment.Segment; /* save segment handle */
-				if( inst->fbGetSegment.RemainingCount == 0 ){
-					inst->fbGetSegment.Next = false;
-					inst->fbGetSegment.Enable = false; /* reset fb */
-					MC_BR_AsmGetSegment_AcpTrak( &inst->fbGetSegment );	
-					inst->n = 0;
-					inst->fbSegGetInfo.Execute = true; /* start fb */
-					inst->fbSegGetInfo.Segment = &inst->SegInfo.segment[inst->n];
-					inst->fbSegReadInfo[inst->n].Segment = &inst->SegInfo.segment[inst->n];
-					MC_BR_SegGetInfo_AcpTrak( &inst->fbSegGetInfo );
-					inst->step = GET_SEGMENT_INFO;
-				}
-				else {
-					++inst->n;
-					inst->fbGetSegment.Next = false;
-					MC_BR_AsmGetSegment_AcpTrak( &inst->fbGetSegment );	
-					inst->fbGetSegment.Next = true;
-					MC_BR_AsmGetSegment_AcpTrak( &inst->fbGetSegment );	
-				}
-			}
-			else if( inst->fbGetSegment.Error ){
-				inst->ErrorID = inst->fbGetSegment.ErrorID;
-				inst->Error = true;
-				inst->fbGetSegment.Next = false;
-				inst->fbGetSegment.Enable = false; /* reset fb */
-				MC_BR_AsmGetSegment_AcpTrak( &inst->fbGetSegment );
-				inst->step = INTERNAL_ERROR_GETSEGMENT;	
-			}
-			else { /* busy */
-				MC_BR_AsmGetSegment_AcpTrak( &inst->fbGetSegment );	
-			}
-			break;
-
-
 			case GET_SEGMENT_INFO:
-			if( inst->fbSegGetInfo.Done ){
-				std::memcpy( &inst->SegInfo.segmentInfo[inst->n], &inst->fbSegGetInfo.SegmentInfo, sizeof(McAcpTrakSegGetInfoType) ); /* save segment infos */
-				inst->fbSegGetInfo.Execute = false; /* reset fb */
-				inst->fbSegReadInfo[inst->n].Enable = true; /* enable fb */
-				MC_BR_SegGetInfo_AcpTrak( &inst->fbSegGetInfo );
-				++inst->n;
-				if( inst->n < inst->SegInfo.numberOfSegments ){ /* there are still some segments left */
-					inst->fbSegGetInfo.Execute = true; /* start fb */
-					inst->fbSegGetInfo.Segment = &inst->SegInfo.segment[inst->n];
-					inst->fbSegReadInfo[inst->n].Segment = &inst->SegInfo.segment[inst->n];
-					MC_BR_SegGetInfo_AcpTrak( &inst->fbSegGetInfo );
+			if( inst->fbSegmentsInfo.Done ){
+				inst->SegInfo.numberOfSegments = inst->fbSegmentsInfo.Count;
+				inst->fbSegmentsInfo.Execute = false; /* reset fb */
+				TD_SegmentsInfo( &inst->fbSegmentsInfo );
+				inst->webData.fbHttpService.enable = true; /* switch on web services */
+				inst->stepTimeout.PT = 10000;
+				inst->stepTimeout.IN = false;
+				TON( &inst->stepTimeout );
+				for( int n = 0; n < inst->SegInfo.numberOfSegments; ++n ){
+					inst->fbSegReadInfo[n].Segment = &inst->SegInfo.segment[n];
+					inst->fbSegReadInfo[n].Enable = true;
 				}
-				else { /* all segments processed. */
-					inst->webData.fbHttpService.enable = true; /* switch on web services */
-					inst->stepTimeout.PT = 10000;
-					inst->stepTimeout.IN = false;
-					TON( &inst->stepTimeout );
-					inst->step = W_HTTP_REQUESTS;
-				}
+				inst->step = W_HTTP_REQUESTS;
 			}
-			else if( inst->fbSegGetInfo.Error ){
-				inst->fbSegGetInfo.Execute = false; /* reset fb */
-				MC_BR_SegGetInfo_AcpTrak( &inst->fbSegGetInfo );
-
+			else if( inst->fbSegmentsInfo.Error ){
+				inst->Error = true;
+				inst->ErrorID = inst->fbSegmentsInfo.StatusID;
+				inst->step = INTERNAL_ERROR_SEGMENTINFO;				
+				inst->fbSegmentsInfo.Execute = false; /* reset fb */
+				TD_SegmentsInfo( &inst->fbSegmentsInfo );
 			}
 			else { /* busy */
-				MC_BR_SegGetInfo_AcpTrak( &inst->fbSegGetInfo );
+				TD_SegmentsInfo( &inst->fbSegmentsInfo );
 			}
 			break;
 
@@ -465,7 +423,7 @@ void TD_WebServices(struct TD_WebServices* inst)
 
 
 			case INTERNAL_ERROR:
-			case INTERNAL_ERROR_GETSEGMENT:
+			case INTERNAL_ERROR_SEGMENTINFO:
 			case INTERNAL_ERROR_PVXGETADR:
 			case INTERNAL_ERROR_HTTP:
 			case INTERNAL_ERROR_FILEINFO_SVG:
