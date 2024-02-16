@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<?AutomationStudio Version=4.12.4.107 FileVersion="4.9"?>
+<?AutomationStudio Version=4.12.5.95 FileVersion="4.9"?>
 <Hardware xmlns="http://br-automation.co.at/AS/Hardware">
   <Module Name="5AC901.BX05-00" Type="5AC901.BX05-00" Version="1.0.1.0">
     <Connection Connector="SY" TargetModule="5PC910.SX05-00" TargetConnector="SY3" />
@@ -41,10 +41,10 @@
     <Parameter ID="Cyclic2Tolerance" Value="10000" />
     <Group ID="FileDevice1" />
     <Parameter ID="FileDeviceName1" Value="SvgData" />
-    <Parameter ID="FileDevicePath1" Value="F:\web\SvgData" />
+    <Parameter ID="FileDevicePath1" Value="USER_PATH\web\SvgData" />
     <Group ID="FileDevice2" />
     <Parameter ID="FileDeviceName2" Value="Diagnosis" />
-    <Parameter ID="FileDevicePath2" Value="F:\web\Diagnosis" />
+    <Parameter ID="FileDevicePath2" Value="USER_PATH\web\Diagnosis" />
     <Parameter ID="EthernetDefaultGateway" Value="10.49.40.1" />
     <Group ID="FtpUser1" />
     <Parameter ID="FtpUsername1" Value="bur" />
