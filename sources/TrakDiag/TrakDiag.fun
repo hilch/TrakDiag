@@ -205,6 +205,7 @@ type of McAcpTrakShuttleData[] if no shuttle user data is defined, see MC_BR_Asm
 		UserDataSize : USINT; (*shuttle user data size in bytes*)
 		DataObjectName : STRING[10]; (*optional: temporary data object for memory allocation*)
 		FileDeviceName : STRING[32]; (*file device where recorder data should be stored*)
+		FileNamePrefix : STRING[32]; (*filename prefix used for generated recorder file*)
 		NumberOfCycles : USINT; (*Refresh rate in number of task cycles (min. 3)*)
 		Trigger : BOOL; (*stops recording and save output file*)
 	END_VAR

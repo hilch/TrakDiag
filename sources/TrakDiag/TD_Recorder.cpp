@@ -329,9 +329,11 @@ void TD_Recorder(struct TD_Recorder* inst)
 					}
 				}
 				else if( inst->tonTriggerDelay.Q and inst->Valid ) { /* we got a trigger and now we save everything */
-					TD_filenameDT( (UDINT) "TD_Recorder_", (UDINT) &inst->OutputFileName, sizeof(inst->OutputFileName)-1 );
+					std::strcpy( inst->OutputFileName, inst->FileNamePrefix );
+					TD_filenameDT( (UDINT) "TD_Recorder_", (UDINT) ((char*) &inst->OutputFileName + std::strlen(inst->FileNamePrefix)), sizeof(inst->OutputFileName)-1 );
 					std::strcat( (char*) &inst->OutputFileName, (char*) ".html" );
-					TD_filenameDT( (UDINT) "TD_Recorder_Dump_", (UDINT) &inst->DumpFileName, sizeof(inst->DumpFileName)-1 );
+					std::strcpy( inst->DumpFileName, inst->FileNamePrefix );
+					TD_filenameDT( (UDINT) "TD_Recorder_Dump_", (UDINT) ((char*) &inst->DumpFileName + std::strlen(inst->FileNamePrefix)), sizeof(inst->DumpFileName)-1 );
 					std::strcat( (char*) &inst->DumpFileName, (char*) ".tar.gz" );
 					inst->Valid = false;
 					inst->Busy = true;
