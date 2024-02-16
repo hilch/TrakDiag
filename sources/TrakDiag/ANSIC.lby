@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <?AutomationStudio FileVersion="4.9"?>
 <Library Version="2.06.0" SubType="ANSIC" xmlns="http://br-automation.co.at/AS/Library">
   <Objects>
@@ -19,8 +19,8 @@
     <Object Type="File">TD_Recorder.h</Object>
     <Object Type="File">TD_WebServices.cpp</Object>
     <Object Type="File">TD_WebServices.h</Object>
-	<Object Type="File">TD_ShuttleErrorTexts.cpp</Object>
-	<Object Type="File">TD_SegmentsInfo.cpp</Object>	
+	  <Object Type="File">TD_ShuttleErrorTexts.cpp</Object>
+	  <Object Type="File">TD_SegmentsInfo.cpp</Object>	
     <Object Type="Package">TrakWebApi</Object>
   </Objects>
   <Dependencies>

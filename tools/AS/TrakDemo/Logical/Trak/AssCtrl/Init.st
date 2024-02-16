@@ -41,6 +41,7 @@ PROGRAM _INIT
 
 	fbRecorder.AssemblyName := 'gAssembly_1';
 	fbRecorder.FileDeviceName := 'Diagnosis';
+	fbRecorder.FileNamePrefix := 'Demo_';
 	fbRecorder.DataAddress := ADR(shuttleData);
 	fbRecorder.DataSize := SIZEOF(shuttleData); (* type of McAcpTrakShuttleData[] if no shuttle user data is defined, see MC_BR_AsmCopyShuttleData_AcpTrak *)
 	fbRecorder.UserDataSize := 0;

@@ -1,6 +1,7 @@
 V2.6.0
 - Add TD_ShuttleErrorTexts
 - Add TD_SegmentsInfo
+- TD_Recorder: Add new entry FileNamePrefix
 - Bugfix: SegInfo.segmentCylicInfo now shows values
 
 V2.5.1

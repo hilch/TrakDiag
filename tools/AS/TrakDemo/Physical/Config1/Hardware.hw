@@ -41,10 +41,10 @@
     <Parameter ID="Cyclic2Tolerance" Value="10000" />
     <Group ID="FileDevice1" />
     <Parameter ID="FileDeviceName1" Value="SvgData" />
-    <Parameter ID="FileDevicePath1" Value="F:\web\SvgData" />
+    <Parameter ID="FileDevicePath1" Value="USER_PATH\web\SvgData" />
     <Group ID="FileDevice2" />
     <Parameter ID="FileDeviceName2" Value="Diagnosis" />
-    <Parameter ID="FileDevicePath2" Value="F:\web\Diagnosis" />
+    <Parameter ID="FileDevicePath2" Value="USER_PATH\web\Diagnosis" />
     <Parameter ID="EthernetDefaultGateway" Value="10.49.40.1" />
     <Group ID="FtpUser1" />
     <Parameter ID="FtpUsername1" Value="bur" />
