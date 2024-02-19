@@ -154,7 +154,7 @@ void TD_Recorder(struct TD_Recorder* inst)
 
 
 			case CHECK_DATA_OBJ: /* check if data object already exist */		
-			if( inst->fbDatObjInfo.status == 0 ){  /* data object exists - delete this */
+			if( inst->fbDatObjInfo.status == ERR_OK ){  /* data object exists - delete this */
 				inst->fbDatObjDelete.ident = inst->fbDatObjInfo.ident;
 				inst->fbDatObjInfo.enable = false; /* reset fb */
 				DatObjInfo( &inst->fbDatObjInfo );
@@ -169,7 +169,7 @@ void TD_Recorder(struct TD_Recorder* inst)
 				DatObjCreate( &inst->fbDatObjCreate );
 				inst->step = CREATE_DATA_OBJ;
 			}
-			else if( inst->fbDatObjInfo.status != 65535 ){ /* other errors */
+			else if( inst->fbDatObjInfo.status != ERR_FUB_BUSY ){ /* other errors */
 				inst->ErrorID = inst->fbDatObjInfo.status;
 				inst->Error = true;
 				inst->fbDatObjInfo.enable = false; /* reset fb */
@@ -183,14 +183,14 @@ void TD_Recorder(struct TD_Recorder* inst)
 
 
 			case DELETE_DATA_OBJ: /* delete an already existing data object */
-			if( inst->fbDatObjDelete.status == 0 ){  /* delete successful */
+			if( inst->fbDatObjDelete.status == ERR_OK ){  /* delete successful */
 				inst->fbDatObjDelete.enable = false; /* reset fb */
 				DatObjDelete( &inst->fbDatObjDelete );
 				inst->fbDatObjCreate.enable = true; /* start fb */
 				DatObjCreate( &inst->fbDatObjCreate );
 				inst->step = CREATE_DATA_OBJ;
 			}
-			else if( inst->fbDatObjDelete.status != 65535 ){ /* error */
+			else if( inst->fbDatObjDelete.status != ERR_FUB_BUSY ){ /* error */
 				inst->ErrorID = inst->fbDatObjDelete.status;
 				inst->Error = true;
 				inst->fbDatObjDelete.enable = false; /* reset fb */
@@ -204,7 +204,7 @@ void TD_Recorder(struct TD_Recorder* inst)
 
 
 			case CREATE_DATA_OBJ: /* create the data object for dynamic memory */
-			if( inst->fbDatObjCreate.status == 0 ){ /* create successful */
+			if( inst->fbDatObjCreate.status == ERR_OK ){ /* create successful */
 				inst->pDataObject = inst->fbDatObjCreate.pDatObjMem; /* pointer to memory */
 				inst->pTimestamps = inst->pDataObject + inst->maxRecords * inst->DataSize; /* pointer to record timestamps */
 				inst->pBuffer = inst->pTimestamps + inst->maxRecords * sizeof(McAcpTrakDateTimeType); /* pointer to buffer */
@@ -215,7 +215,7 @@ void TD_Recorder(struct TD_Recorder* inst)
 				inst->n = 0;
 				inst->step = GET_SEGMENT_LIST;
 			}
-			else if( inst->fbDatObjCreate.status != 65535 ){ /* error */
+			else if( inst->fbDatObjCreate.status != ERR_FUB_BUSY ){ /* error */
 				inst->ErrorID = inst->fbDatObjCreate.status;
 				inst->Error = true;
 				inst->fbDatObjCreate.enable = false; /* reset fb */
@@ -359,7 +359,7 @@ void TD_Recorder(struct TD_Recorder* inst)
 
 			
 			case CREATE_FILE:
-			if( inst->fbFileCreate.status == 0 ){
+			if( inst->fbFileCreate.status == ERR_OK ){
 				inst->fbFileWrite.ident = inst->fbFileCreate.ident;
 				inst->fbFileCreate.enable = false; /* reset fb */
 				FileCreate( &inst->fbFileCreate );
@@ -372,7 +372,7 @@ void TD_Recorder(struct TD_Recorder* inst)
 				FileWriteEx( &inst->fbFileWrite );
 				inst->step = WRITE_HTML_HEADER;
 			}
-			else if( inst->fbFileCreate.status != 65535 ){ /* error */
+			else if( inst->fbFileCreate.status != ERR_FUB_BUSY ){ /* error */
 				inst->ErrorID = inst->fbFileCreate.status;
 				inst->Error = true;
 				inst->fbFileCreate.enable = false; /* reset fb */
@@ -386,7 +386,7 @@ void TD_Recorder(struct TD_Recorder* inst)
 
 
 			case WRITE_HTML_HEADER:
-			if( inst->fbFileWrite.status == 0 ){ /* done */
+			if( inst->fbFileWrite.status == ERR_OK ){ /* done */
 				inst->fbFileWrite.offset += inst->fbFileWrite.len;
 				inst->fbFileWrite.enable = false; /* reset fb */
 				FileWriteEx( &inst->fbFileWrite );	
@@ -426,7 +426,7 @@ void TD_Recorder(struct TD_Recorder* inst)
 					inst->step = WRITE_SEGMENT_INFO;					
 				}
 			}
-			else if( inst->fbFileWrite.status != 65535 ){ /* error */
+			else if( inst->fbFileWrite.status != ERR_FUB_BUSY ){ /* error */
 				inst->ErrorID = inst->fbFileWrite.status;
 				inst->Busy = false;
 				inst->Error = true;
@@ -441,14 +441,14 @@ void TD_Recorder(struct TD_Recorder* inst)
 
 
 			case WRITE_SEGMENT_INFO:
-			if( inst->fbFileWrite.status == 0 ){
+			if( inst->fbFileWrite.status == ERR_OK ){
 				inst->fbFileWrite.offset += inst->fbFileWrite.len;
 				inst->fbFileWrite.enable = false; /* reset fb */
 				FileWriteEx( &inst->fbFileWrite );	
 				inst->n = 0;
 				inst->step = COLLECT_SHUTTLE_DATA;
 			}
-			else if( inst->fbFileWrite.status != 65535 ){
+			else if( inst->fbFileWrite.status != ERR_FUB_BUSY ){
 				inst->ErrorID = inst->fbFileWrite.status;
 				inst->Busy = false;
 				inst->Error = true;
@@ -528,7 +528,7 @@ void TD_Recorder(struct TD_Recorder* inst)
 
 
 			case WRITE_SHUTTLE_DATA:
-			if( inst->fbFileWrite.status == 0 ){ /* done */
+			if( inst->fbFileWrite.status == ERR_OK ){ /* done */
 				inst->fbFileWrite.offset += inst->fbFileWrite.len;
 				inst->fbFileWrite.enable = false; /* reset fb */
 				FileWriteEx( &inst->fbFileWrite );
@@ -546,7 +546,7 @@ void TD_Recorder(struct TD_Recorder* inst)
 					inst->step = COLLECT_SHUTTLE_DATA;
 				}
 			}
-			else if( inst->fbFileWrite.status != 65535 ){ /* error */
+			else if( inst->fbFileWrite.status != ERR_FUB_BUSY ){ /* error */
 				inst->ErrorID = inst->fbFileWrite.status;
 				inst->Busy = false;
 				inst->Error = true;
@@ -561,7 +561,7 @@ void TD_Recorder(struct TD_Recorder* inst)
 
 
 			case WRITE_HTML_HEADER_END:
-			if( inst->fbFileWrite.status == 0 ){ /* done */
+			if( inst->fbFileWrite.status == ERR_OK ){ /* done */
 				inst->fbFileWrite.enable = false; /* reset fb */
 				inst->fbFileWrite.offset += inst->fbFileWrite.len;
 				FileWriteEx( &inst->fbFileWrite );
@@ -569,7 +569,7 @@ void TD_Recorder(struct TD_Recorder* inst)
 				FileOpen( &inst->fbFileOpen );
 				inst->step = OPEN_SVG_FILE;
 			}
-			else if( inst->fbFileWrite.status != 65535 ){ /* error */
+			else if( inst->fbFileWrite.status != ERR_FUB_BUSY ){ /* error */
 				inst->ErrorID = inst->fbFileWrite.status;
 				inst->Busy = false;
 				inst->Error = true;
@@ -584,7 +584,7 @@ void TD_Recorder(struct TD_Recorder* inst)
 
 
 			case OPEN_SVG_FILE:
-			if( inst->fbFileOpen.status == 0 ){ /* done */
+			if( inst->fbFileOpen.status == ERR_OK ){ /* done */
 				inst->fbFileRead.offset = 0;
 				inst->fbFileRead.pDest = inst->pBuffer;			
 				inst->fbFileRead.len = BUFFER_SIZE;				
@@ -595,7 +595,7 @@ void TD_Recorder(struct TD_Recorder* inst)
 				FileOpen( &inst->fbFileOpen );
 				inst->step = READ_SVG_DATA;
 			}
-			else if( inst->fbFileOpen.status != 65535 ){ /* error */
+			else if( inst->fbFileOpen.status != ERR_FUB_BUSY ){ /* error */
 				inst->ErrorID = inst->fbFileOpen.status;
 				inst->Busy = false;
 				inst->Error = true;
@@ -610,7 +610,7 @@ void TD_Recorder(struct TD_Recorder* inst)
 
 
 			case READ_SVG_DATA:
-			if( inst->fbFileRead.status == 0 ){ /* done */
+			if( inst->fbFileRead.status == ERR_OK ){ /* done */
 				if( inst->fbFileRead.bytesread > 0 ){
 					inst->fbFileWrite.pSrc = inst->pBuffer;							
 					inst->fbFileWrite.len = inst->fbFileRead.bytesread;
@@ -633,7 +633,7 @@ void TD_Recorder(struct TD_Recorder* inst)
 				}
 			}
 			//else if( inst->fbFileRead.status == EOF )
-			else if( inst->fbFileRead.status != 65535 ){ /* error */
+			else if( inst->fbFileRead.status != ERR_FUB_BUSY ){ /* error */
 				inst->ErrorID = inst->fbFileRead.status;
 				inst->Busy = false;
 				inst->Error = true;
@@ -648,7 +648,7 @@ void TD_Recorder(struct TD_Recorder* inst)
 
 
 			case WRITE_SVG_DATA:
-			if( inst->fbFileWrite.status == 0 ){ /* done */
+			if( inst->fbFileWrite.status == ERR_OK ){ /* done */
 				inst->fbFileWrite.offset += inst->fbFileWrite.len;
 				inst->fbFileWrite.enable = false; /* reset fb */
 				FileWriteEx( &inst->fbFileWrite );
@@ -656,7 +656,7 @@ void TD_Recorder(struct TD_Recorder* inst)
 				FileReadEx( &inst->fbFileRead );	
 				inst->step = READ_SVG_DATA;
 			}
-			else if( inst->fbFileWrite.status != 65535 ){ /* error */
+			else if( inst->fbFileWrite.status != ERR_FUB_BUSY ){ /* error */
 				inst->ErrorID = inst->fbFileWrite.status;
 				inst->Busy = false;
 				inst->Error = true;
@@ -671,7 +671,7 @@ void TD_Recorder(struct TD_Recorder* inst)
 
 
 			case CLOSE_SVG_FILE: /* close the svg file */
-			if( inst->fbFileClose.status == 0 ){ /* successful */
+			if( inst->fbFileClose.status == ERR_OK ){ /* successful */
 				inst->fbFileClose.enable = false; /* reset fb */
 				FileClose( &inst->fbFileClose );
 				inst->fbFileWrite.pSrc = (UDINT) HTML_FOOTER;
@@ -680,7 +680,7 @@ void TD_Recorder(struct TD_Recorder* inst)
 				FileWriteEx( &inst->fbFileWrite );	
 				inst->step = WRITE_HTML_FOOTER;
 			}
-			else if( inst->fbFileClose.status != 65535 ) {  /* error */
+			else if( inst->fbFileClose.status != ERR_FUB_BUSY ) {  /* error */
 				inst->ErrorID = inst->fbFileClose.status ;
 				inst->Busy = false;
 				inst->Error = true;
@@ -696,7 +696,7 @@ void TD_Recorder(struct TD_Recorder* inst)
 
 
 			case WRITE_HTML_FOOTER:
-			if( inst->fbFileWrite.status == 0 ){ /* done */
+			if( inst->fbFileWrite.status == ERR_OK ){ /* done */
 				inst->fbFileClose.ident = inst->fbFileWrite.ident;
 				inst->fbFileWrite.enable = false; /* reset fb */
 				FileWriteEx( &inst->fbFileWrite );	
@@ -706,7 +706,7 @@ void TD_Recorder(struct TD_Recorder* inst)
 				FileClose( &inst->fbFileClose );
 				inst->step = CLOSE_DEST_FILE;
 			}
-			else if( inst->fbFileWrite.status != 65535 ){ /* error */
+			else if( inst->fbFileWrite.status != ERR_FUB_BUSY ){ /* error */
 				inst->ErrorID = inst->fbFileWrite.status;
 				inst->Busy = false;
 				inst->Error = true;
@@ -721,14 +721,14 @@ void TD_Recorder(struct TD_Recorder* inst)
 
 
 			case CLOSE_DEST_FILE: /* close the destination file */
-			if( inst->fbFileClose.status == 0 ){ /* successful */
+			if( inst->fbFileClose.status == ERR_OK ){ /* successful */
 				inst->fbFileClose.enable = false; /* reset fb */
 				FileClose( &inst->fbFileClose );
 				inst->fbSystemDump.enable = true;
 				SdmSystemDump( &inst->fbSystemDump );
 				inst->step = W_SYSTEMDUMP;
 			}
-			else if( inst->fbFileClose.status != 65535 ) {  /* error */
+			else if( inst->fbFileClose.status != ERR_FUB_BUSY ) {  /* error */
 				inst->ErrorID = inst->fbFileClose.status ;
 				inst->Busy = false;
 				inst->Error = true;
@@ -743,12 +743,12 @@ void TD_Recorder(struct TD_Recorder* inst)
 
 
 			case W_SYSTEMDUMP:
-			if( inst->fbSystemDump.status == 0 ){ /* successful */
+			if( inst->fbSystemDump.status == ERR_OK ){ /* successful */
 				inst->fbSystemDump.enable = false; /* reset fb */
 				SdmSystemDump( &inst->fbSystemDump );
 				inst->step = W_RESTART;
 			}
-			else if( inst->fbSystemDump.status != 65535 ){  /* busy */
+			else if( inst->fbSystemDump.status != ERR_FUB_BUSY ){  /* busy */
 				inst->fbSystemDump.enable = false; /* reset fb */
 				SdmSystemDump( &inst->fbSystemDump );
 				inst->step = INTERNAL_ERROR_SYSTEMDUMP;
