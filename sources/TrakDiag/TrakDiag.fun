@@ -242,6 +242,34 @@ FUNCTION_BLOCK TD_SegmentsInfo (*Gets information about all segments in assembly
 	END_VAR
 END_FUNCTION_BLOCK
 
+FUNCTION_BLOCK TD_LimitFileNumber (*(internal use)*)
+	VAR_INPUT
+		Execute : BOOL;
+		FileDeviceName : STRING[32]; (*file device*)
+		DirectoryName : STRING[32]; (*directory name*)
+		FileNamePattern : STRING[128]; (*regular expression for file names*)
+		MaxCount : UINT; (*limited number of files*)
+	END_VAR
+	VAR_OUTPUT
+		Done : BOOL;
+		Busy : BOOL;
+		Error : BOOL;
+		StatusID : DINT;
+		ErrorFileNamePattern : STRING[80]; (*extended error information*)
+	END_VAR
+	VAR
+		step : UINT;
+		fbDirOpen : DirOpen;
+		fbDirRead : DirReadEx;
+		fbDirClose : DirClose;
+		fbFileDelete : FileDelete;
+		dirEntry : fiDIR_READ_EX_DATA;
+		fileCount : UINT;
+		timeStamps : ARRAY[0..100] OF DATE_AND_TIME;
+		pass : USINT;
+	END_VAR
+END_FUNCTION_BLOCK
+
 {REDUND_ERROR} FUNCTION_BLOCK TD_Recorder (*Shuttle 'flight recorder'*) (*$GROUP=User,$CAT=User,$GROUPICON=User.png,$CATICON=User.png*)
 	VAR_INPUT
 		Enable : BOOL;
@@ -296,7 +324,6 @@ type of McAcpTrakShuttleData[] if no shuttle user data is defined, see MC_BR_Asm
 	END_VAR
 END_FUNCTION_BLOCK
 
-
 {REDUND_ERROR} FUNCTION_BLOCK TD_WebServices (*Trak web services*) (*$GROUP=User,$CAT=User,$GROUPICON=User.png,$CATICON=User.png*)
 	VAR_INPUT
 		Enable : BOOL;
@@ -341,5 +368,3 @@ END_FUNCTION_BLOCK
 		stepTimeout : TON;
 	END_VAR
 END_FUNCTION_BLOCK
-
-

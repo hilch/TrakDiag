@@ -1,4 +1,6 @@
 VAR CONSTANT
+	TD_ERR_WRONG_PARAM : DINT := -536870911;
+	TD_ERR_INTERNAL : DINT := -536870912;
 	TD_MAX_SUPPORTED_SEGMENTS_ASM : USINT := 255; (*maximum number of supported segments in assembly*)
 	TD_MAX_SUPPORTED_SHUTTLES_ASM : USINT := 255; (*maximum number of supported shuttles in assembly*)
 END_VAR
