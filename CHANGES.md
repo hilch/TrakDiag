@@ -1,7 +1,8 @@
 V2.6.0
 - Add TD_ShuttleErrorTexts
 - Add TD_SegmentsInfo
-- TD_Recorder: Add new entry FileNamePrefix
+- TD_Recorder: Add new input 'FileNamePrefix' to prepend a text to the recorded files
+- TD_Recorder: Add new input 'MaxNumberOfRecordings' to limit the recorded files (old files will be deleted)  
 - Bugfix: SegInfo.segmentCylicInfo now shows values
 
 V2.5.1

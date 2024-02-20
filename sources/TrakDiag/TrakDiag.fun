@@ -254,7 +254,7 @@ FUNCTION_BLOCK TD_LimitFileNumber (*(internal use)*)
 		Done : BOOL;
 		Busy : BOOL;
 		Error : BOOL;
-		StatusID : DINT;
+		ErrorID : DINT;
 		ErrorFileNamePattern : STRING[80]; (*extended error information*)
 	END_VAR
 	VAR
@@ -281,6 +281,7 @@ type of McAcpTrakShuttleData[] if no shuttle user data is defined, see MC_BR_Asm
 		DataObjectName : STRING[10]; (*optional: temporary data object for memory allocation*)
 		FileDeviceName : STRING[32]; (*file device where recorder data should be stored*)
 		FileNamePrefix : STRING[32]; (*filename prefix used for generated recorder file*)
+		MaxNumberOfRecordings : {REDUND_UNREPLICABLE} USINT; (*Maximum number of recordings*)
 		NumberOfCycles : USINT; (*Refresh rate in number of task cycles (min. 3)*)
 		Trigger : BOOL; (*stops recording and save output file*)
 	END_VAR
@@ -314,6 +315,7 @@ type of McAcpTrakShuttleData[] if no shuttle user data is defined, see MC_BR_Asm
 		fbGetSegment : MC_BR_AsmGetSegment_AcpTrak;
 		fbSegGetInfo : MC_BR_SegGetInfo_AcpTrak;
 		fbSystemDump : SdmSystemDump;
+		fbLimitFileNumber : TD_LimitFileNumber;
 		pAssembly : REFERENCE TO McAssemblyType;
 		tonTriggerDelay : TON;
 		fbRtInfo : RTInfo;

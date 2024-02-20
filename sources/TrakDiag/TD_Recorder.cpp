@@ -144,10 +144,21 @@ void TD_Recorder(struct TD_Recorder* inst)
 					inst->fbSystemDump.pParam = 0;
 					SdmSystemDump( &inst->fbSystemDump ); /* reset fb */
 
+					/* */
+					std::strncpy( inst->fbLimitFileNumber.FileDeviceName, inst->FileDeviceName, sizeof(inst->fbLimitFileNumber.FileDeviceName) );
+					std::strcpy( inst->fbLimitFileNumber.DirectoryName, "" );
+					std::snprintf( inst->fbLimitFileNumber.FileNamePattern, sizeof(inst->fbLimitFileNumber.FileNamePattern)-1,
+						R"((%sTD_Recorder)(_Dump)?(_\d{4}-\d{2}-\d{2}T\d{2}_\d{2}_\d{2}.)((html)|(tar.gz)))", 
+						inst->FileNamePrefix );
+					inst->fbLimitFileNumber.MaxCount = inst->MaxNumberOfRecordings * 2;
+					inst->fbLimitFileNumber.Execute = false; /* reset fb */
+					TD_LimitFileNumber( &inst->fbLimitFileNumber );
+
 					inst->tonTriggerDelay.PT = 200;
 				}
 				else {
 					inst->Error = true;
+					inst->ErrorID = TD_ERR_INTERNAL;
 					inst->step = INTERNAL_ERROR_PVXGETADR;
 				}
 			break;
@@ -746,7 +757,9 @@ void TD_Recorder(struct TD_Recorder* inst)
 			if( inst->fbSystemDump.status == ERR_OK ){ /* successful */
 				inst->fbSystemDump.enable = false; /* reset fb */
 				SdmSystemDump( &inst->fbSystemDump );
-				inst->step = W_RESTART;
+				inst->fbLimitFileNumber.Execute = true; 
+				TD_LimitFileNumber( &inst->fbLimitFileNumber );
+				inst->step = DELETE_OLD_RECORDINGS;
 			}
 			else if( inst->fbSystemDump.status != ERR_FUB_BUSY ){  /* busy */
 				inst->fbSystemDump.enable = false; /* reset fb */
@@ -755,6 +768,25 @@ void TD_Recorder(struct TD_Recorder* inst)
 			}
 			else {  /* busy */
 				SdmSystemDump( &inst->fbSystemDump );
+			}
+			break;
+
+
+			case DELETE_OLD_RECORDINGS:
+			if( inst->fbLimitFileNumber.Done ){ /* done */
+				inst->fbLimitFileNumber.Execute = false; /* reset fb */
+				TD_LimitFileNumber( &inst->fbLimitFileNumber );
+				inst->step = W_RESTART;
+			}
+			else if( inst->fbLimitFileNumber.Error ){ /* error */
+				inst->ErrorID = inst->fbLimitFileNumber.ErrorID;
+				inst->Error = true;
+				inst->fbLimitFileNumber.Execute = false; /* reset fb */
+				TD_LimitFileNumber( &inst->fbLimitFileNumber );
+				inst->step = INTERNAL_ERROR_TD_LIMIT_FILE_NUMBER;
+			}
+			else {  /* busy */
+				TD_LimitFileNumber( &inst->fbLimitFileNumber );
 			}
 			break;
 
@@ -783,6 +815,7 @@ void TD_Recorder(struct TD_Recorder* inst)
 			case INTERNAL_ERROR_FILECLOSE_DST:
 			case INTERNAL_ERROR_FILEOPEN:
 			case INTERNAL_ERROR_FILEREAD:
+			case INTERNAL_ERROR_TD_LIMIT_FILE_NUMBER:
 			break;
 
 		} /* end of switch() */
