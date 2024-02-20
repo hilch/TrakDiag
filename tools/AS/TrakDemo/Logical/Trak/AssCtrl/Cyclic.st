@@ -222,8 +222,7 @@ PROGRAM _CYCLIC
 	END_IF
 
 	(* run recorder for breakdown analysis *)
-	fbRecorder( Trigger := assemblyCtrl.Status.ErrorStop );
-
+	fbRecorder(Trigger := assemblyCtrl.Status.ErrorStop );
 	(* web page *)
 	fbWebServices();
 
