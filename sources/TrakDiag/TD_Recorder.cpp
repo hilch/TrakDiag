@@ -41,6 +41,7 @@ SOFTWARE.
 #include <cstring>
 #include <cstdio>
 #include <algorithm>
+#include "recorder_html.h"
 #include "TD_Recorder.h"
 
 
