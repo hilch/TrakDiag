@@ -1,3 +1,6 @@
+V2.7.0
+- TD_Recorder: Add mouse wheel for zoom and pan
+
 V2.6.0
 - Add TD_ShuttleErrorTexts
 - Add TD_SegmentsInfo
