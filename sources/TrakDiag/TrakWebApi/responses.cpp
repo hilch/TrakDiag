@@ -146,14 +146,16 @@ void SendResponse_SingleShuttleInfo(struct TD_WebServices* inst){
 	if( inst->webData.fbGetParamUrl.status == 0 ){
 		unsigned shuttleIndex = std::atoi( (char*) inst->webData.urlParamBuffer );
 		TD_ServicesShuttleType *shuttle = 0;
+		bool found = false;
 
 		for( unsigned n = 0; n < inst->ShuttleInfo.numberOfEntries; ++n ){
 			shuttle = &inst->ShuttleInfo.shuttle[n]; 
 			if( shuttleIndex == shuttle->index ){
+				found = true;
 				break;
 			}
 		}
-		if( shuttle ){ /* shuttle found */
+		if( found ){ /* shuttle found */
 
 			LREAL segmentLength = 0.0;
 			STRING segmentName[32] = {0};
