@@ -200,7 +200,7 @@ FUNCTION_BLOCK TD_ShuttleErrorTexts (*Read last error records of a shuttle given
 		Execute : BOOL;
 		Assembly : REFERENCE TO McAssemblyType;
 		Axis : REFERENCE TO McAxisType; (*Shuttle Axis reference*)
-		ID : UDINT; (*Shuttles ID (if Axis is 0)*)
+		Index : UDINT; (*Shuttles index (if Axis is 0)*)
 		Language : McLanguageEnum;
 	END_VAR
 	VAR_OUTPUT

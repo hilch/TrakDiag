@@ -83,7 +83,7 @@ void TD_ShuttleErrorTexts(struct TD_ShuttleErrorTexts* inst)
 			case GET_SHUTTLE: /* wait for first shuttle found */
 			if( inst->fbAsmGetShuttle.Valid ){
 
-				if( inst->fbAsmGetShuttle.AdditionalInfo.ShuttleID == inst->ID ){ /* shuttle with given ID found */
+				if( inst->fbAsmGetShuttle.AdditionalInfo.ShuttleID == inst->Index ){ /* shuttle with given index found */
 					std::memcpy( &inst->axis, &inst->fbAsmGetShuttle.Axis, sizeof(McAxisType) );
 					inst->fbReadErrorText.Component = reinterpret_cast<McComponentType>(&inst->axis);
 					inst->fbAsmGetShuttle.Next = false;
