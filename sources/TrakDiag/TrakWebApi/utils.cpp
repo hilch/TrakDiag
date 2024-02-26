@@ -146,7 +146,7 @@ bool GetSegmentData(struct TD_WebServices* inst, char* segmentName, UINT* ID, LR
 }
 
 
-/* retrieve shuttle data */
+/* collect shuttle data */
 void CollectShuttleInfo(struct TD_WebServices* inst){
 	USINT * pShuttleData = (USINT*) inst->DataAddress;
 	size_t numShuttleData = inst->DataSize / ( sizeof(McAcpTrakShuttleData) + inst->UserDataSize );
@@ -206,5 +206,22 @@ void CollectSegmentInformation(struct TD_WebServices* inst){
 		MC_BR_SegReadInfo_AcpTrak( &inst->fbSegReadInfo[n] );
 		inst->SegInfo.segmentCyclicInfo[n] = inst->fbSegReadInfo[n].SegmentInfo;
 		//std::memcpy( &inst->SegInfo.segmentCyclicInfo[n], &inst->fbSegReadInfo[n].SegmentInfo, sizeof(inst->SegInfo.segmentCyclicInfo[n]) );
+	}
+}
+
+/* returns a string describing PLCopen state for an axis */
+const char* GetAxisPlcOpenStateString( McAxisPLCopenStateEnum state ){
+	switch( state ){
+		case mcAXIS_DISABLED: return "disabled"; break;
+		case mcAXIS_STANDSTILL: return "standstill"; break;
+		case mcAXIS_HOMING: return "homing"; break;
+		case mcAXIS_STOPPING: return "stopping"; break;
+		case mcAXIS_DISCRETE_MOTION: return "discrete motion"; break;
+		case mcAXIS_CONTINUOUS_MOTION: return "continuous motion"; break;
+		case mcAXIS_SYNCHRONIZED_MOTION: return "synchronized motion"; break;
+		case mcAXIS_ERRORSTOP: return "errorstop"; break;
+		case mcAXIS_STARTUP: return "startup"; break;
+		case mcAXIS_INVALID_CONFIGURATION: return "invalid configuration"; break;
+		default: return "unknonw"; break;
 	}
 }

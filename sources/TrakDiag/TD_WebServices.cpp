@@ -127,10 +127,16 @@ void TD_WebServices(struct TD_WebServices* inst)
 								SendResponse_404(inst); /* 404 - not found */
 								break;
 							}
-							else if( std::strcmp( (char*) inst->webData.uri, responses[n].request ) == 0 ){
-								responses[n].send_response( inst );
-								inst->step = HTTP_SERV_RESPONSE;
-								break;
+							else {
+//								char *found = std::strstr( (char*) inst->webData.uri, "?" ); /* GET params ? */
+//								if( found ){
+//									*found = 0;
+//								}
+								if( std::strncmp( responses[n].request, (char*) inst->webData.uri, std::strlen(responses[n].request)  ) == 0 ){
+									responses[n].send_response( inst );
+									inst->step = HTTP_SERV_RESPONSE;
+									break;
+								}
 							}
 						}
 						inst->webData.fbHttpService.send = true;

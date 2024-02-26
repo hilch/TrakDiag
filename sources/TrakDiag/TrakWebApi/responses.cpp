@@ -45,6 +45,7 @@ SOFTWARE.
 #include "index_js.h"
 #include "panzoom_js.h"
 #include "index_html.h"
+#include "utils.h"
 
 
 
@@ -65,14 +66,8 @@ void SendResponse_GeneralInformation(struct TD_WebServices* inst){
 
 
 void SendResponse_AssemblyInformation(struct TD_WebServices* inst){
-// not available in 5.21
-//						int plcOpen = inst->asmInfo.PLCopenState;
-//						if( plcOpen > mcACPTRAK_INVALID_CONFIGURATION ){
-//							plcOpen = mcACPTRAK_INVALID_CONFIGURATION;
-//						}
 	sprintf( (char*) inst->webData.responseData, 
 			"{"
-//								"\"PLCopen\" : \"%s\"," // not available in 5.21
 			"\"CommunicationReady\" : %s,"
 			"\"ReadyForPowerOn\" : %s,"
 			"\"PowerOn\" : %s,"
@@ -82,7 +77,6 @@ void SendResponse_AssemblyInformation(struct TD_WebServices* inst){
 			"\"ShuttlesCount\" : %d,"
 			"\"ShuttlesInErrorStopCount\" : %d"
 			"}", 
-//								AcpTrakPLCopenState[plcOpen], // not available in 5.21
 			JavascriptBoolean[inst->asmInfo.CommunicationReady],
 			JavascriptBoolean[inst->asmInfo.ReadyForPowerOn],
 			JavascriptBoolean[inst->asmInfo.PowerOn],
@@ -135,6 +129,67 @@ void SendResponse_ShuttlePositions(struct TD_WebServices* inst){
 	std::strcpy( (char*) inst->webData.responseHeader.connection, "keep-Alive" );
 	std::strcpy( (char*) inst->webData.responseHeader.keepAlive, "timeout=20, max=5" );
 }
+
+
+void SendResponse_SingleShuttleInfo(struct TD_WebServices* inst){
+	inst->webData.fbGetParamUrl.enable = false; /* reset fb */
+	inst->webData.fbGetParamUrl.pSrc = (UDINT) &inst->webData.uri;
+	inst->webData.fbGetParamUrl.pParam = (UDINT) "index";
+	inst->webData.fbGetParamUrl.pValue = (UDINT) inst->webData.urlParamBuffer;
+	inst->webData.fbGetParamUrl.valueSize = sizeof(inst->webData.urlParamBuffer);
+	httpGetParamUrl( &inst->webData.fbGetParamUrl );
+	inst->webData.fbGetParamUrl.enable = true;
+	do {
+		httpGetParamUrl( &inst->webData.fbGetParamUrl );
+	} while( inst->webData.fbGetParamUrl.status == ERR_FUB_BUSY );
+
+	if( inst->webData.fbGetParamUrl.status == 0 ){
+		unsigned shuttleIndex = std::atoi( (char*) inst->webData.urlParamBuffer );
+		TD_ServicesShuttleType *shuttle = 0;
+
+		for( unsigned n = 0; n < inst->ShuttleInfo.numberOfEntries; ++n ){
+			shuttle = &inst->ShuttleInfo.shuttle[n]; 
+			if( shuttleIndex == shuttle->index ){
+				break;
+			}
+		}
+		if( shuttle ){ /* shuttle found */
+
+			LREAL segmentLength = 0.0;
+			STRING segmentName[32] = {0};
+			for( int n = 0; n < inst->SegInfo.numberOfSegments; ++n ){
+				if( shuttle->segmentID == inst->SegInfo.segmentInfo[n].ID ){
+					segmentLength = inst->SegInfo.segmentInfo[n].Length;
+					std::strcpy( segmentName, inst->SegInfo.segmentInfo[n].Name );
+					break;
+				}
+			}
+
+			std::sprintf( inst->webData.responseData, 
+				"{ \"result\" : \"ok\", \"index\":%d, \"active\": %s, \"virtual\": %s, \"segmentID\":%d, \"segmentName\":\"%s\", \"segmentPosition\":%f, \"PLCopen\":\"%s\" }", 
+				shuttleIndex, shuttle->flags&0x01 ? "true" : "false", shuttle->flags&0x02 ? "true" : "false", shuttle->segmentID, 
+				segmentName, shuttle->segmentPosition/100.0*segmentLength, GetAxisPlcOpenStateString(shuttle->plcOpenState) );
+		}
+		else {
+			std::sprintf( inst->webData.responseData, "{ \"result\" : \"shuttle with given index not found\", \"index\":%d }", shuttleIndex );
+		}
+	}
+	else if( inst->webData.fbGetParamUrl.status == httpERR_NOT_FOUND ){
+		std::sprintf( inst->webData.responseData, "{ \"result\" : \"GET parameter invalid\" }" );	
+	}
+	else { /* internal error */
+		std::sprintf( inst->webData.responseData, "{ \"result\" : \"%d\" }", inst->webData.fbGetParamUrl.status  );
+	}
+	inst->webData.fbGetParamUrl.enable = false; /* reset fb */
+	httpGetParamUrl( &inst->webData.fbGetParamUrl );
+
+	inst->webData.fbHttpService.responseDataLen = std::strlen( (char*) inst->webData.responseData );
+	std::strcpy( (char*) inst->webData.responseHeader.contentType, "application/json; charset=iso-8859-1");
+	inst->webData.responseHeader.contentLength = inst->webData.fbHttpService.responseDataLen;
+	std::strcpy( (char*) inst->webData.responseHeader.connection, "keep-Alive" );
+	std::strcpy( (char*) inst->webData.responseHeader.keepAlive, "timeout=20, max=5" );
+}
+
 
 
 void SendResponse_SegmentList(struct TD_WebServices* inst){

@@ -3,7 +3,7 @@ TYPE
 	TD_HttpServiceType : 	STRUCT 
 		fbHttpService : httpService;
 		fbGetParamUrl : httpGetParamUrl;
-		urlParamBuffer : STRING[10];
+		urlParamBuffer : STRING[256];
 		tempDINT : DINT;
 		serviceName : STRING[80];
 		uri : STRING[256];

@@ -63,5 +63,5 @@ SOFTWARE.
 #define INTERNAL_ERROR_FREEMEMORY			9011
 
 
-const char* AcpTrakPLCopenState[] = { "Disabled", "Homing", "Ready", "Stopping", "Errorstop", "Startup", "Invalid Configuration" };
+
 
