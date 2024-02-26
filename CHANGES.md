@@ -1,5 +1,6 @@
 V2.7.0
 - TD_Recorder: Add mouse wheel for zoom and pan
+- TD_WebServices: Add /TrakWebApi/shuttle for single shuttle information
 
 V2.6.0
 - Add TD_ShuttleErrorTexts
