@@ -122,7 +122,7 @@ END_FUNCTION_BLOCK
 	END_VAR
 END_FUNCTION_BLOCK
 
-FUNCTION_BLOCK TD_CrashReport (*Read motion logger*)
+{REDUND_ERROR} FUNCTION_BLOCK TD_CrashReport (*Read motion logger*)
 	VAR_INPUT
 		Execute : BOOL;
 		pLoggerEntries : {REDUND_UNREPLICABLE} UDINT; (*pointer to TD_LoggerEntryType[]*)
@@ -173,7 +173,7 @@ END_FUNCTION_BLOCK
 	END_VAR
 END_FUNCTION_BLOCK
 
-FUNCTION_BLOCK TD_LoggerReadEntry (*(internal use)*)
+{REDUND_ERROR} FUNCTION_BLOCK TD_LoggerReadEntry (*(internal use)*)
 	VAR_INPUT
 		Execute : BOOL;
 		Ident : ArEventLogIdentType;
@@ -195,7 +195,27 @@ FUNCTION_BLOCK TD_LoggerReadEntry (*(internal use)*)
 	END_VAR
 END_FUNCTION_BLOCK
 
-FUNCTION_BLOCK TD_ShuttleErrorTexts (*Read last error records of a shuttle given by ID or Axis reference*)
+{REDUND_ERROR} FUNCTION_BLOCK TD_GetShuttles (*Returns the axis references of all shuttles of the assembly that corresponds to the selected mode*)
+	VAR_INPUT
+		Assembly : REFERENCE TO McAssemblyType;
+		Execute : BOOL; (*Assembly reference*)
+		SelectionMode : McAcpTrakGetShuttleModeEnum; (*Criteria according to which the shuttles to be output are selected*)
+	END_VAR
+	VAR_OUTPUT
+		Axis : ARRAY[0..TD_MAX_SUPPORTED_SHUTTLES_ASM] OF McAxisType;
+		Count : UINT;
+		Done : BOOL;
+		Busy : BOOL;
+		Error : BOOL;
+		ErrorID : DINT;
+	END_VAR
+	VAR
+		step : UINT;
+		fbGetShuttle : MC_BR_AsmGetShuttleSel_AcpTrak;
+	END_VAR
+END_FUNCTION_BLOCK
+
+{REDUND_ERROR} FUNCTION_BLOCK TD_ShuttleErrorTexts (*Read last error records of a shuttle given by ID or Axis reference*)
 	VAR_INPUT
 		Execute : BOOL;
 		Assembly : REFERENCE TO McAssemblyType;
@@ -219,7 +239,7 @@ FUNCTION_BLOCK TD_ShuttleErrorTexts (*Read last error records of a shuttle given
 	END_VAR
 END_FUNCTION_BLOCK
 
-FUNCTION_BLOCK TD_SegmentsInfo (*Gets information about all segments in assembly*)
+{REDUND_ERROR} FUNCTION_BLOCK TD_SegmentsInfo (*Gets information about all segments in assembly*)
 	VAR_INPUT
 		Execute : BOOL;
 		Assembly : REFERENCE TO McAssemblyType;
@@ -242,7 +262,7 @@ FUNCTION_BLOCK TD_SegmentsInfo (*Gets information about all segments in assembly
 	END_VAR
 END_FUNCTION_BLOCK
 
-FUNCTION_BLOCK TD_LimitFileNumber (*(internal use)*)
+{REDUND_ERROR} FUNCTION_BLOCK TD_LimitFileNumber (*(internal use)*)
 	VAR_INPUT
 		Execute : BOOL;
 		FileDeviceName : STRING[32]; (*file device*)

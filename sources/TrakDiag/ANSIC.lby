@@ -23,6 +23,7 @@
     <Object Type="File">TD_ShuttleErrorTexts.cpp</Object>
     <Object Type="File">TD_SegmentsInfo.cpp</Object>
     <Object Type="File">TD_LimitFileNumber.cpp</Object>
+    <Object Type="File">TD_GetShuttles.cpp</Object>	
     <Object Type="Package">TrakWebApi</Object>
   </Objects>
   <Dependencies>
