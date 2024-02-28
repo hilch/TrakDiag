@@ -202,7 +202,7 @@ END_FUNCTION_BLOCK
 		SelectionMode : McAcpTrakGetShuttleModeEnum; (*Criteria according to which the shuttles to be output are selected*)
 	END_VAR
 	VAR_OUTPUT
-		Axis : ARRAY[0..TD_MAX_SUPPORTED_SHUTTLES_ASM] OF McAxisType;
+		Shuttle : ARRAY[0..TD_MAX_SUPPORTED_SHUTTLES_ASM] OF TD_GetShuttlesShuttleInfoType;
 		Count : UINT;
 		Done : BOOL;
 		Busy : BOOL;

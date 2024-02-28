@@ -53,7 +53,7 @@ void TD_GetShuttles(struct TD_GetShuttles* inst)
 			inst->Busy = 1;
 			inst->ErrorID = 0;
 			inst->Count = 0;
-			std::memset( &inst->Axis, 0, sizeof(inst->Axis));
+			std::memset( &inst->Shuttle, 0, sizeof(inst->Shuttle));
 			inst->fbGetShuttle.Enable = false; /* reset fb */
 			inst->fbGetShuttle.Assembly = inst->Assembly;
 			inst->fbGetShuttle.AdvancedParameters.VirtualSelectionMode = mcACPTRAK_GET_SH_VIRT_NONVIRTUAL; /* only non-virtual shuttles */
@@ -67,9 +67,11 @@ void TD_GetShuttles(struct TD_GetShuttles* inst)
 
 			case GET_SHUTTLE:
 			if( inst->fbGetShuttle.Valid ){
-				std::memcpy( &inst->Axis[inst->Count], &inst->fbGetShuttle.Axis, sizeof(McAxisType));
-				if( inst->fbGetShuttle.TotalCount > 0 )
+				if( inst->fbGetShuttle.TotalCount > 0 ) {
+					std::memcpy( &inst->Shuttle[inst->Count].Axis, &inst->fbGetShuttle.Axis, sizeof(McAxisType));
+					inst->Shuttle[inst->Count].ShuttleID = inst->fbGetShuttle.AdditionalInfo.ShuttleID;
 					++inst->Count;
+				}
 				inst->fbGetShuttle.Next = false;
 				MC_BR_AsmGetShuttleSel_AcpTrak( &inst->fbGetShuttle );
 				if( inst->fbGetShuttle.RemainingCount > 0 ){
