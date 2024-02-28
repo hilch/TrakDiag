@@ -89,6 +89,9 @@ void TD_ShuttleErrorTexts(struct TD_ShuttleErrorTexts* inst)
 					inst->fbAsmGetShuttle.Next = false;
 					inst->fbAsmGetShuttle.Enable = false;
 					MC_BR_AsmGetShuttle_AcpTrak( &inst->fbAsmGetShuttle ); /* reset fb */
+					inst->fbReadErrorText.Enable = false; /* reset fb */
+					inst->fbReadErrorText.ReadNext = false;
+					MC_BR_ReadErrorText( &inst->fbReadErrorText );
 					inst->fbReadErrorText.Enable = true;
 					MC_BR_ReadErrorText( &inst->fbReadErrorText );
 					inst->step = READ_ERRORS;
@@ -127,9 +130,16 @@ void TD_ShuttleErrorTexts(struct TD_ShuttleErrorTexts* inst)
 			case READ_ERRORS: /* read error texts */
 			if( inst->fbReadErrorText.Valid ){
 				inst->NumberOfRecords = inst->fbReadErrorText.NumberOfRecords;
+				if( inst->NumberOfRecords > 0 ){
 					inst->fbReadErrorText.ReadNext = true;
 					MC_BR_ReadErrorText( &inst->fbReadErrorText );
 					inst->step = READ_RECORDS;
+				}
+				else { /* no records */
+					inst->fbReadErrorText.Enable = false;
+					MC_BR_ReadErrorText( &inst->fbReadErrorText ); /* reset fb */
+					inst->step = DONE;
+				}
 			}
 			else if( inst->fbReadErrorText.Error ){
 				inst->StatusID = inst->fbReadErrorText.ErrorID;
