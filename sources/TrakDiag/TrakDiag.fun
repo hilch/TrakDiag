@@ -384,6 +384,7 @@ END_FUNCTION_BLOCK
 		fbSegmentsInfo : TD_SegmentsInfo;
 		fbAsmReadInfo : MC_BR_AsmReadInfo_AcpTrak;
 		fbSegReadInfo : ARRAY[0..TD_MAX_SUPPORTED_SEGMENTS_ASM] OF MC_BR_SegReadInfo_AcpTrak;
+		fbShuttleErrorTexts : TD_ShuttleErrorTexts;
 		pAssembly : REFERENCE TO McAssemblyType;
 		fbRtInfo : RTInfo;
 		asmInfo : McAcpTrakAsmInfoType; (*assembly information*)

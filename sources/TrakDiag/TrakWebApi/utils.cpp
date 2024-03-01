@@ -86,6 +86,9 @@ void InitalizeInstance(struct TD_WebServices* inst){
 	inst->webData.fbHttpService.pStatistics = (UDINT) &inst->webData.statistics;
 
 	/* */
+	inst->fbShuttleErrorTexts.Assembly = inst->pAssembly;
+
+	/* */
 	inst->fbDatObjInfo.enable = false; /* reset fb */
 	if( std::strlen(inst->DataObjectName) == 0 ){
 		std::strcpy( inst->DataObjectName, "$$tdwmem" );
