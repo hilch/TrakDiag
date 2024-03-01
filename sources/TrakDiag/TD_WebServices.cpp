@@ -466,7 +466,7 @@ void TD_WebServices(struct TD_WebServices* inst)
 							inst->webData.shuttle.flags&0x02 ? "true" : "false", inst->webData.shuttle.segmentID, 
 						    segmentName, inst->webData.shuttle.segmentPosition/100.0*segmentLength, 
 							GetAxisPlcOpenStateString(inst->webData.shuttle.plcOpenState) );
-						const char* tail = " ] }";
+						const char* tail = "}";
 						sizeOfResponse += std::strlen(tail);
 						if( sizeOfResponse < sizeof(inst->webData.responseData) ){
 							std::strcat( inst->webData.responseData, tail );
