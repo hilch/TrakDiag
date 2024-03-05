@@ -148,9 +148,9 @@ void TD_Recorder(struct TD_Recorder* inst)
 					/* */
 					std::strncpy( inst->fbLimitFileNumber.FileDeviceName, inst->FileDeviceName, sizeof(inst->fbLimitFileNumber.FileDeviceName) );
 					std::strcpy( inst->fbLimitFileNumber.DirectoryName, "" );
-					std::snprintf( inst->fbLimitFileNumber.FileNamePattern, sizeof(inst->fbLimitFileNumber.FileNamePattern)-1,
-						R"((%sTD_Recorder)(_Dump)?(_\d{4}-\d{2}-\d{2}T\d{2}_\d{2}_\d{2}.)((html)|(tar.gz)))", 
-						inst->FileNamePrefix );
+					std::strncpy( inst->fbLimitFileNumber.FileNamePattern, 
+						R"([\w-]*(TD_Recorder)(_Dump)?(_\d{4}-\d{2}-\d{2}T\d{2}_\d{2}_\d{2}.)((html)|(tar.gz)))",
+						sizeof(inst->fbLimitFileNumber.FileNamePattern));
 					inst->fbLimitFileNumber.MaxCount = inst->MaxNumberOfRecordings * 2;
 					inst->fbLimitFileNumber.Execute = false; /* reset fb */
 					TD_LimitFileNumber( &inst->fbLimitFileNumber );
