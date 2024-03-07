@@ -12,22 +12,37 @@ class Segment {
 		this.segmentBody2 = undefined;
 	}
 
+	showSegmentDialog = (event) => {
+		const content = [
+			['ID: ', this.ID],
+			['Name: ', `"${this.name}"` ],
+			['Length: ', `${this.length.toFixed(3)} m`],
+		];
+		assembly.showModalDialog( `Segment "${this.name}"`, content, event );
+	}
+
 	addEvents(segmentParent) {
 		segmentParent.addEventListener('mouseover', (event) => {
-			const hoverInfo = document.getElementById('hoverInfo');
-			hoverInfo.innerHTML = 'name: ' + this.name + ' / length: ' + this.length.toFixed(3)
-				+ ' / ID: ' + this.ID
-			hoverInfo.style.visibility='visible';
 			this.segmentBody.classList.add('highlightSegment');
 			this.segmentBody2.classList.add('highlightSegment');
 		});
 		segmentParent.addEventListener('mouseout', (event) => {
-			const hoverInfo = document.getElementById('hoverInfo');
 			this.segmentBody.classList.remove('highlightSegment');
 			this.segmentBody2.classList.remove('highlightSegment');
-			hoverInfo.style.visibility='hidden';
+		});
+		segmentParent.addEventListener('click', (event) => {
+			this.showSegmentDialog(event);
 		});
 	}
+
+	addTooltip(segmentParent){
+		let tooltipContent = 'Segment name: "' + this.name + '" / length: ' + this.length.toFixed(3)
+		+ ' / ID: ' + this.ID
+		let tooltipNode = document.createElementNS('http://www.w3.org/2000/svg', 'title');
+		tooltipNode.appendChild(document.createTextNode(tooltipContent));
+		segmentParent.appendChild(tooltipNode);
+	}
+
 
 	findElementsV1(container) { /* < 5.23 */
 		this.segmentBody = container.querySelector(`g polygon[id]#${this.name}`);
@@ -36,6 +51,7 @@ class Segment {
 		const segmentParent = this.segmentBody.parentElement;
 		this.segmentPath = segmentParent.querySelector('polyline');
 		this.addEvents(segmentParent);
+		this.addTooltip(segmentParent);
 	}
 
 	findElementsV2(container) { /* >= 5.23 */
@@ -45,6 +61,7 @@ class Segment {
 		const segmentParent = container.querySelector(`#gsg_${this.name}`);
 		this.segmentPath = container.querySelector(`#plsg_${this.name}`);				
 		this.addEvents(segmentParent);
+		this.addTooltip(segmentParent);		
 	}
 
 	xy(percentage) { /* get coords from percentage position */
@@ -93,12 +110,15 @@ class Segment {
 
 
 class Shuttle {
-	constructor(index, active, PLCopen, segment, pos ) {
+	constructor(index, data ) {
+		this.data = data;
 		this.index = index;
-		this.active = active;
-		this.PLCopen = PLCopen;
-		this.segment = segment;
-		this.pos = pos; /* [%] */
+		this.active = !!(data & 0x100);
+		this.virtual = !!(data & 0x200);		
+		this.PLCopen = data & 0x7f;
+		const segmentIndex = (data >> 10) & 0x7ff;
+		this.pos = (data >> 21) & 0x7f;
+		this.segment = assembly.segment[segmentIndex];		
 	}
 
 	plcOpenStatus() {
@@ -106,13 +126,53 @@ class Shuttle {
 			'synchronized motion', 'error stop', 'startup', 'invalid configuration'][this.PLCopen];
 	}
 
+	addTooltip(svg) {
+		let tooltipContent = `Shuttle ${ !this.active ? '(deleted !)' : ''} index: ${this.index}`;
+		tooltipContent += ` / PLCopen: ${this.plcOpenStatus()} / segment: ${this.segment.name}`
+		tooltipContent += ` / segment-position: ${this.segment.segmentPosition(this.pos)}`;	
+		let tooltipNode = document.createElementNS('http://www.w3.org/2000/svg', 'title');
+		tooltipNode.appendChild(document.createTextNode(tooltipContent));
+		tooltipNode.classList.add('tooltiptext');
+		svg.appendChild(tooltipNode);
+	}
+
+	async showShuttleDialog(event){
+		try {
+			let response = await fetch(`/TrakWebApi/shuttle?index=${this.index}`);
+			let shuttle = await response.json()
+			const title = `${!shuttle.active ? 'deleted ! ' : ''} Shuttle ${shuttle.index}`;
+			const content = [
+				['controlled: ', `${shuttle.controlled}`],
+				['virtual: ', `${shuttle.virtual}`],				
+				['User-ID: ', `"${shuttle.userID}"`],
+				['PLCopen: ', shuttle.PLCopen],
+				['Segment-Name: ', `"${shuttle.segmentName}"`],
+				['Segment-Position: ', `${shuttle.segmentPosition.toFixed(3)} m`],
+				['Sector-Name: ', `"${shuttle.sectorName}"`],
+				['Sector-Position: ', `${shuttle.sectorPosition.toFixed(3)} m`]				
+			];
+			if( 'errorTexts' in shuttle ){
+				for( let n = 0; n < shuttle.errorTexts.length; ++n ){
+					const row = [`${new Date(shuttle.errorTexts[n].t).toISOString()}: `, shuttle.errorTexts[n].txt]
+					content.push(row);
+				}	
+			}			
+			assembly.showModalDialog( title, content, event );
+		}
+		catch( err ){
+			console.log(err);
+		}
+
+	}
+
 	createSVG() {
 		const { x, y } = this.segment.xy(this.pos);
 		this.svg = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-		this.svg.classList.add('shuttle');
+		this.svg.classList.add('shuttle');	
 		this.svg.classList.add('shuttleId_' + this.index);
 		this.svg.setAttribute('shuttle-id', this.index);
-		this.svg.setAttribute('r', '0.012');
+		this.svg.setAttribute('shuttle-data', this.data )
+		this.svg.setAttribute('r', '0.024');
 		this.svg.setAttribute('cx', x);
 		this.svg.setAttribute('cy', y);
 		switch (this.PLCopen) {
@@ -137,24 +197,81 @@ class Shuttle {
 		}
 		if (!this.active) this.svg.classList.add('shuttleDeleted');
 		this.svg.addEventListener('mouseover', (event) => {
-			const hoverInfo = document.getElementById('hoverInfo');
-			const deleted = !this.active ? 'deleted shuttle !' : '';
-			hoverInfo.innerHTML = deleted + 'index: ' + this.index + ' / ' + 'PLCopen: ' + this.plcOpenStatus() + ' / '
-				+ 'segment: ' + this.segment.name + ' / '
-				+ 'segment-position: ' + this.segment.segmentPosition(this.pos);
 			this.svg.classList.add('highlightShuttle');
-			hoverInfo.style.visibility='visible';
 			event.stopPropagation();
 		});
 		this.svg.addEventListener('mouseout', (event) => {
-			const hoverInfo = document.getElementById('hoverInfo');
 			this.svg.classList.remove('highlightShuttle');
-			hoverInfo.style.visibility='hidden';
 		});
+		this.svg.addEventListener('click', (event) => {
+			this.showShuttleDialog(event);
+			event.stopPropagation();
+		});
+
+		this.addTooltip(this.svg)
 	}
 
 	paint() {
 		this.segment.paintShuttle(this.svg);
+	}
+}
+
+
+class ShuttleList {
+
+	constructor( monitor ) {
+		const allShuttleNodes = document.querySelectorAll('.shuttle');
+		this.oldShuttles = new Map();
+		for( let n = 0; n < allShuttleNodes.length; ++n ){
+			const s = allShuttleNodes[n];
+			this.oldShuttles.set( parseInt(s.getAttribute('shuttle-id')), parseInt(s.getAttribute('shuttle-data')));
+		}
+		this.newShuttles = new Map();
+		for( let n = 0; n < monitor.length; ++n ){
+			const s = monitor[n];
+			const index = s[0];
+			this.newShuttles.set(index, s[1]);
+		}
+	}
+
+	/* shuttles that are to be deleted */
+	toBeDeleted = () => {
+		let result = new Set();
+		this.oldShuttles.forEach( (value, key, map)=>{
+			if( !this.newShuttles.has(key)) // shuttle does not exist anymore
+				result.add(key);
+		})
+		this.newShuttles.forEach( (value, key, map)=>{
+			if( this.oldShuttles.has(key) && value != this.oldShuttles.get(key)){  // shuttle data have changed
+				result.add(key);
+			}
+		})
+		return result;
+	}
+
+	/* shuttles that are to be painted new */
+	toBeCreated = () => {
+		let result = new Set();
+		this.newShuttles.forEach( (value, key, map)=>{
+			if( this.oldShuttles.get(key) != value ) // shuttle data have changed
+				result.add(key);
+		})
+		return result;		
+	}
+
+
+	paint = () => {
+		/* delete invalid shuttles */
+		this.toBeDeleted().forEach( index =>{
+			const node = document.querySelector(`.shuttleId_${index}`);
+			node.parentNode.removeChild(node);			
+		});
+		/* paint new and changed shuttles */
+		this.toBeCreated().forEach( index =>{
+			const shuttle = new Shuttle( index, this.newShuttles.get(index));
+			shuttle.createSVG();
+			shuttle.paint();
+		});
 	}
 }
 
@@ -179,7 +296,7 @@ class Assembly {
 		try {
 			let response = await fetch('/TrakWebApi/segments');
 			let segmentInfo = await response.json()
-			segmentInfo.forEach(item => this.segment.push(new Segment(item.ID, item.name, item.length)));
+			segmentInfo.forEach(item => this.segment[item.ID] = new Segment(item.ID, item.name, item.length));
 		}
 		catch( err ){
 			document.getElementById('timeoutBox').style.display = 'block';
@@ -246,12 +363,6 @@ class Assembly {
 		}
 	}
 
-	removeAllShuttles = () => {
-		const shuttles = document.querySelectorAll('.shuttle');
-		if (shuttles.length != 0) {
-			shuttles.forEach((s) => s.parentNode.removeChild(s));
-		}
-	}
 
 	/* read shuttle positions */
 	async readShuttlePositions() {
@@ -261,23 +372,12 @@ class Assembly {
 				if( this.offline ) document.querySelector('#timeoutBox').style.display = 'none';
 				this.offline = false;
 				const monitor = await res.json();
-				this.removeAllShuttles();
+				//this.removeAllShuttles();
 				if(monitor.length){
-					monitor.forEach( s => {
-						const first = s[0]; 
-						const second = s[1];
-						const index = first;
-						const plcOpen = second & 0x7f;
-						const active = !!(second & 0x100);
-						const virtual = !!(second & 0x200);
-						const segmentIndex = (second >> 10) & 0x7ff;
-						const segmentPosition = (second >> 21) & 0x7f;
-						const segment = this.segment[segmentIndex];
-						const shuttle = new Shuttle( index, active, plcOpen, segment, segmentPosition);
-						shuttle.createSVG();
-						shuttle.paint();
-					});
+					const shuttleList = new ShuttleList( monitor );
+					shuttleList.paint();
 				}
+				this.monitorOld = monitor;
 			}
 		} catch( err ){
 			if( err.name == 'AbortError' ){;
@@ -312,11 +412,62 @@ class Assembly {
 		}
 	}
 
+
+	/* modal dialog */
+	showModalDialog = (title, content, event) => {	
+		const dlg = document.getElementById('modalDialog');
+		document.getElementById('modalDialogTitle').textContent = title;
+		const modalDialogContent = document.getElementById('modalDialogContent');
+		modalDialogContent.innerHTML='';
+		const tbl = document.createElement("table");
+		const tblBody = document.createElement("tbody");
+    	// Create all cells
+		for (let r = 0; r < content.length; r++) {
+			// Create a table row
+			const row = document.createElement("tr");
+			for (let c = 0; c < 2; c++) {
+				// Create a <td> element and a text node
+				const cell = document.createElement("td");
+				const cellText = document.createTextNode(content[r][c], content[r][c]);
+				cell.appendChild(cellText);
+				row.appendChild(cell);
+			}
+			// Add the row to the end of the table body
+			tblBody.appendChild(row);
+		}
+		// Put the <tbody> in the <table>
+		tbl.appendChild(tblBody);
+	    // Append <table> into modalDialogContent>
+		modalDialogContent.appendChild(tbl);
+		dlg.show();
+		const dlgRect = dlg.getBoundingClientRect();
+		const svgRect = document.getElementById('svgParent').getBoundingClientRect();
+		const maxWidth = svgRect.width*0.9;
+		if( dlgRect.width > maxWidth )
+			dlg.style.width = maxWidth + 'px';
+
+		let top = event.pageY + 10;
+		if( ((top + dlgRect.height) > svgRect.y + svgRect.height) || 
+			(event.pageY > (svgRect.height+svgRect.y)) ){
+			top = event.pageY - 5 - dlgRect.height;
+		}	
+		
+		let left = event.pageX - 10;
+		if((left + dlgRect.width+5) > (svgRect.x + svgRect.width)){
+			left = svgRect.x + svgRect.width-dlgRect.width-5;
+		}
+		if( left < 5 ) left = 5;
+
+		dlg.style.top = `${top}px`;
+		dlg.style.left = `${left}px`;
+
+
+	}
 }
 
 
 document.addEventListener('DOMContentLoaded', async () => {
-	const assembly = new Assembly();
+	this.assembly = new Assembly();
 	if( await assembly.load() ){
 		await assembly.cyclicRefresh();
 	}

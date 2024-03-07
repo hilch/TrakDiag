@@ -26,8 +26,8 @@
 }
 
 .highlightShuttle {
-	stroke: orange !important;
-	fill: orange !important;
+	stroke:  #ff8f0f !important;
+	fill:  #ff8f0f !important;
 }
 
 .segReady {
@@ -47,13 +47,38 @@
 }
 
 .highlightSegment {
-	fill: orange !important;
+	fill:  #ff8f0f !important;
 }
 
-#hoverInfo { padding: 0px 1em 0px 1em; margin: auto; border: none; background-color: orange;}
+#hoverInfo { padding: 0px 1em 0px 1em; margin: auto; border: none; background-color:  #ff8f0f;}
 #timeoutBox { position : fixed; top: 0; left : 0; width: 100%; height: 100%; border: none; background-color: rgba(0,0,0,0.4); display : none }
 #timeoutBox h2 { padding: 0px 1em 0px 1em; margin: auto; color: red }
 h1,h2,h3,h4,h5,h6 { font-family: "Segoe UI",Arial,sans-serif; font-weight: 400; margin: 10px 0 }
 h1 { font-size: 30px }
 h2 { font-size: 24px }
 
+
+#modalDialog { 
+    border: 2px solid grey; 
+	padding: 0px;	
+	border-radius: 5px;
+    background-color: lightgray; 
+    margin: 0px; 
+    opacity:80%; 
+}
+
+#modalDialogTitle {
+	background-color: #ff8f0f;
+	margin: 0px;
+	border-radius: 5px 5px 0px 0px;
+	padding: 0px 5px;		
+}
+
+#modalDialogContent {
+	padding: 10px 0px;
+}
+
+#modalDialog > button {
+	margin-top: 10px;
+	margin-left: 10px;
+}

@@ -17,7 +17,7 @@ TYPE
 		responseData : STRING[65536];
 		statistics : httpStatistics_t;
 		lastError : UINT;
-		shuttle : TD_ServicesShuttleType;
+		shuttle : McAcpTrakShuttleData;
 	END_STRUCT;
 	TD_ServicesSegInfoType : 	STRUCT  (*segment information*)
 		numberOfSegments : UINT;

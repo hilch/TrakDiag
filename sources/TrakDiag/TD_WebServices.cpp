@@ -438,34 +438,32 @@ void TD_WebServices(struct TD_WebServices* inst)
 			} while( inst->webData.fbGetParamUrl.status == ERR_FUB_BUSY );
 		
 			if( inst->webData.fbGetParamUrl.status == 0 ){
-				inst->webData.shuttle.index = std::atoi( (char*) inst->webData.urlParamBuffer );
+				inst->webData.shuttle.Index = std::atoi( (char*) inst->webData.urlParamBuffer ); /* save shuttle index */
 				bool found = false;
 		
-				for( unsigned n = 0; n < inst->ShuttleInfo.numberOfEntries; ++n ){
-					if( inst->webData.shuttle.index == inst->ShuttleInfo.shuttle[n].index ){
-						std::memcpy( &inst->webData.shuttle, &inst->ShuttleInfo.shuttle[n], sizeof(inst->webData.shuttle));
+				McAcpTrakShuttleData * pShuttleData = (McAcpTrakShuttleData*) inst->DataAddress;
+				size_t numShuttleData = inst->DataSize / ( sizeof(McAcpTrakShuttleData) + inst->UserDataSize );
+				for( unsigned n = 0; n < numShuttleData; ++n ){
+					if( inst->webData.shuttle.Index == pShuttleData[n].Index ){
+						std::memcpy( &inst->webData.shuttle, &pShuttleData[n], sizeof(inst->webData.shuttle) );
 						found = true;
 						break;
 					}
 				}
 				if( found ){ /* shuttle in array found */
-					if( !(inst->webData.shuttle.flags & 0x1) || inst->webData.shuttle.plcOpenState != mcAXIS_ERRORSTOP ){ /* active shuttle or shuttle not in error stop */
-						LREAL segmentLength = 0.0;
-						STRING segmentName[32] = {0};
-						for( int n = 0; n < inst->SegInfo.numberOfSegments; ++n ){
-						    if( inst->webData.shuttle.segmentID == inst->SegInfo.segmentInfo[n].ID ){
-						        segmentLength = inst->SegInfo.segmentInfo[n].Length;
-						        std::strcpy( segmentName, inst->SegInfo.segmentInfo[n].Name );
-						        break;
-						    }
-						}
+					if( !inst->webData.shuttle.Active || (inst->webData.shuttle.PLCopenState != mcAXIS_ERRORSTOP) ){ /* active shuttle or shuttle not in error stop */
 						size_t sizeOfResponse = std::sprintf( inst->webData.responseData, 
-						    "{ \"result\" : \"ok\", \"index\":%lu, \"active\": %s, \"virtual\": %s, \"segmentID\":%d, \"segmentName\":\"%s\","
-								" \"segmentPosition\":%f, \"PLCopen\":\"%s\"", 
-						    inst->webData.shuttle.index, inst->webData.shuttle.flags&0x01 ? "true" : "false", 
-							inst->webData.shuttle.flags&0x02 ? "true" : "false", inst->webData.shuttle.segmentID, 
-						    segmentName, inst->webData.shuttle.segmentPosition/100.0*segmentLength, 
-							GetAxisPlcOpenStateString(inst->webData.shuttle.plcOpenState) );
+						    "{ \"result\" : \"ok\", \"index\":%lu, \"userID\":\"%s\", \"active\": %s, \"controlled\": %s, \"virtual\": %s,"
+								" \"segmentName\":\"%s\", \"segmentPosition\":%f,"
+								" \"sectorName\":\"%s\", \"sectorPosition\":%f,"
+								" \"PLCopen\":\"%s\"", 
+						    UDINT(inst->webData.shuttle.Index), inst->webData.shuttle.UserID,
+							inst->webData.shuttle.Active ? "true" : "false",
+							inst->webData.shuttle.Controlled ? "true" : "false",  
+							inst->webData.shuttle.Virtual ? "true" : "false", 
+						    inst->webData.shuttle.SegmentName, inst->webData.shuttle.SegmentPosition,
+							inst->webData.shuttle.SectorName, inst->webData.shuttle.SectorPosition, 
+							GetAxisPlcOpenStateString(inst->webData.shuttle.PLCopenState) );
 						const char* tail = "}";
 						sizeOfResponse += std::strlen(tail);
 						if( sizeOfResponse < sizeof(inst->webData.responseData) ){
@@ -475,7 +473,7 @@ void TD_WebServices(struct TD_WebServices* inst)
 						inst->step = SEND_SHUTTLE_INFO;
 					} else {  /* active shuttle in error stop */
 						inst->fbShuttleErrorTexts.Axis = 0;
-						inst->fbShuttleErrorTexts.Index = inst->webData.shuttle.index;
+						inst->fbShuttleErrorTexts.Index = inst->webData.shuttle.Index;
 						inst->fbShuttleErrorTexts.Execute = false; /* reset fb */
 						TD_ShuttleErrorTexts( &inst->fbShuttleErrorTexts );
 						inst->fbShuttleErrorTexts.Execute = true;
@@ -484,7 +482,7 @@ void TD_WebServices(struct TD_WebServices* inst)
 					}
 				}
 				else { /* shuttle with given index not found */
-					std::sprintf( inst->webData.responseData, "{ \"result\" : \"shuttle with given index not found\", \"index\":%lu }", inst->webData.shuttle.index );
+					std::sprintf( inst->webData.responseData, "{ \"result\" : \"shuttle with given index not found\", \"index\":%lu }", UDINT(inst->webData.shuttle.Index) );
 					SendResponse( inst, "application/json; charset=iso-8859-1" );
 					inst->step = SEND_SHUTTLE_INFO;
 				}
@@ -506,26 +504,22 @@ void TD_WebServices(struct TD_WebServices* inst)
 
 			case SHUTTLE_ERROR_TEXTS:
 			if( inst->fbShuttleErrorTexts.Done ){ /* done */
-				LREAL segmentLength = 0.0;
-				STRING segmentName[32] = {0};
-				for( int n = 0; n < inst->SegInfo.numberOfSegments; ++n ){
-				    if( inst->webData.shuttle.segmentID == inst->SegInfo.segmentInfo[n].ID ){
-				        segmentLength = inst->SegInfo.segmentInfo[n].Length;
-				        std::strcpy( segmentName, inst->SegInfo.segmentInfo[n].Name );
-				        break;
-				    }
-				}
 				size_t sizeOfResponse = std::sprintf( inst->webData.responseData, 
-				    "{ \"result\" : \"ok\", \"index\":%lu, \"active\": %s, \"virtual\": %s, \"segmentID\":%d, \"segmentName\":\"%s\","
-						" \"segmentPosition\":%f, \"PLCopen\":\"%s\", errorTexts = [ ", 
-				    inst->webData.shuttle.index, inst->webData.shuttle.flags&0x01 ? "true" : "false", 
-					inst->webData.shuttle.flags&0x02 ? "true" : "false", inst->webData.shuttle.segmentID, 
-				    segmentName, inst->webData.shuttle.segmentPosition/100.0*segmentLength, 
-					GetAxisPlcOpenStateString(inst->webData.shuttle.plcOpenState) );
+				    "{ \"result\" : \"ok\", \"index\":%lu, \"userID\":\"%s\", \"active\": %s, \"controlled\": %s, \"virtual\": %s,"
+						" \"segmentName\":\"%s\", \"segmentPosition\":%f,"
+						" \"sectorName\":\"%s\", \"sectorPosition\":%f,"
+						" \"PLCopen\":\"%s\", \"errorTexts\":[ ", 
+				    UDINT(inst->webData.shuttle.Index), inst->webData.shuttle.UserID,
+					inst->webData.shuttle.Active ? "true" : "false", 
+					inst->webData.shuttle.Controlled ? "true" : "false", 
+					inst->webData.shuttle.Virtual ? "true" : "false", 
+				    inst->webData.shuttle.SegmentName, inst->webData.shuttle.SegmentPosition, 
+				    inst->webData.shuttle.SectorName, inst->webData.shuttle.SectorPosition, 
+					GetAxisPlcOpenStateString(inst->webData.shuttle.PLCopenState) );
 				for( unsigned n = 0; n < inst->fbShuttleErrorTexts.NumberOfRecords; ++n ){
 					char record[300];
-					double timestamp = inst->fbShuttleErrorTexts.Records.Record[n].TimeStamp.Seconds * 1000 + 
-										inst->fbShuttleErrorTexts.Records.Record[n].TimeStamp.Nanoseconds / 1000;
+					double timestamp = double(inst->fbShuttleErrorTexts.Records.Record[n].TimeStamp.Seconds) * 1000 + 
+										double(inst->fbShuttleErrorTexts.Records.Record[n].TimeStamp.Nanoseconds) / 1000;
 					sizeOfResponse += std::snprintf( record, sizeof(record), "%s{\"t\":%lf, \"txt\":\"%s\"}", n==0 ? "" : ",", timestamp, inst->fbShuttleErrorTexts.Records.Record[n].Text );
 					if( sizeOfResponse < sizeof(inst->webData.responseData) ){
 						std::strcat( inst->webData.responseData, record );
