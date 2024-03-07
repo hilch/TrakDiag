@@ -348,9 +348,9 @@ class Assembly {
 				this.segment.forEach(s => s.findElementsV1(container));
 			}
 			document.querySelector('#svgParent').replaceWith(svgParent);
-			svg.viewBox.baseVal.x = svg.getBBox().x-0.02;
+			svg.viewBox.baseVal.x = svg.getBBox().x-0.05;
 			svg.viewBox.baseVal.width = svg.getBBox().width+0.1;
-			svg.viewBox.baseVal.y = svg.getBBox().y-0.02;
+			svg.viewBox.baseVal.y = svg.getBBox().y-0.05;
 			svg.viewBox.baseVal.height = svg.getBBox().height+0.1;
 			hoverInfo.style.visibility='hidden';
 			panzoom( svg );
