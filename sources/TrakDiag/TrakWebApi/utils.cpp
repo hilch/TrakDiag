@@ -140,7 +140,7 @@ bool GetSegmentData(struct TD_WebServices* inst, char* segmentName, UINT* ID, LR
 	*length = -1.0; /* invalid */
 	for( int i = 0; i < inst->SegInfo.numberOfSegments; ++i ){
 		if( std::strcmp( (char*) inst->SegInfo.segmentInfo[i].Name, segmentName ) == 0 ){
-			*ID = i;
+			*ID = inst->SegInfo.segmentInfo[i].ID;
 			*length = inst->SegInfo.segmentInfo[i].Length;
 			return true;
 		}
