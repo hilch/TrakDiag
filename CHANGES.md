@@ -1,8 +1,10 @@
 V2.7.0
 - TD_Recorder: Add mouse wheel for zoom and pan
+- TD_Recorder: Increase size of shuttle circles
 - TD_WebServices: Add /TrakWebApi/shuttle?index=<shuttle index> for single shuttle information (with optional error texts included)
 - TD_WebServices: Change segment and shuttle tooltip position
 - TD_WebServices: Add dialog for segments and shuttles by clicking on them 
+- TD_Webservices: Increase size of shuttle circles
 - Add TD_GetShuttles
 - Bugfix: TD_WebServices: SegInfo.segmentInfo[].ID showed wrong ID
 
