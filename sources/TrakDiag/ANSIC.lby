@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <?AutomationStudio FileVersion="4.9"?>
-<Library Version="2.07.0" SubType="ANSIC" xmlns="http://br-automation.co.at/AS/Library">
+<Library Version="2.07.1" SubType="ANSIC" xmlns="http://br-automation.co.at/AS/Library">
   <Objects>
     <Object Type="File" Description="Exported data types">TrakDiagTypes.typ</Object>
     <Object Type="File" Description="Exported constants">TrakDiagConstants.var</Object>
@@ -23,7 +23,7 @@
     <Object Type="File">TD_ShuttleErrorTexts.cpp</Object>
     <Object Type="File">TD_SegmentsInfo.cpp</Object>
     <Object Type="File">TD_LimitFileNumber.cpp</Object>
-    <Object Type="File">TD_GetShuttles.cpp</Object>	
+    <Object Type="File">TD_GetShuttles.cpp</Object>
     <Object Type="Package">TrakWebApi</Object>
   </Objects>
   <Dependencies>

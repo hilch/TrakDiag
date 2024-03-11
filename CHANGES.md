@@ -1,3 +1,6 @@
+V2.7.1
+- Bugfix: TD_Webservices /TrakWebApi/index sometimes showed 33556
+
 V2.7.0
 - TD_Recorder: Add mouse wheel for zoom and pan
 - TD_Recorder: Increase size of shuttle circles

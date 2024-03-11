@@ -96,7 +96,6 @@ void TD_WebServices(struct TD_WebServices* inst)
 
 
 			case W_HTTP_REQUESTS: /* waiting for http requests */
-			TON( &inst->stepTimeout );
 			if( (inst->refreshTimer += inst->fbRtInfo.cycle_time) > 100000 ){
 //				UDINT hash = Djb2( (USINT*) &inst->ShuttleInfo, sizeof(inst->ShuttleInfo) );
 //				if( hash != inst->hashShuttleInfo ){
@@ -176,6 +175,8 @@ void TD_WebServices(struct TD_WebServices* inst)
 				if( inst->webData.fbHttpService.phase == httpPHASE_WAITING ){
 					inst->webData.fbHttpService.send = false;
 					httpService( &inst->webData.fbHttpService);
+					inst->stepTimeout.IN = false; /* reset fb */
+					TON( &inst->stepTimeout );
 					inst->step = W_HTTP_REQUESTS;	
 				}
 			}
@@ -204,7 +205,6 @@ void TD_WebServices(struct TD_WebServices* inst)
 					inst->stepTimeout.PT = 30000;
 					inst->stepTimeout.IN = false;
 					TON( &inst->stepTimeout );
-					inst->stepTimeout.IN = true;
 					inst->webData.fbHttpService.send = false;
 					inst->webData.fbHttpService.abort = false;
 					httpService( &inst->webData.fbHttpService);
