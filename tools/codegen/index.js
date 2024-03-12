@@ -450,7 +450,8 @@ class Assembly {
 		if( ((top + dlgRect.height) > svgRect.y + svgRect.height) || 
 			(event.pageY > (svgRect.height+svgRect.y)) ){
 			top = event.pageY - 5 - dlgRect.height;
-		}	
+		}
+		if( top < 5 ) top = 5;
 		
 		let left = event.pageX - 10;
 		if((left + dlgRect.width+5) > (svgRect.x + svgRect.width)){
