@@ -69,10 +69,6 @@ class Segment {
 		return this.segmentPath.getPointAtLength(linepos);
 	}
 
-	paintShuttle(svg) {
-		this.segmentPath.parentElement.appendChild(svg);
-	}
-
 	segmentPosition(percentage) {
 		return ((percentage/100)*this.length).toFixed(3);
 	}
@@ -212,7 +208,7 @@ class Shuttle {
 	}
 
 	paint() {
-		this.segment.paintShuttle(this.svg);
+		assembly.shuttleParent.appendChild(this.svg);
 	}
 }
 
@@ -220,7 +216,7 @@ class Shuttle {
 class ShuttleList {
 
 	constructor( monitor ) {
-		const allShuttleNodes = document.querySelectorAll('.shuttle');
+		const allShuttleNodes = assembly.shuttleParent.querySelectorAll('.shuttle');
 		this.oldShuttles = new Map();
 		for( let n = 0; n < allShuttleNodes.length; ++n ){
 			const s = allShuttleNodes[n];
@@ -263,8 +259,8 @@ class ShuttleList {
 	paint = () => {
 		/* delete invalid shuttles */
 		this.toBeDeleted().forEach( index =>{
-			const node = document.querySelector(`.shuttleId_${index}`);
-			node.parentNode.removeChild(node);			
+			const node = assembly.shuttleParent.querySelector(`.shuttleId_${index}`);
+			assembly.shuttleParent.removeChild(node);			
 		});
 		/* paint new and changed shuttles */
 		this.toBeCreated().forEach( index =>{
@@ -281,6 +277,7 @@ class Assembly {
 	constructor() {
 		this.segment = [];
 		this.offline = true;
+		this.shuttleParent = null;
 	}
 
 	wait = async (milliseconds) => {  /* wait x ms */
@@ -348,6 +345,9 @@ class Assembly {
 				this.segment.forEach(s => s.findElementsV1(container));
 			}
 			document.querySelector('#svgParent').replaceWith(svgParent);
+			this.shuttleParent = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+			this.shuttleParent.setAttribute('id', 'shuttles');
+			svg.appendChild(this.shuttleParent);
 			svg.viewBox.baseVal.x = svg.getBBox().x-0.05;
 			svg.viewBox.baseVal.width = svg.getBBox().width+0.1;
 			svg.viewBox.baseVal.y = svg.getBBox().y-0.05;
