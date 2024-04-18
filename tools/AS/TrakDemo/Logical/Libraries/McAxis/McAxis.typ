@@ -634,6 +634,8 @@ TYPE
 		UseAxisPeriod : BOOL; (*Use axis period for window period*)
 		UpdatePeriod : BOOL; (*Detect and adapt to change of input "Period"*)
 		ReadTriggerWidth : BOOL; (*Enable reading and updating the "TriggerInfo.Width" value*)
+		SubstituteValueWindowPosition : BOOL; (*If the window area is exceeded with no valid trigger received, the latch value is substituted for the window position*)
+		IncreaseTriggerCountNoTrigger : BOOL; (*ValidTriggerCount output is also increased if the expected trigger does not occur*)
 	END_STRUCT;
 
 	McBrTriggerInfoType : STRUCT
@@ -847,7 +849,7 @@ TYPE
         ModelNumber : STRING[19]; (*Model number of the drive*)
         ModuleID : STRING[11]; (*For B&R modules: B&R ID code; For DS402 modules: Product code; [hex]*)
         SerialNumber : STRING[19]; (*Serial number of the drive*)
-        Revision : STRING[3]; (*Revision number of the drive*)
+        Revision : STRING[11]; (*Revision number of the drive*)
         FirmwareVersion : STRING[7]; (*Used firmware version*)
     END_STRUCT;
 
@@ -875,4 +877,34 @@ TYPE
 	McDigitalOutputType : STRUCT
 		FeatureName : STRING[250]; (*Name of the "Digital output" feature in which the output which should be written. The feature must be assigned to the axis as well inside the hardware configuration*)
 	END_STRUCT;
+
+	McCheckAutCompModeEnum :
+	(
+		mcCAC_CHECK_ALL := 1, (*Check all parameters.*)
+		mcCAC_CALC_MASTER_COMP_DIST := 2, (*Calculate the minimum master compensation path.*)
+		mcCAC_CALC_SLAVE_COMP_DIST_POS := 3, (*Calculate the maximum positive slave compensation path.*)
+		mcCAC_CALC_SLAVE_COMP_DIST_NEG := 4 (*Calculate the maximum negative slave compensation path*)
+	);
+
+	McCheckAutCompDataType : STRUCT
+		MaxMasterVelocity : REAL; (*Maximum master speed during compensating movement [Measurement units of master / s].*)
+		MasterCompDistance : LREAL; (* Effective compensation distance of the master axis [Measurement units of master].*)
+		SlaveCompDistance : LREAL; (*Effective compensation distance of the slave axis [Measurement units of slave].*)
+		StartSlope : REAL; (*Slope when entering compensation [Measurement units of slave / Measurement units of master].*)
+		EndSlope : REAL; (*Slope when exiting compensation [Measurement units of slave / Measurement units of master].*)
+		MaxSlaveCompVelocity : REAL; (*Maximum speed of the slave during the compensating movement [Measurement units of slave / s].*)
+		MinSlaveCompVelocity : REAL; (*Minimum speed of the slave during the compensating movement [Measurement units of slave / s].*)
+		MaxSlaveAccelComp1 : REAL; (*Maximum acceleration of the slave during compensation phase 1 [Measurement units of slave / s^2].*)
+		MaxSlaveAccelComp2 : REAL; (*Maximum acceleration of the slave during compensation phase 2 [Measurement units of slave / s^2].*)
+	END_STRUCT;
+
+	McAdvCheckAutCompType : STRUCT
+		MaxSlaveJerk : REAL := 0.0; (*Maximum jerk value of slave axis for jerk limited movement parameter checking / calculation [Measurement units of slave / s^3].*)
+	END_STRUCT;
+
+	McCheckAutCompResultType : STRUCT
+		LimitsExceeded : BOOL := FALSE; (*Logical result of the Check or Calculate function.*)
+		CalculatedValue : LREAL := 0.0; (*Calculated Master or Slave compensation distance value [Measurement units of master] or [Measurement units of slave].*)
+	END_STRUCT;
+
 END_TYPE

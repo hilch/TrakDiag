@@ -1,6 +1,6 @@
 /* Automation Studio generated header file */
 /* Do not edit ! */
-/* McAxis 5.21.2 */
+/* McAxis 5.26.9 */
 
 #ifndef _MCAXIS_
 #define _MCAXIS_
@@ -9,7 +9,7 @@ extern "C"
 {
 #endif
 #ifndef _McAxis_VERSION
-#define _McAxis_VERSION 5.21.2
+#define _McAxis_VERSION 5.26.9
 #endif
 
 #include <bur/plctypes.h>
@@ -393,6 +393,13 @@ typedef enum McMechDevCompCmdEnum
 	mcMDC_CMD_CALC_COMP_DATA
 } McMechDevCompCmdEnum;
 
+typedef enum McCheckAutCompModeEnum
+{	mcCAC_CHECK_ALL = 1,
+	mcCAC_CALC_MASTER_COMP_DIST = 2,
+	mcCAC_CALC_SLAVE_COMP_DIST_POS = 3,
+	mcCAC_CALC_SLAVE_COMP_DIST_NEG = 4
+} McCheckAutCompModeEnum;
+
 typedef enum McABTEnum
 {	mcABT_LIN_BD = 0,
 	mcABT_LIN = 1,
@@ -422,6 +429,22 @@ typedef enum McAMoveLimDecEnum
 {	mcAMLD_BASIC = 0,
 	mcAMLD_ADV = 1
 } McAMoveLimDecEnum;
+
+typedef enum McAFPGJFEnum
+{	mcAFPGJF_NOT_USE = 0,
+	mcAFPGJF_USE = 1,
+	mcAFPGJF_JERK_LIM = 2
+} McAFPGJFEnum;
+
+typedef enum McAFPGZVFEnum
+{	mcAFPGZVF_NOT_USE = 0,
+	mcAFPGZVF_USE = 1
+} McAFPGZVFEnum;
+
+typedef enum McAFPGCSMaSetValSrcEnum
+{	mcAFPGCSMSVS_PROF_GEN_SET_POS = 0,
+	mcAFPGCSMSVS_ACP_SET_POS = 1
+} McAFPGCSMaSetValSrcEnum;
 
 typedef enum McAFDCSTypEnum
 {	mcAFDCST_ACP = 0
@@ -977,6 +1000,8 @@ typedef struct McAdvBrTouchProbeParType
 	plcbit UseAxisPeriod;
 	plcbit UpdatePeriod;
 	plcbit ReadTriggerWidth;
+	plcbit SubstituteValueWindowPosition;
+	plcbit IncreaseTriggerCountNoTrigger;
 } McAdvBrTouchProbeParType;
 
 typedef struct McBrTriggerInfoType
@@ -1129,7 +1154,7 @@ typedef struct McHwInfoDriveType
 {	plcstring ModelNumber[20];
 	plcstring ModuleID[12];
 	plcstring SerialNumber[20];
-	plcstring Revision[4];
+	plcstring Revision[12];
 	plcstring FirmwareVersion[8];
 } McHwInfoDriveType;
 
@@ -1157,6 +1182,27 @@ typedef struct McHardwareInfoType
 typedef struct McDigitalOutputType
 {	plcstring FeatureName[251];
 } McDigitalOutputType;
+
+typedef struct McCheckAutCompDataType
+{	float MaxMasterVelocity;
+	double MasterCompDistance;
+	double SlaveCompDistance;
+	float StartSlope;
+	float EndSlope;
+	float MaxSlaveCompVelocity;
+	float MinSlaveCompVelocity;
+	float MaxSlaveAccelComp1;
+	float MaxSlaveAccelComp2;
+} McCheckAutCompDataType;
+
+typedef struct McAdvCheckAutCompType
+{	float MaxSlaveJerk;
+} McAdvCheckAutCompType;
+
+typedef struct McCheckAutCompResultType
+{	plcbit LimitsExceeded;
+	double CalculatedValue;
+} McCheckAutCompResultType;
 
 typedef struct McABTLinBdType
 {	enum McCfgLocLenUnitEnum MeasurementUnit;
@@ -1268,6 +1314,58 @@ typedef struct McCfgAxBaseTypType
 typedef struct McCfgAxMoveLimType
 {	struct McAMLType MovementLimits;
 } McCfgAxMoveLimType;
+
+typedef struct McAFPGJFUseType
+{	float MaximumJerkTime;
+	float JerkTime;
+} McAFPGJFUseType;
+
+typedef struct McAFPGJFJerkLimType
+{	float JerkLimit;
+} McAFPGJFJerkLimType;
+
+typedef struct McAFPGJFType
+{	enum McAFPGJFEnum Type;
+	struct McAFPGJFUseType Used;
+	struct McAFPGJFJerkLimType JerkLimited;
+} McAFPGJFType;
+
+typedef struct McAFPGZVFUseType
+{	float MaximumZeroVibrationFilterTime;
+	float ZeroVibrationFilterCoefficient;
+	float ZeroVibrationFilterTime;
+} McAFPGZVFUseType;
+
+typedef struct McAFPGZVFType
+{	enum McAFPGZVFEnum Type;
+	struct McAFPGZVFUseType Used;
+} McAFPGZVFType;
+
+typedef struct McAFPGCSMaSetValSrcType
+{	enum McAFPGCSMaSetValSrcEnum Type;
+} McAFPGCSMaSetValSrcType;
+
+typedef struct McAFPGCSType
+{	struct McAFPGCSMaSetValSrcType MasterSetValueSource;
+} McAFPGCSType;
+
+typedef struct McCfgAxFeatProfGenType
+{	struct McAFPGJFType JerkFilter;
+	struct McAFPGZVFType ZeroVibrationFilter;
+	struct McAFPGCSType CouplingSettings;
+} McCfgAxFeatProfGenType;
+
+typedef struct McCfgAxFeatPgJerkFltrType
+{	struct McAFPGJFType JerkFilter;
+} McCfgAxFeatPgJerkFltrType;
+
+typedef struct McCfgAxFeatPgZeroVibFltrType
+{	struct McAFPGZVFType ZeroVibrationFilter;
+} McCfgAxFeatPgZeroVibFltrType;
+
+typedef struct McCfgAxFeatPgCplgSetType
+{	struct McAFPGCSType CouplingSettings;
+} McCfgAxFeatPgCplgSetType;
 
 typedef struct McAFDCSTypAcpValSrcRTOAUseType
 {	struct McCfgReferenceType AxisReference;
@@ -1661,6 +1759,10 @@ typedef struct McAFANERNetwErrReacType
 typedef struct McCfgAxFeatAcpNetwErrReacType
 {	struct McAFANERNetwErrReacType NetworkErrorReaction;
 } McCfgAxFeatAcpNetwErrReacType;
+
+typedef struct McCfgAxFeatAcpCycDatProcType
+{	enum McPTCEnum ProcessingTaskClass;
+} McCfgAxFeatAcpCycDatProcType;
 
 typedef struct MC_BR_CyclicDriveErrorDecel
 {
@@ -3281,6 +3383,44 @@ typedef struct MC_WriteDigitalOutput
 	plcbit Error;
 } MC_WriteDigitalOutput_typ;
 
+typedef struct MC_BR_CamGetObjectData
+{
+	/* VAR_INPUT (analog) */
+	struct McCamDefineType Data;
+	/* VAR_OUTPUT (analog) */
+	signed long ErrorID;
+	unsigned short DataObjectVersion;
+	/* VAR (analog) */
+	struct McExec1InternalType Internal;
+	/* VAR_INPUT (digital) */
+	plcbit Execute;
+	/* VAR_OUTPUT (digital) */
+	plcbit Done;
+	plcbit Busy;
+	plcbit Error;
+} MC_BR_CamGetObjectData_typ;
+
+typedef struct MC_BR_CheckAutCompensation
+{
+	/* VAR_INPUT (analog) */
+	struct McAxisType* Master;
+	struct McAxisType* Slave;
+	enum McCheckAutCompModeEnum Mode;
+	struct McCheckAutCompDataType CompensationData;
+	struct McAdvCheckAutCompType AdvancedParameters;
+	/* VAR_OUTPUT (analog) */
+	signed long ErrorID;
+	struct McCheckAutCompResultType Result;
+	/* VAR (analog) */
+	struct McInternalTwoRefType Internal;
+	/* VAR_INPUT (digital) */
+	plcbit Execute;
+	/* VAR_OUTPUT (digital) */
+	plcbit Done;
+	plcbit Busy;
+	plcbit Error;
+} MC_BR_CheckAutCompensation_typ;
+
 
 
 /* Prototyping of functions and function blocks */
@@ -3357,6 +3497,8 @@ _BUR_PUBLIC void MC_BR_LimitLoadCam(struct MC_BR_LimitLoadCam* inst);
 _BUR_PUBLIC void MC_BR_MechDeviationComp(struct MC_BR_MechDeviationComp* inst);
 _BUR_PUBLIC void MC_BR_GetHardwareInfo(struct MC_BR_GetHardwareInfo* inst);
 _BUR_PUBLIC void MC_WriteDigitalOutput(struct MC_WriteDigitalOutput* inst);
+_BUR_PUBLIC void MC_BR_CamGetObjectData(struct MC_BR_CamGetObjectData* inst);
+_BUR_PUBLIC void MC_BR_CheckAutCompensation(struct MC_BR_CheckAutCompensation* inst);
 
 
 #ifdef __cplusplus
