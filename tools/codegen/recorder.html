@@ -78,7 +78,7 @@
 			}
 <!-- ### C_COMMENT( Segment.paintShuttle ) -->
 			paintShuttle( svg ){
-				this.pathElement.parentElement.appendChild( svg );
+				document.getElementById('shuttles').appendChild( svg );
 			}
 		}
 <!-- ### C_COMMENT( class Shuttle ) -->
@@ -1533,7 +1533,7 @@
 <!-- ### HTML_HEADER_END -->
 <!-- ### C_COMMENT( remove shuttles ) -->
 		const removeAllShuttles = () => {
-			const shuttles = this.svgData.querySelectorAll('.shuttle');
+			const shuttles = this.shuttles.querySelectorAll('.shuttle');
 			if( shuttles.length != 0 ){
 				shuttles.forEach((s) => s.parentNode.removeChild(s));
 			}		
@@ -1600,6 +1600,9 @@
 			svg.viewBox.baseVal.y = svg.getBBox().y-0.02;
 			svg.viewBox.baseVal.height = svg.getBBox().height+0.04;
 			record.forEach( r => r.createSVG());
+			const shuttleParent = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+			shuttleParent.setAttribute('id', 'shuttles');
+			svg.appendChild(shuttleParent);
 			this.sliderTime.min = 0;
 			this.sliderTime.max = record.length-1;
 			this.sliderTime.value = this.sliderTime.max;
