@@ -1,3 +1,6 @@
+V2.7.2
+- TD_Recorder & TD_Webservices: the shuttles are drawn last so that they are not overdrawn.
+
 V2.7.1
 - Bugfix: TD_Webservices /TrakWebApi/index sometimes showed 33556
 
