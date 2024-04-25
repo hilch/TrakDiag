@@ -7,5 +7,6 @@
     <Object Type="File">Config.mappmotioncfg</Object>
     <Object Type="File">Config_3.sector</Object>
     <Object Type="File">Config_4.processpointlist</Object>
+    <Object Type="File">Hierarchy.objecthierarchy</Object>
   </Objects>
 </Package>
