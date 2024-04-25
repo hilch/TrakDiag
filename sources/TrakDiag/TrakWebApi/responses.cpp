@@ -209,21 +209,17 @@ void SendResponse_SegmentStatus(struct TD_WebServices* inst){
 	std::strcpy( (char*) inst->webData.responseData, "[ " ); /* start JSON */
 	size_t length = 2;
 	for( int n = 0; n < inst->SegInfo.numberOfSegments; ++n ){
-		char s[256];
-		unsigned int flags =  0;
-		if( inst->fbSegReadInfo[n].Valid ){
-			McAcpTrakSegInfoType * i = &inst->fbSegReadInfo[n].SegmentInfo;
-			flags =  (!!i->CommunicationReady)
-					 | (!!i->ReadyForPowerOn << 1)
-					 | (!!i->PowerOn << 2)
-					 | (!!i->SegmentEnable << 3); 
-		}
-			length += static_cast<size_t>(std::sprintf( s, "%s%d", n == 0 ? "" : ",", flags	));
+		auto *data = &inst->SegInfo.segmentData[n];
+		unsigned int flags =  (!!data->CommunicationReady)
+								| (!!data->ReadyForPowerOn << 1)
+								| (!!data->PowerOn << 2)
+								| (!!data->SegmentEnable<< 3)
+								| ( (data->ErrorReason != mcACPTRAK_SEG_ERROR_NONE) << 7);
+		char s[256]{};
+		length += static_cast<size_t>(std::sprintf( s, "%s%d", n == 0 ? "" : ",", flags	));
 		if( length < sizeof(inst->webData.responseData) ){
 			std::strcat( (char*) inst->webData.responseData, s ); /* copy segment info */
 		}
-		else
-			break;
 	} 
 	std::strcat( (char*) inst->webData.responseData, "]" ); /* close JSON */
 	SendResponse( inst, "application/json; charset=iso-8859-1" );

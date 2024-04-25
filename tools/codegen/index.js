@@ -78,10 +78,15 @@ class Segment {
 		const ready = !!(flags & 0x02);
 		const power = !!(flags & 0x04);
 		const enable = !!(flags & 0x08);
-		this.segmentBody.classList.remove('segReady', 'segNotReadyForPowerOn', 'segDisabled', 'segOffline' );
-		this.segmentBody2.classList.remove('segReady', 'segNotReadyForPowerOn', 'segDisabled', 'segOffline' );
+		const errorStop = !!(flags & 0x80);
+		this.segmentBody.classList.remove('segReady', 'segNotReadyForPowerOn', 'segDisabled', 'segOffline', 'segErrorStop' );
+		this.segmentBody2.classList.remove('segReady', 'segNotReadyForPowerOn', 'segDisabled', 'segOffline', 'segErrorStop' );
 		if( commReady ){
-			if( ready ){
+			if( errorStop ){
+				this.segmentBody.classList.add('segErrorStop');
+				this.segmentBody2.classList.add('segErrorStop');
+			}
+			else if( ready ){
 				if( power ){
 					this.segmentBody.classList.add('segReady');
 					this.segmentBody2.classList.add('segReady');

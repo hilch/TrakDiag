@@ -65,6 +65,14 @@ void InitalizeInstance(struct TD_WebServices* inst){
 	inst->fbSegmentsInfo.Execute = true;
 
 	/* */
+	inst->fbCopySegmentData.Assembly = inst->pAssembly;
+	inst->fbCopySegmentData.Command =  mcACPTRAK_SEG_DATA_ALL;
+	inst->fbCopySegmentData.AdvancedParameters.Trigger = mcACPTRAK_SEG_DATA_TRIGGER_IMM;
+	inst->fbCopySegmentData.AdvancedParameters.SegmentID = 0;
+	inst->fbCopySegmentData.AdvancedParameters.DataAddress = (UDINT) &inst->SegInfo.segmentData;
+	inst->fbCopySegmentData.AdvancedParameters.DataSize = 0;
+
+	/* */
 	inst->fbAsmReadInfo.Enable = false;
 	inst->fbAsmReadInfo.Assembly = inst->pAssembly;
 	MC_BR_AsmReadInfo_AcpTrak( &inst->fbAsmReadInfo ); /* reset fb */
@@ -203,14 +211,6 @@ void CollectAssemblyInformation(struct TD_WebServices* inst){
 	}
 }
 
-/* collect segment information */
-void CollectSegmentInformation(struct TD_WebServices* inst){
-	for( int n = 0; n < inst->SegInfo.numberOfSegments; ++n ){
-		MC_BR_SegReadInfo_AcpTrak( &inst->fbSegReadInfo[n] );
-		inst->SegInfo.segmentCyclicInfo[n] = inst->fbSegReadInfo[n].SegmentInfo;
-		//std::memcpy( &inst->SegInfo.segmentCyclicInfo[n], &inst->fbSegReadInfo[n].SegmentInfo, sizeof(inst->SegInfo.segmentCyclicInfo[n]) );
-	}
-}
 
 /* returns a string describing PLCopen state for an axis */
 const char* GetAxisPlcOpenStateString( McAxisPLCopenStateEnum state ){

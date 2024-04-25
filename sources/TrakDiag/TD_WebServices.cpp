@@ -70,6 +70,8 @@ void TD_WebServices(struct TD_WebServices* inst)
 			case GET_SEGMENT_INFO:
 			if( inst->fbSegmentsInfo.Done ){
 				inst->SegInfo.numberOfSegments = inst->fbSegmentsInfo.Count;
+				inst->fbCopySegmentData.AdvancedParameters.DataSize = inst->SegInfo.numberOfSegments * sizeof(McAcpTrakSegmentData);
+				inst->fbCopySegmentData.Execute = true;
 				inst->fbSegmentsInfo.Execute = false; /* reset fb */
 				TD_SegmentsInfo( &inst->fbSegmentsInfo );
 				inst->webData.fbHttpService.enable = true; /* switch on web services */
@@ -580,7 +582,14 @@ void TD_WebServices(struct TD_WebServices* inst)
 
 		/* collect some information */
 		CollectAssemblyInformation( inst );
-		CollectSegmentInformation(inst);
+
+		/* copy cyclic segment data */
+		MC_BR_AsmCopySegmentData_AcpTrak( &inst->fbCopySegmentData );
+		if( inst->fbCopySegmentData.Done ){
+			inst->fbCopySegmentData.Execute = false,
+			MC_BR_AsmCopySegmentData_AcpTrak( &inst->fbCopySegmentData );
+			inst->fbCopySegmentData.Execute = true;
+		}
 
 	}
 	else {

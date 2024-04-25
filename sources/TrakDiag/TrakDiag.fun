@@ -382,6 +382,7 @@ END_FUNCTION_BLOCK
 		fbFileOpen : FileOpen;
 		fbFileRead : FileReadEx;
 		fbSegmentsInfo : TD_SegmentsInfo;
+		fbCopySegmentData : MC_BR_AsmCopySegmentData_AcpTrak;
 		fbAsmReadInfo : MC_BR_AsmReadInfo_AcpTrak;
 		fbSegReadInfo : ARRAY[0..TD_MAX_SUPPORTED_SEGMENTS_ASM] OF MC_BR_SegReadInfo_AcpTrak;
 		fbShuttleErrorTexts : TD_ShuttleErrorTexts;
