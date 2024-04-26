@@ -9,7 +9,9 @@ class Segment {
 		this.length = length;
 		this.segmentPath = undefined;
 		this.segmentBody = undefined;
+		this.segmentBodyStyle = undefined;
 		this.segmentBody2 = undefined;
+		this.arrowElement = undefined;
 		this.PLCopen = 5; /* startup */
 		this.errReason = 0; /* none */
 		this.errInitiator = false; /* no */
@@ -65,11 +67,13 @@ class Segment {
 	findElements(container) { /* >= 5.26 */
 		this.segmentBody = container.querySelector(`#pgsg_${this.name}`);
 		this.segmentBody.style.fill = '';
+		this.segmentBodyStyle = this.segmentBody.getAttribute('style');
 		this.segmentBody2 = this.segmentBody.nextElementSibling;		this.segmentBody2.style.fill = '';
 		const segmentParent = container.querySelector(`#gsg_${this.name}`);
-		this.segmentPath = container.querySelector(`#plsg_${this.name}`);				
+		this.segmentPath = container.querySelector(`#plsg_${this.name}`);
+		this.arrowElement = container.querySelector(`#bsg_${this.name}`);
 		this.addEvents(segmentParent);
-		this.addTooltip(segmentParent);		
+		this.addTooltip(segmentParent);	
 	}
 
 	xy(percentage) { /* get coords from percentage position */
@@ -83,7 +87,7 @@ class Segment {
 
 	setStatus(flags) {
 		const commReady = !!(flags &0x01);
-		const ready = !!(flags & 0x02);
+		const readyForPowerOn = !!(flags & 0x02);
 		const power = !!(flags & 0x04);
 		const enable = !!(flags & 0x08);
 		this.errInitiator = !!(flags & 0x10);
@@ -91,8 +95,8 @@ class Segment {
 		const errorStop = !!(flags & 0x80);
 		this.PLCopen = (flags &0xff00)>>8;
 		this.errReason = (flags &0xf0000) >> 16;
-		this.segmentBody.classList.remove('segReady', 'segNotReadyForPowerOn', 'segDisabled', 'segOffline', 'segErrorStop', 'segErrorInitiator' );
-		this.segmentBody2.classList.remove('segReady', 'segNotReadyForPowerOn', 'segDisabled', 'segOffline', 'segErrorStop', 'segErrorInitiator' );
+		this.segmentBody.classList.remove('segReady', 'segNotReadyForPowerOn', 'segDisabled', 'segOffline', 'segErrorStop', 'segErrorInitiator', 'segNotEnabled' );
+		this.segmentBody2.classList.remove('segReady', 'segNotReadyForPowerOn', 'segDisabled', 'segOffline', 'segErrorStop', 'segErrorInitiator', 'segNotEnabled' );
 		if( commReady ){
 			if( errorStop ){
 				if( this.errInitiator) {
@@ -104,7 +108,7 @@ class Segment {
 					this.segmentBody2.classList.add('segErrorStop');
 				}
 			}
-			else if( ready ){
+			else if( readyForPowerOn ){
 				if( power ){
 					this.segmentBody.classList.add('segReady');
 					this.segmentBody2.classList.add('segReady');
@@ -114,9 +118,15 @@ class Segment {
 					this.segmentBody2.classList.add('segDisabled');
 				}
 			}
-			else {
-				this.segmentBody.classList.add('segNotReadyForPowerOn');
-				this.segmentBody2.classList.add('segNotReadyForPowerOn');
+			else { /* not ready for power on */
+				if( enable ){
+					this.segmentBody.classList.add('segNotReadyForPowerOn');
+					this.segmentBody2.classList.add('segNotReadyForPowerOn');
+				}
+				else {
+					this.segmentBody.classList.add('segNotEnabled');
+					this.segmentBody2.classList.add('segNotEnabled');
+				}
 			}
 		}
 		else {
