@@ -62,17 +62,7 @@ class Segment {
 	}
 
 
-	findElementsV1(container) { /* < 5.23 */
-		this.segmentBody = container.querySelector(`g polygon[id]#${this.name}`);
-		this.segmentBody.style.fill = '';
-		this.segmentBody2 = this.segmentBody.nextElementSibling;		this.segmentBody2.style.fill = '';
-		const segmentParent = this.segmentBody.parentElement;
-		this.segmentPath = segmentParent.querySelector('polyline');
-		this.addEvents(segmentParent);
-		this.addTooltip(segmentParent);
-	}
-
-	findElementsV2(container) { /* >= 5.23 */
+	findElements(container) { /* >= 5.26 */
 		this.segmentBody = container.querySelector(`#pgsg_${this.name}`);
 		this.segmentBody.style.fill = '';
 		this.segmentBody2 = this.segmentBody.nextElementSibling;		this.segmentBody2.style.fill = '';
@@ -351,35 +341,17 @@ class Assembly {
 			const workspace = svgParent.querySelector('#workspace');
 			const container = workspace.parentElement;
 			const segmentObjects = container.querySelector('#segments');
-			if (segmentObjects) { /* >= 5.23 */
-				segmentObjects.querySelector('#sg_legend').remove();
-				const sectors = container.querySelector('#sectors');
-					if( sectors ) sectors.remove();
-				const barriers = container.querySelector('#barriers');
-					if( barriers ) barriers.remove();
-				container.querySelector('#workspace').remove();
-				const processpoints = container.querySelector('#processpoints');
-					if( processpoints ) processpoints.remove();
-				this.segment.forEach(s => s.findElementsV2(segmentObjects.querySelector('#sg_layout')));
-			}
-			else { /* < 5.23 */
-				/* remove all sectors */
-				container.querySelectorAll('#sector').forEach((e) => { e.remove(); })
+			/* >= 5.26 required */
+			segmentObjects.querySelector('#sg_legend').remove();
+			const sectors = container.querySelector('#sectors');
+				if( sectors ) sectors.remove();
+			const barriers = container.querySelector('#barriers');
+				if( barriers ) barriers.remove();
+			container.querySelector('#workspace').remove();
+			const processpoints = container.querySelector('#processpoints');
+				if( processpoints ) processpoints.remove();
+			this.segment.forEach(s => s.findElements(segmentObjects.querySelector('#sg_layout')));
 
-				/* remove triggerpoints and barriers */
-				container.querySelectorAll('#triggerpoint').forEach((e) => { e.remove(); })
-				container.querySelectorAll('polyline[stroke="darkorange"]').forEach((e) => { e.remove(); })
-				container.querySelectorAll('polyline[stroke="purple"]').forEach((e) => { e.remove(); })
-				/* remove all legend tables */
-				svgParent.querySelectorAll('text').forEach((e) => {
-					if (e.innerHTML == ' Sectors' || e.textContent == ' Segments')
-						e.parentElement.parentElement.remove();
-					else if (/Process\s*points/.test(e.innerHTML))
-						e.parentElement.parentElement.remove();
-				})
-				workspace.remove();
-				this.segment.forEach(s => s.findElementsV1(container));
-			}
 			document.querySelector('#svgParent').replaceWith(svgParent);
 			this.shuttleParent = document.createElementNS('http://www.w3.org/2000/svg', 'g');
 			this.shuttleParent.setAttribute('id', 'shuttles');
