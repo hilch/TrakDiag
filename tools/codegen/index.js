@@ -10,11 +10,17 @@ class Segment {
 		this.segmentPath = undefined;
 		this.segmentBody = undefined;
 		this.segmentBody2 = undefined;
+		this.PLCopen = 5; /* startup */
+	}
+
+	plcOpenStatus() {
+		return ['disabled', 'homing', 'ready', 'stopping', 'errorstop', 'startup', 'invalid configuration'][this.PLCopen];
 	}
 
 	showSegmentDialog = (event) => {
 		const content = [
 			['ID: ', this.ID],
+			['PLCopen:', this.plcOpenStatus()],
 			['Name: ', `"${this.name}"` ],
 			['Length: ', `${this.length.toFixed(3)} m`],
 		];
@@ -36,8 +42,8 @@ class Segment {
 	}
 
 	addTooltip(segmentParent){
-		let tooltipContent = 'Segment name: "' + this.name + '" / length: ' + this.length.toFixed(3)
-		+ ' / ID: ' + this.ID
+		let tooltipContent = 'Segment name: "' + this.name 
+		+ '" / length: ' + this.length.toFixed(3) + ' / ID: ' + this.ID
 		let tooltipNode = document.createElementNS('http://www.w3.org/2000/svg', 'title');
 		tooltipNode.appendChild(document.createTextNode(tooltipContent));
 		segmentParent.appendChild(tooltipNode);
@@ -74,6 +80,7 @@ class Segment {
 	}
 
 	setStatus(flags) {
+		this.PLCopen = (flags &0xff00)>>8;
 		const commReady = !!(flags &0x01);
 		const ready = !!(flags & 0x02);
 		const power = !!(flags & 0x04);

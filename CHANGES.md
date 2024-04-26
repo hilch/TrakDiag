@@ -1,8 +1,10 @@
 V3.0.0
 - mappMotion 5.26.x required as minimum
-- TD_WebServices: Remove output SegInfo.segmentCyclicInfo
-- TD_WebServices: Add output SegInfo.segmentData
-- TD_WebServices: Segments are colored red when in ErrorStop
+TD_WebServices
+- Remove output SegInfo.segmentCyclicInfo
+- Add output SegInfo.segmentData
+- Segments are colored red when in ErrorStop
+- Add PLCopen state to segment info dialog
 
 
 V2.7.2
