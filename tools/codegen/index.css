@@ -1,5 +1,5 @@
 /* @ */
-@keyframes blinkerOffline { 50% { fill: red; } }
+@keyframes blinkerOffline { 50% { fill: rgb(183, 0, 255); } }
 @keyframes blinkerNotReady { 50% { fill: lightgray; } }
 
 .shuttleDisabled {
@@ -34,8 +34,12 @@
 	fill: lightgray;
 }
 
-.segErrorStop {
+.segErrorInitiator {
 	fill: red;
+}
+
+.segErrorStop {
+	fill: darkred;
 }
 
 .segNotReadyForPowerOn {

@@ -11,16 +11,28 @@ class Segment {
 		this.segmentBody = undefined;
 		this.segmentBody2 = undefined;
 		this.PLCopen = 5; /* startup */
+		this.errReason = 0; /* none */
+		this.errInitiator = false; /* no */
 	}
 
 	plcOpenStatus() {
 		return ['disabled', 'homing', 'ready', 'stopping', 'errorstop', 'startup', 'invalid configuration'][this.PLCopen];
 	}
 
+	errorReason() {
+		return ['none', 'unspecified', 'no gripper', 'command', 'segment', 'assembly', 'channel', 'shuttle unobservable', 'encoder difference'][this.errReason];
+	}
+
+	errorInitator() {
+		return ['no', 'yes'][Number(this.errInitiator)];
+	}
+
 	showSegmentDialog = (event) => {
 		const content = [
 			['ID: ', this.ID],
 			['PLCopen:', this.plcOpenStatus()],
+			['Error Reason:', this.errorReason()],
+			['Error Initiator:', this.errorInitator()],
 			['Name: ', `"${this.name}"` ],
 			['Length: ', `${this.length.toFixed(3)} m`],
 		];
@@ -80,18 +92,27 @@ class Segment {
 	}
 
 	setStatus(flags) {
-		this.PLCopen = (flags &0xff00)>>8;
 		const commReady = !!(flags &0x01);
 		const ready = !!(flags & 0x02);
 		const power = !!(flags & 0x04);
 		const enable = !!(flags & 0x08);
+		this.errInitiator = !!(flags & 0x10);
+		const movementDetected = !!(flags & 0x20);		
 		const errorStop = !!(flags & 0x80);
-		this.segmentBody.classList.remove('segReady', 'segNotReadyForPowerOn', 'segDisabled', 'segOffline', 'segErrorStop' );
-		this.segmentBody2.classList.remove('segReady', 'segNotReadyForPowerOn', 'segDisabled', 'segOffline', 'segErrorStop' );
+		this.PLCopen = (flags &0xff00)>>8;
+		this.errReason = (flags &0xf0000) >> 16;
+		this.segmentBody.classList.remove('segReady', 'segNotReadyForPowerOn', 'segDisabled', 'segOffline', 'segErrorStop', 'segErrorInitiator' );
+		this.segmentBody2.classList.remove('segReady', 'segNotReadyForPowerOn', 'segDisabled', 'segOffline', 'segErrorStop', 'segErrorInitiator' );
 		if( commReady ){
 			if( errorStop ){
-				this.segmentBody.classList.add('segErrorStop');
-				this.segmentBody2.classList.add('segErrorStop');
+				if( this.errInitiator) {
+					this.segmentBody.classList.add('segErrorInitiator');
+					this.segmentBody2.classList.add('segErrorInitiator');
+				}
+				else {
+					this.segmentBody.classList.add('segErrorStop');
+					this.segmentBody2.classList.add('segErrorStop');
+				}
 			}
 			else if( ready ){
 				if( power ){
@@ -149,7 +170,7 @@ class Shuttle {
 			let response = await fetch(`/TrakWebApi/shuttle?index=${this.index}`);
 			let shuttle = await response.json()
 			const title = `${!shuttle.active ? 'deleted ! ' : ''} Shuttle ${shuttle.index}`;
-			const content = [
+			let content = [
 				['controlled: ', `${shuttle.controlled}`],
 				['virtual: ', `${shuttle.virtual}`],				
 				['User-ID: ', `"${shuttle.userID}"`],
@@ -164,7 +185,10 @@ class Shuttle {
 					const row = [`${new Date(shuttle.errorTexts[n].t).toISOString()}: `, shuttle.errorTexts[n].txt]
 					content.push(row);
 				}	
-			}			
+			}
+			if( shuttle.result != "ok"){
+				content = `error: ${shuttle.result}`;
+			}
 			assembly.showModalDialog( title, content, event );
 		}
 		catch( err ){

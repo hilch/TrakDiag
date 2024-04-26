@@ -210,22 +210,28 @@ void SendResponse_SegmentStatus(struct TD_WebServices* inst){
 	size_t length = 2;
 	for( int n = 0; n < inst->SegInfo.numberOfSegments; ++n ){
 		auto *data = &inst->SegInfo.segmentData[n];
-		/* we return 16 Bit:
+		/* we return 32 Bit:
 			Bit0 : Communication ready
 			Bit1 : Ready for power on
 			Bit2 : Power On
 			Bit3 : Enable input 
+			Bit4 : Error initiator
+			Bit5 : Movement detected
 			Bit7 : ErrorStop 
 			Bit8-15 : PLCopen Status
+			Bit16-19 : ErrorReason
 		*/
-		unsigned int flags =  (!!data->CommunicationReady)
+		unsigned long flags =  (!!data->CommunicationReady)
 								| (!!data->ReadyForPowerOn << 1)
 								| (!!data->PowerOn << 2)
 								| (!!data->SegmentEnable<< 3)
+								| (!!data->ErrorInitiator<< 4)
+								| (!!data->MovementDetected<< 5)
 								| ( (data->ErrorReason != mcACPTRAK_SEG_ERROR_NONE) << 7)
-								| (static_cast<USINT>(data->PLCopenState) << 8);
+								| (static_cast<USINT>(data->PLCopenState) << 8)
+								| (static_cast<USINT>(data->ErrorReason) << 16);
 		char s[256]{};
-		length += static_cast<size_t>(std::sprintf( s, "%s%d", n == 0 ? "" : ",", flags	));
+		length += static_cast<size_t>(std::sprintf( s, "%s%lu", n == 0 ? "" : ",", flags	));
 		if( length < sizeof(inst->webData.responseData) ){
 			std::strcat( (char*) inst->webData.responseData, s ); /* copy segment info */
 		}

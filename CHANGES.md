@@ -3,8 +3,8 @@ V3.0.0
 TD_WebServices
 - Remove output SegInfo.segmentCyclicInfo
 - Add output SegInfo.segmentData
-- Segments are colored red when in ErrorStop
-- Add PLCopen state to segment info dialog
+- Segments are colored dark red when in ErrorStop. Segments that initiate errors are colored red.
+- Add PLCopen state and error reason to segment info dialog
 
 
 V2.7.2
