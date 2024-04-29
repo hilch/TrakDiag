@@ -360,7 +360,7 @@ END_FUNCTION_BLOCK
 		Busy : BOOL;
 		Error : BOOL;
 		ErrorID : DINT;
-		SegInfo : TD_ServicesSegInfoType; (*segment information*)
+		SegInfo : TD_SegInfoType; (*segment information*)
 		ShuttleInfo : TD_ServicesShuttlesType; (*cyclic shuttle information*)
 	END_VAR
 	VAR

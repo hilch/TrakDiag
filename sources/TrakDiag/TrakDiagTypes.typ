@@ -19,7 +19,7 @@ TYPE
 		lastError : UINT;
 		shuttle : McAcpTrakShuttleData;
 	END_STRUCT;
-	TD_ServicesSegInfoType : 	STRUCT  (*segment information*)
+	TD_SegInfoType : 	STRUCT  (*segment information*)
 		numberOfSegments : UINT;
 		segment : ARRAY[0..TD_MAX_SUPPORTED_SEGMENTS_ASM]OF McSegmentType;
 		segmentInfo : ARRAY[0..TD_MAX_SUPPORTED_SEGMENTS_ASM]OF McAcpTrakSegGetInfoType;
