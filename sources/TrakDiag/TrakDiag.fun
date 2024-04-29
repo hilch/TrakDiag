@@ -295,7 +295,7 @@ END_FUNCTION_BLOCK
 		Enable : BOOL;
 		AssemblyName : {REDUND_UNREPLICABLE} STRING[32]; (*name of the assembly*)
 		DataAddress : UDINT; (*address of shuttle data array*)
-		DataSize : UDINT; (*sizeo of shuttle data array. 
+		DataSize : UDINT; (*sizeof shuttle data array. 
 type of McAcpTrakShuttleData[] if no shuttle user data is defined, see MC_BR_AsmCopyShuttleData_AcpTrak *)
 		UserDataSize : USINT; (*shuttle user data size in bytes*)
 		DataObjectName : STRING[10]; (*optional: temporary data object for memory allocation*)
