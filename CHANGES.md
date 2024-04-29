@@ -1,11 +1,16 @@
 V3.0.0
-- mappMotion 5.26.x required as minimum
-TD_WebServices
+- mappMotion 5.26.x required as minimum. Discard support of older firmware.
+- Rename TD_ServicesSegInfoType to TD_SegInfoType
+- Remove obsolete datatype TD_RecorderSegInfoType
+
+TD_WebServices:
 - Remove output SegInfo.segmentCyclicInfo
 - Add output SegInfo.segmentData
 - Segments are colored dark red when in ErrorStop. Segments that initiate errors are colored red.
 - Segments are colored yellow when enable input not active.
 - Add PLCopen state and error reason to segment info dialog
+TD_Recorder:
+- Change datatype of .SegInfo to TD_SegInfoType
 
 
 V2.7.2

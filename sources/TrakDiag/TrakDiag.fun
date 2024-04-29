@@ -311,7 +311,7 @@ type of McAcpTrakShuttleData[] if no shuttle user data is defined, see MC_BR_Asm
 		Error : BOOL;
 		Saved : BOOL; (*output file was saved*)
 		ErrorID : DINT;
-		SegInfo : TD_RecorderSegInfoType; (*segment information*)
+		SegInfo : TD_SegInfoType; (*segment information*)
 		OutputFileName : STRING[255]; (*name of output file*)
 		DumpFileName : STRING[255];
 	END_VAR
@@ -332,8 +332,7 @@ type of McAcpTrakShuttleData[] if no shuttle user data is defined, see MC_BR_Asm
 		fbFileOpen : FileOpen;
 		fbFileRead : FileReadEx;
 		fbCopyShuttleData : MC_BR_AsmCopyShuttleData_AcpTrak;
-		fbGetSegment : MC_BR_AsmGetSegment_AcpTrak;
-		fbSegGetInfo : MC_BR_SegGetInfo_AcpTrak;
+		fbSegmentsInfo : TD_SegmentsInfo;
 		fbSystemDump : SdmSystemDump;
 		fbLimitFileNumber : TD_LimitFileNumber;
 		pAssembly : REFERENCE TO McAssemblyType;

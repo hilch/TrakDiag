@@ -38,13 +38,6 @@ Bit1: shuttle is virtual*)
 		numberOfActiveShuttles : USINT; (*number of active shuttles*)
 		shuttle : ARRAY[0..TD_MAX_SUPPORTED_SHUTTLES_ASM]OF TD_ServicesShuttleType;
 	END_STRUCT;
-	TD_RecorderSegInfoType : 	STRUCT  (*segment information*)
-		numberOfSegments : UINT;
-		fill1 : USINT;
-		fill2 : USINT;
-		segment : ARRAY[0..TD_MAX_SUPPORTED_SEGMENTS_ASM]OF McSegmentType;
-		segmentInfo : ARRAY[0..TD_MAX_SUPPORTED_SEGMENTS_ASM]OF McAcpTrakSegGetInfoType;
-	END_STRUCT;
 	TD_SegErrorCommandEnum : 
 		( (*error type for TD_SegCommandError*)
 		TD_SEGERRCMD_SEGMENT, (*segment error*)

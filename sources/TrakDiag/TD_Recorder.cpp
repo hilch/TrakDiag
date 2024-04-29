@@ -74,15 +74,12 @@ void TD_Recorder(struct TD_Recorder* inst)
 					inst->maxRecords = RECORDING_TIME_US / (inst->refreshCycles * inst->fbRtInfo.cycle_time); /* max. number of records */
 	
 					/* */
-					inst->fbGetSegment.Assembly = inst->pAssembly;
-					inst->fbGetSegment.AdvancedParameters.SelectionMode = mcACPTRAK_GET_SEG_ALL;
-					inst->fbGetSegment.Next = false;
-					inst->fbGetSegment.Enable = false; /* reset fb */
-					MC_BR_AsmGetSegment_AcpTrak( &inst->fbGetSegment );		
-	
-					/* */
-					inst->fbSegGetInfo.Execute = false; /* reset fb */
-					MC_BR_SegGetInfo_AcpTrak( &inst->fbSegGetInfo );
+					inst->fbSegmentsInfo.Assembly = inst->pAssembly;
+					inst->fbSegmentsInfo.MaxCount = sizeof(inst->SegInfo.segment)/sizeof(inst->SegInfo.segment[0]);
+					inst->fbSegmentsInfo.Segments = &inst->SegInfo.segment[0];
+					inst->fbSegmentsInfo.SegmentsInfo = &inst->SegInfo.segmentInfo[0];
+					inst->fbSegmentsInfo.Execute = false; /* reset fb */
+					TD_SegmentsInfo( &inst->fbSegmentsInfo );
 	
 					/* */
 					inst->fbDatObjInfo.enable = false; /* reset fb */
@@ -222,10 +219,9 @@ void TD_Recorder(struct TD_Recorder* inst)
 				inst->pBuffer = inst->pTimestamps + inst->maxRecords * sizeof(McAcpTrakDateTimeType); /* pointer to buffer */
 				inst->fbDatObjCreate.enable = false; /* reset fb */
 				DatObjCreate( &inst->fbDatObjCreate );				
-				inst->fbGetSegment.Enable = true; /* start fb */
-				MC_BR_AsmGetSegment_AcpTrak( &inst->fbGetSegment );	
-				inst->n = 0;
-				inst->step = GET_SEGMENT_LIST;
+				inst->fbSegmentsInfo.Execute = true;
+				TD_SegmentsInfo( &inst->fbSegmentsInfo );
+				inst->step = GET_SEGMENT_INFO;
 			}
 			else if( inst->fbDatObjCreate.status != ERR_FUB_BUSY ){ /* error */
 				inst->ErrorID = inst->fbDatObjCreate.status;
@@ -240,65 +236,22 @@ void TD_Recorder(struct TD_Recorder* inst)
 			break;
 
 
-
-			case GET_SEGMENT_LIST: /* get a list of all segments in this assembly */
-			if( inst->fbGetSegment.Valid ){
-				inst->SegInfo.numberOfSegments = inst->fbGetSegment.TotalCount; /* save the number of segments */
-				inst->SegInfo.segment[inst->n] = inst->fbGetSegment.Segment; /* save segment handle */
-				if( inst->fbGetSegment.RemainingCount == 0 ){
-					inst->fbGetSegment.Next = false;
-					inst->fbGetSegment.Enable = false; /* reset fb */
-					MC_BR_AsmGetSegment_AcpTrak( &inst->fbGetSegment );	
-					inst->n = 0;
-					inst->fbSegGetInfo.Execute = true; /* start fb */
-					inst->fbSegGetInfo.Segment = &inst->SegInfo.segment[inst->n];
-					MC_BR_SegGetInfo_AcpTrak( &inst->fbSegGetInfo );
-					inst->step = GET_SEGMENT_INFO;
-				}
-				else {
-					++inst->n;
-					inst->fbGetSegment.Next = false;
-					MC_BR_AsmGetSegment_AcpTrak( &inst->fbGetSegment );	
-					inst->fbGetSegment.Next = true;
-					MC_BR_AsmGetSegment_AcpTrak( &inst->fbGetSegment );	
-				}
-			}
-			else if( inst->fbGetSegment.Error ){
-				inst->ErrorID = inst->fbGetSegment.ErrorID;
-				inst->Error = true;
-				inst->fbGetSegment.Next = false;
-				inst->fbGetSegment.Enable = false; /* reset fb */
-				MC_BR_AsmGetSegment_AcpTrak( &inst->fbGetSegment );
-				inst->step = INTERNAL_ERROR_GETSEGMENT;	
-			}
-			else { /* busy */
-				MC_BR_AsmGetSegment_AcpTrak( &inst->fbGetSegment );	
-			}
-			break;
-
-
 			case GET_SEGMENT_INFO:
-			if( inst->fbSegGetInfo.Done ){
-				std::memcpy( &inst->SegInfo.segmentInfo[inst->n], &inst->fbSegGetInfo.SegmentInfo, sizeof(McAcpTrakSegGetInfoType) ); /* save segment infos */
-				inst->fbSegGetInfo.Execute = false; /* reset fb */
-				MC_BR_SegGetInfo_AcpTrak( &inst->fbSegGetInfo );
-				++inst->n;
-				if( inst->n < inst->SegInfo.numberOfSegments ){ /* there are still some segments left */
-					inst->fbSegGetInfo.Execute = true; /* start fb */
-					inst->fbSegGetInfo.Segment = &inst->SegInfo.segment[inst->n];
-					MC_BR_SegGetInfo_AcpTrak( &inst->fbSegGetInfo );
-				}
-				else { /* all segments processed. We can start recording */
-					inst->step = START_RECORDING;
-				}
+			if( inst->fbSegmentsInfo.Done ){
+				inst->SegInfo.numberOfSegments = inst->fbSegmentsInfo.Count;
+				inst->fbCopySegmentData.AdvancedParameters.DataSize = inst->SegInfo.numberOfSegments * sizeof(McAcpTrakSegmentData);
+				inst->fbCopySegmentData.Execute = true;
+				inst->step = START_RECORDING;
 			}
-			else if( inst->fbSegGetInfo.Error ){
-				inst->fbSegGetInfo.Execute = false; /* reset fb */
-				MC_BR_SegGetInfo_AcpTrak( &inst->fbSegGetInfo );
-
+			else if( inst->fbSegmentsInfo.Error ){
+				inst->Error = true;
+				inst->ErrorID = inst->fbSegmentsInfo.StatusID;
+				inst->step = INTERNAL_ERROR_SEGMENTINFO;				
+				inst->fbSegmentsInfo.Execute = false; /* reset fb */
+				TD_SegmentsInfo( &inst->fbSegmentsInfo );
 			}
 			else { /* busy */
-				MC_BR_SegGetInfo_AcpTrak( &inst->fbSegGetInfo );
+				TD_SegmentsInfo( &inst->fbSegmentsInfo );
 			}
 			break;
 
@@ -808,7 +761,7 @@ void TD_Recorder(struct TD_Recorder* inst)
 			case INTERNAL_ERROR_DATOBJINFO:
 			case INTERNAL_ERROR_DATOBJDELETE:
 			case INTERNAL_ERROR_DATOBJCREATE:
-			case INTERNAL_ERROR_GETSEGMENT:
+			case INTERNAL_ERROR_SEGMENTINFO:
 			case INTERNAL_ERROR_COPYSHUTTLEDATA:
 			case INTERNAL_ERROR_FILECREATE:
 			case INTERNAL_ERROR_FILEWRITE:
