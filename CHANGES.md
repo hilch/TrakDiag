@@ -11,6 +11,8 @@ TD_WebServices:
 - Add PLCopen state and error reason to segment info dialog
 TD_Recorder:
 - Change datatype of .SegInfo to TD_SegInfoType
+- Add logging segment datatype
+- TD_SegmentsInfo: Segments are now sorted by ID
 
 
 V2.7.2
