@@ -43,8 +43,7 @@ SOFTWARE.
 #include <algorithm>
 #include "recorder_html.h"
 #include "TD_Recorder.h"
-
-
+#include "Record.h"
 
 
 /* Recorder */
@@ -59,7 +58,8 @@ void TD_Recorder(struct TD_Recorder* inst)
 				inst->Error = false;
 				inst->Saved = false;
 				/* get pointer to assembly's PV */
-				inst->ErrorID = PV_xgetadr( (char*) inst->AssemblyName, (UDINT*) &inst->pAssembly, (UDINT*) &inst->tempudint );
+				UDINT temp;
+				inst->ErrorID = PV_xgetadr( (char*) inst->AssemblyName, (UDINT*) &inst->pAssembly, &temp );
 				if( inst->ErrorID == 0 ){					
 					inst->Busy = true;
 					/* */
@@ -93,7 +93,7 @@ void TD_Recorder(struct TD_Recorder* inst)
 					inst->fbDatObjCreate.enable = false; /* reset fb */
 					inst->fbDatObjCreate.grp = 0;
 					inst->fbDatObjCreate.pName = (UDINT) inst->DataObjectName;
-					inst->fbDatObjCreate.len = inst->maxRecords * ( inst->DataSize + sizeof(McAcpTrakDateTimeType) ) + BUFFER_SIZE;
+					inst->fbDatObjCreate.len = inst->maxRecords * sizeof(Record) + BUFFER_SIZE;
 					inst->fbDatObjCreate.MemType = doTEMP;
 					inst->fbDatObjCreate.Option = doNO_CS;
 					inst->fbDatObjCreate.pCpyData = 0;
@@ -110,6 +110,14 @@ void TD_Recorder(struct TD_Recorder* inst)
 					inst->fbCopyShuttleData.Execute = false; /* reset fb */
 					MC_BR_AsmCopyShuttleData_AcpTrak( &inst->fbCopyShuttleData );
 	
+					/* */
+					inst->fbCopySegmentData.Assembly = inst->pAssembly;
+					inst->fbCopySegmentData.Command =  mcACPTRAK_SEG_DATA_ALL;
+					inst->fbCopySegmentData.AdvancedParameters.Trigger = mcACPTRAK_SEG_DATA_TRIGGER_IMM;
+					inst->fbCopySegmentData.AdvancedParameters.SegmentID = 0;
+					inst->fbCopySegmentData.AdvancedParameters.DataAddress = (UDINT) &inst->SegInfo.segmentData;
+					inst->fbCopySegmentData.AdvancedParameters.DataSize = 0;
+
 					/* */
 					inst->fbFileCreate.pDevice = (UDINT) &inst->FileDeviceName;
 					inst->fbFileCreate.pFile = (UDINT) &inst->OutputFileName;
@@ -216,7 +224,7 @@ void TD_Recorder(struct TD_Recorder* inst)
 			if( inst->fbDatObjCreate.status == ERR_OK ){ /* create successful */
 				inst->pDataObject = inst->fbDatObjCreate.pDatObjMem; /* pointer to memory */
 				inst->pTimestamps = inst->pDataObject + inst->maxRecords * inst->DataSize; /* pointer to record timestamps */
-				inst->pBuffer = inst->pTimestamps + inst->maxRecords * sizeof(McAcpTrakDateTimeType); /* pointer to buffer */
+				inst->pBuffer = inst->pDataObject + inst->maxRecords * sizeof(Record); /* pointer to buffer */
 				inst->fbDatObjCreate.enable = false; /* reset fb */
 				DatObjCreate( &inst->fbDatObjCreate );				
 				inst->fbSegmentsInfo.Execute = true;
@@ -257,8 +265,6 @@ void TD_Recorder(struct TD_Recorder* inst)
 
 
 			case START_RECORDING:
-				inst->fbCopyShuttleData.AdvancedParameters.DataAddress = inst->pDataObject; 
-				inst->fbCopyShuttleData.AdvancedParameters.DataSize = inst->DataSize;
 				inst->currentRecord = 0; /* point to first record in data object */
 				inst->fbCopyShuttleData.Execute = true; /* start fb */
 				MC_BR_AsmCopyShuttleData_AcpTrak( &inst->fbCopyShuttleData );
@@ -278,19 +284,18 @@ void TD_Recorder(struct TD_Recorder* inst)
 			inst->tonTriggerDelay.IN = inst->Trigger;
 			TON( &inst->tonTriggerDelay );
 			if( inst->fbCopyShuttleData.Done ){
-				std::memcpy( (void*) inst->DataAddress, 
-							(void*) inst->fbCopyShuttleData.AdvancedParameters.DataAddress, inst->DataSize ); /* copy shuttle data to output structure */
-				((McAcpTrakDateTimeType*) inst->pTimestamps)[inst->currentRecord] = inst->fbCopyShuttleData.Info.TimeStamp; /* copy timestamp */
+				Record *record = reinterpret_cast<Record *>(inst->pDataObject);
+				record[inst->currentRecord].packTimeStamp( inst->fbCopyShuttleData.Info.TimeStamp );
+				record[inst->currentRecord].packShuttleData( inst->fbCopyShuttleData.AdvancedParameters.DataAddress, inst->fbCopyShuttleData.AdvancedParameters.DataSize, inst->UserDataSize );		
+
 				inst->fbCopyShuttleData.Execute = false; /* reset fb */
 				MC_BR_AsmCopyShuttleData_AcpTrak( &inst->fbCopyShuttleData );
 
 				if( !inst->tonTriggerDelay.Q ){ /* we don't get a trigger so we continue to record */
 					inst->currentRecord += 1; /* use next record in data object */
-					inst->fbCopyShuttleData.AdvancedParameters.DataAddress += inst->DataSize;
 					if( inst->currentRecord >= inst->maxRecords ){
 						inst->currentRecord = 0;
 						inst->Valid = true;
-						inst->fbCopyShuttleData.AdvancedParameters.DataAddress = inst->pDataObject;
 					}
 				}
 				else if( inst->tonTriggerDelay.Q and inst->Valid ) { /* we got a trigger and now we save everything */
@@ -358,7 +363,7 @@ void TD_Recorder(struct TD_Recorder* inst)
 				/* write segment information to buffer */
 				const char head[] = "\t\tconst segment = [\n\t\t\t/* name, length */\n";
 				const char tail[] = "\n\t\t];\n\n";
-				int totalLength = std::strlen(head) + std::strlen(tail);
+				size_t totalLength = std::strlen(head) + std::strlen(tail);
 				char temp[256];
 				std::strcpy( (char*) inst->pBuffer, head );
 				for( int i = 0; i < inst->SegInfo.numberOfSegments; ++i ){
@@ -410,8 +415,14 @@ void TD_Recorder(struct TD_Recorder* inst)
 				inst->fbFileWrite.offset += inst->fbFileWrite.len;
 				inst->fbFileWrite.enable = false; /* reset fb */
 				FileWriteEx( &inst->fbFileWrite );	
-				inst->n = 0;
-				inst->step = COLLECT_SHUTTLE_DATA;
+				inst->fbFileWrite.len = std::snprintf( reinterpret_cast<char*>(inst->pBuffer), BUFFER_SIZE, 
+									"\t\tconst record = [\n" 
+									"\t\t\t/* Shuttle( index, active, PLCopen state, segment index, segment position ) */"
+									"\n\t\t\t/* record: 0 = latest */" );
+				inst->fbFileWrite.pSrc = inst->pBuffer;						
+				inst->fbFileWrite.enable = true; /* start fb */
+				FileWriteEx( &inst->fbFileWrite );
+				inst->step = WRITE_START_RECORDS;
 			}
 			else if( inst->fbFileWrite.status != ERR_FUB_BUSY ){
 				inst->ErrorID = inst->fbFileWrite.status;
@@ -427,88 +438,69 @@ void TD_Recorder(struct TD_Recorder* inst)
 			break;
 
 
-			case COLLECT_SHUTTLE_DATA:
+			case WRITE_START_RECORDS:
+			if( inst->fbFileWrite.status == ERR_OK ){
+				inst->fbFileWrite.offset += inst->fbFileWrite.len;
+				inst->fbFileWrite.enable = false; /* reset fb */
+				FileWriteEx( &inst->fbFileWrite );	
+				inst->n = 0;
+				inst->step = CREATE_RECORD;
+			}
+			else if( inst->fbFileWrite.status != ERR_FUB_BUSY ){
+				inst->ErrorID = inst->fbFileWrite.status;
+				inst->Busy = false;
+				inst->Error = true;
+				inst->fbFileWrite.enable = false; /* reset fb */
+				FileWriteEx( &inst->fbFileWrite );
+				inst->step = INTERNAL_ERROR_FILEWRITE;				
+			}
+			else { /* busy */
+				FileWriteEx( &inst->fbFileWrite );				
+			}
+			break;
+
+
+			case CREATE_RECORD:
 			{
-				int entrySize = sizeof(McAcpTrakShuttleData) + inst->UserDataSize;
-				int numberOfEntries = inst->DataSize / entrySize;
-				McAcpTrakDateTimeType timeStamp = ((McAcpTrakDateTimeType*)inst->pTimestamps)[inst->currentRecord];
-				USINT *pBase = (USINT*) (inst->pDataObject + inst->currentRecord * inst->DataSize);
-				const char head1[] = "\t\tconst record = [\n" // head for first record
-									"\t\t\t/* index, active, PLCopen state, segment index, segment position */"
-									"\n\t\t\t/* record: %d = latest */\n\t\t\t  new Record( new Date(%d, %d, %d, %d, %d, %d, %d), \n\t\t\t\t[";
-				const char headx[] = " ] )\n\t\t\t/* record: %d */\n\t\t\t, new Record( new Date(%d, %d, %d, %d, %d, %d, %d), \n\t\t\t\t["; // head for other records
-				const char tail[] = " ] )\n\t\t];\n\n"; /* to close declaration */
-				int totalLength = sprintf( (char*) inst->pBuffer, inst->n == 0 ? head1 : headx, inst->n, timeStamp.Year, timeStamp.Month, timeStamp.Day, 
-												timeStamp.Hour, timeStamp.Minute, timeStamp.Second, timeStamp.Millisec );
-				char temp[256];
-				/* write shuttle data of one record into buffer */
-				bool validEntriesFound = false;
-				for( int i = 0; i <numberOfEntries; ++i, pBase += entrySize ){
-					McAcpTrakShuttleData *pEntry = (McAcpTrakShuttleData *) pBase;
-					if( pEntry->Index ){ /* valid entry ? */
-						/* find index of segment */
-						int indexOfSegment = -1;
-						for( int i = 0; i < inst->SegInfo.numberOfSegments; ++i ){
-							if( !std::strcmp( pEntry->SegmentName, inst->SegInfo.segmentInfo[i].Name ) ){
-								indexOfSegment = i;
-								break;
-							}
-						}
-						if( indexOfSegment >= 0 ){ 
-							int len = sprintf( temp, "%s new Shuttle( %lu, %d, 0x%x, %i, %lf )", !validEntriesFound ? "" : "\n\t\t\t\t,", 
-																			(unsigned long) pEntry->Index,
-																			pEntry->Active,
-																			pEntry->PLCopenState,
-																			indexOfSegment, pEntry->SegmentPosition );
-							validEntriesFound = true;
-							if( (totalLength + len + 256 ) < BUFFER_SIZE ){
-								totalLength += len;
-								std::strcat( (char*) inst->pBuffer, temp );
-							}
-							else {
-								inst->ErrorID = fiERR_DATA; /* error : buffer to small */
-								inst->Error = true;
-								inst->Busy = false;
-								break;
-							}
-						} // if( indexOfSegment >= 0 )...
-					}
-				}
-				if(inst->Error ){
+
+				Record *record = reinterpret_cast<Record *>(inst->pDataObject);
+				size_t len = record[inst->currentRecord].toJavascript( reinterpret_cast<char*>(inst->pBuffer), BUFFER_SIZE, inst->n );
+
+				if( len == 0 ) { /* error */
+					inst->ErrorID = fiERR_DATA; /* error : buffer to small */
+					inst->Error = true;
+					inst->Busy = false;
 					inst->step = INTERNAL_ERROR_BUFFER_SIZE;
 				}
 				else {
-					if( inst->n == (inst->maxRecords -1) ){
-						std::strcat( (char*) inst->pBuffer, tail );
-						totalLength += strlen(tail);
-					}
 					inst->fbFileWrite.pSrc = inst->pBuffer;	
-					inst->fbFileWrite.len = totalLength;						
+					inst->fbFileWrite.len = len;						
 					inst->fbFileWrite.enable = true; /* start fb */
 					FileWriteEx( &inst->fbFileWrite );
-					inst->step = WRITE_SHUTTLE_DATA;	
+					inst->step = WRITE_RECORD;	
 				}
 			}
 			break;
 
 
-			case WRITE_SHUTTLE_DATA:
+			case WRITE_RECORD:
 			if( inst->fbFileWrite.status == ERR_OK ){ /* done */
 				inst->fbFileWrite.offset += inst->fbFileWrite.len;
 				inst->fbFileWrite.enable = false; /* reset fb */
 				FileWriteEx( &inst->fbFileWrite );
 				++inst->n;
 				if( inst->n == inst->maxRecords ) { /* no more records to write */
-					inst->fbFileWrite.pSrc = (UDINT) HTML_HEADER_END;
-					inst->fbFileWrite.len = std::strlen( HTML_HEADER_END );
+					const char tail[] = "\n\t\t];\n\n"; /* to close record declaration */
+					inst->fbFileWrite.pSrc = (UDINT) tail;
+					inst->fbFileWrite.len = std::strlen( tail );
 					inst->fbFileWrite.enable = true; /* start fb */
 					FileWriteEx( &inst->fbFileWrite );	
-					inst->step = WRITE_HTML_HEADER_END;
+					inst->step = WRITE_END_RECORDS;
 				}
 				else {
 					if( --inst->currentRecord < 0 )
 						inst->currentRecord = inst->maxRecords - 1;
-					inst->step = COLLECT_SHUTTLE_DATA;
+					inst->step = CREATE_RECORD;
 				}
 			}
 			else if( inst->fbFileWrite.status != ERR_FUB_BUSY ){ /* error */
@@ -523,6 +515,32 @@ void TD_Recorder(struct TD_Recorder* inst)
 				FileWriteEx( &inst->fbFileWrite );
 			}
 			break;
+
+
+			case WRITE_END_RECORDS:
+			if( inst->fbFileWrite.status == ERR_OK ){
+				inst->fbFileWrite.offset += inst->fbFileWrite.len;
+				inst->fbFileWrite.enable = false; /* reset fb */
+				FileWriteEx( &inst->fbFileWrite );	
+				inst->fbFileWrite.pSrc = (UDINT) HTML_HEADER_END;
+				inst->fbFileWrite.len = std::strlen( HTML_HEADER_END );
+				inst->fbFileWrite.enable = true; /* start fb */
+				FileWriteEx( &inst->fbFileWrite );	
+				inst->step = WRITE_HTML_HEADER_END;
+			}
+			else if( inst->fbFileWrite.status != ERR_FUB_BUSY ){
+				inst->ErrorID = inst->fbFileWrite.status;
+				inst->Busy = false;
+				inst->Error = true;
+				inst->fbFileWrite.enable = false; /* reset fb */
+				FileWriteEx( &inst->fbFileWrite );
+				inst->step = INTERNAL_ERROR_FILEWRITE;				
+			}
+			else { /* busy */
+				FileWriteEx( &inst->fbFileWrite );				
+			}
+			break;
+
 
 
 			case WRITE_HTML_HEADER_END:
@@ -773,6 +791,16 @@ void TD_Recorder(struct TD_Recorder* inst)
 			break;
 
 		} /* end of switch() */
+
+
+		/* copy cyclic segment data */
+		MC_BR_AsmCopySegmentData_AcpTrak( &inst->fbCopySegmentData );
+		if( inst->fbCopySegmentData.Done ){
+			inst->fbCopySegmentData.Execute = false,
+			MC_BR_AsmCopySegmentData_AcpTrak( &inst->fbCopySegmentData );
+			inst->fbCopySegmentData.Execute = true,
+			MC_BR_AsmCopySegmentData_AcpTrak( &inst->fbCopySegmentData );
+		}
 	}
 	else {
 		inst->step = STARTUP;

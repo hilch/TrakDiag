@@ -15,9 +15,7 @@
     <Object Type="File">TD_CrashReport.cpp</Object>
     <Object Type="File">TD_SegCommandError.cpp</Object>
     <Object Type="File">TD_LoggerReadEntry.cpp</Object>
-    <Object Type="File">TD_Recorder.cpp</Object>
-    <Object Type="File">recorder_html.h</Object>
-    <Object Type="File">TD_Recorder.h</Object>
+    <Object Type="Package">TD_Recorder</Object>	
     <Object Type="File">TD_WebServices.cpp</Object>
     <Object Type="File">TD_WebServices.h</Object>
     <Object Type="File">TD_ShuttleErrorTexts.cpp</Object>

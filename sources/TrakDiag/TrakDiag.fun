@@ -332,13 +332,13 @@ type of McAcpTrakShuttleData[] if no shuttle user data is defined, see MC_BR_Asm
 		fbFileOpen : FileOpen;
 		fbFileRead : FileReadEx;
 		fbCopyShuttleData : MC_BR_AsmCopyShuttleData_AcpTrak;
+		fbCopySegmentData : MC_BR_AsmCopySegmentData_AcpTrak;
 		fbSegmentsInfo : TD_SegmentsInfo;
 		fbSystemDump : SdmSystemDump;
 		fbLimitFileNumber : TD_LimitFileNumber;
 		pAssembly : REFERENCE TO McAssemblyType;
 		tonTriggerDelay : TON;
 		fbRtInfo : RTInfo;
-		tempudint : UDINT;
 		pDataObject : UDINT;
 		pBuffer : UDINT;
 		pTimestamps : UDINT;
