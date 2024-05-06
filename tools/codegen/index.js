@@ -170,26 +170,28 @@ class Shuttle {
 			let response = await fetch(`/TrakWebApi/shuttle?index=${this.index}`);
 			let shuttle = await response.json()
 			const title = `${!shuttle.active ? 'deleted ! ' : ''} Shuttle ${shuttle.index}`;
-			let content = [
-				['controlled: ', `${shuttle.controlled}`],
-				['virtual: ', `${shuttle.virtual}`],				
-				['User-ID: ', `"${shuttle.userID}"`],
-				['PLCopen: ', shuttle.PLCopen],
-				['Segment-Name: ', `"${shuttle.segmentName}"`],
-				['Segment-Position: ', `${shuttle.segmentPosition.toFixed(3)} m`],
-				['Sector-Name: ', `"${shuttle.sectorName}"`],
-				['Sector-Position: ', `${shuttle.sectorPosition.toFixed(3)} m`]				
-			];
-			if( 'errorTexts' in shuttle ){
-				for( let n = 0; n < shuttle.errorTexts.length; ++n ){
-					const row = [`${new Date(shuttle.errorTexts[n].t).toISOString()}: `, shuttle.errorTexts[n].txt]
-					content.push(row);
-				}	
-			}
 			if( shuttle.result != "ok"){
-				content = `error: ${shuttle.result}`;
+				assembly.showModalDialog( title, `error: ${shuttle.result}`, event );
 			}
-			assembly.showModalDialog( title, content, event );
+			else {
+				let content = [
+					['controlled: ', `${shuttle.controlled}`],
+					['virtual: ', `${shuttle.virtual}`],				
+					['User-ID: ', `"${shuttle.userID}"`],
+					['PLCopen: ', shuttle.PLCopen],
+					['Segment-Name: ', `"${shuttle.segmentName}"`],
+					['Segment-Position: ', `${shuttle.segmentPosition.toFixed(3)} m`],
+					['Sector-Name: ', `"${shuttle.sectorName}"`],
+					['Sector-Position: ', `${shuttle.sectorPosition.toFixed(3)} m`]				
+				];
+				if( 'errorTexts' in shuttle ){
+					for( let n = 0; n < shuttle.errorTexts.length; ++n ){
+						const row = [`${new Date(shuttle.errorTexts[n].t).toISOString()}: `, shuttle.errorTexts[n].txt]
+						content.push(row);
+					}	
+				}
+				assembly.showModalDialog( title, content, event );
+			}
 		}
 		catch( err ){
 			console.log(err);
