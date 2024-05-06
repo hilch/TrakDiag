@@ -30,8 +30,8 @@ SOFTWARE.
 
 
 
-#include "TrakWebApi/responses.h"
-#include "TrakWebApi/utils.h"
+#include "responses.h"
+#include "utils.h"
 
 #define STARTUP					0
 #define GET_SEGMENT_INFO		20
