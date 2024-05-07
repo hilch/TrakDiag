@@ -93,6 +93,8 @@ void TD_Recorder(struct TD_Recorder* inst)
 					inst->fbDatObjCreate.enable = false; /* reset fb */
 					inst->fbDatObjCreate.grp = 0;
 					inst->fbDatObjCreate.pName = (UDINT) inst->DataObjectName;
+
+					inst->pBuffer = 0;
 					inst->fbDatObjCreate.len = inst->maxRecords * sizeof(Record) + BUFFER_SIZE;
 					inst->fbDatObjCreate.MemType = doTEMP;
 					inst->fbDatObjCreate.Option = doNO_CS;
@@ -287,6 +289,7 @@ void TD_Recorder(struct TD_Recorder* inst)
 				Record *record = reinterpret_cast<Record *>(inst->pDataObject);
 				record[inst->currentRecord].packTimeStamp( inst->fbCopyShuttleData.Info.TimeStamp );
 				record[inst->currentRecord].packShuttleData( inst->fbCopyShuttleData.AdvancedParameters.DataAddress, inst->fbCopyShuttleData.AdvancedParameters.DataSize, inst->UserDataSize );		
+				record[inst->currentRecord].packSegmentData( inst->SegInfo.segmentData, inst->SegInfo.numberOfSegments );
 
 				inst->fbCopyShuttleData.Execute = false; /* reset fb */
 				MC_BR_AsmCopyShuttleData_AcpTrak( &inst->fbCopyShuttleData );
@@ -464,7 +467,7 @@ void TD_Recorder(struct TD_Recorder* inst)
 			{
 
 				Record *record = reinterpret_cast<Record *>(inst->pDataObject);
-				size_t len = record[inst->currentRecord].toJavascript( reinterpret_cast<char*>(inst->pBuffer), BUFFER_SIZE, inst->n );
+				size_t len = record[inst->currentRecord].toJavascript( reinterpret_cast<char*>(inst->pBuffer), BUFFER_SIZE, inst->n ); 
 
 				if( len == 0 ) { /* error */
 					inst->ErrorID = fiERR_DATA; /* error : buffer to small */
@@ -796,10 +799,16 @@ void TD_Recorder(struct TD_Recorder* inst)
 		/* copy cyclic segment data */
 		MC_BR_AsmCopySegmentData_AcpTrak( &inst->fbCopySegmentData );
 		if( inst->fbCopySegmentData.Done ){
-			inst->fbCopySegmentData.Execute = false,
+			/* sort new Segment Data by SegmentID */
+			if( inst->SegInfo.numberOfSegments > 0 ){
+				std::sort( &inst->SegInfo.segmentData[0], &inst->SegInfo.segmentData[inst->SegInfo.numberOfSegments], 
+						[]( McAcpTrakSegmentData seg1, McAcpTrakSegmentData seg2 ){
+									return( seg1.SegmentID < seg2.SegmentID );
+							} );
+			}
+			inst->fbCopySegmentData.Execute = false; /* reset fb  */
 			MC_BR_AsmCopySegmentData_AcpTrak( &inst->fbCopySegmentData );
-			inst->fbCopySegmentData.Execute = true,
-			MC_BR_AsmCopySegmentData_AcpTrak( &inst->fbCopySegmentData );
+			inst->fbCopySegmentData.Execute = true; /* start next execution */
 		}
 	}
 	else {

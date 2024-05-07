@@ -122,6 +122,14 @@ const char* HTML_HEADER = ""
 "\t\t\t\tdocument.getElementById('shuttles').appendChild( svg );\n"
 "\t\t\t}\n"
 "\t\t}\n"
+/*  class SegmentData  */		
+"\t\tclass SegmentData {\n"
+"\n"
+/*  SegmentData.constructor  */
+"\t\t\tconstructor( id, PLCopen, errReason, commReady, ready, power, enable, movement, errInitiator ){\n"
+"\t\t\t\t\n"
+"\t\t\t}\n"
+"\t\t}\n"
 /*  class Shuttle  */
 "\t\tclass Shuttle {\n"
 /*  Shuttle.constructor  */

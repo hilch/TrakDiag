@@ -34,18 +34,19 @@ struct SegmentDataRecordType {
 		bool segmentEnable : 1;
 		bool movementDetected : 1;
 		bool errorInitiator : 1;
-	};
+	} bits;
 };
 
 class Record {
 	public:
+	Record( void );
 	void packTimeStamp( McAcpTrakDateTimeType timestamp );
 	void packShuttleData( UDINT dataAddress, UDINT dataSize, USINT sizeofUserData );
 	void packSegmentData( McAcpTrakSegmentData * segmentData, UINT numberOfSegments );
 	size_t toJavascript( char* s, const size_t maxLength, const unsigned recordNumber );
 
 	private:
-		McAcpTrakDateTimeType timestamp;
-		ShuttleDataRecordType shuttles[TD_MAX_SUPPORTED_SHUTTLES_ASM];
-		SegmentDataRecordType segments[TD_MAX_SUPPORTED_SEGMENTS_ASM];
+	McAcpTrakDateTimeType m_timestamp;
+	ShuttleDataRecordType m_shuttles[TD_MAX_SUPPORTED_SHUTTLES_ASM];
+	SegmentDataRecordType m_segmentData[TD_MAX_SUPPORTED_SEGMENTS_ASM];
 };
