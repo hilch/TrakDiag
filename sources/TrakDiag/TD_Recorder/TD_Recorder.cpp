@@ -59,7 +59,7 @@ void TD_Recorder(struct TD_Recorder* inst)
 				inst->Saved = false;
 				/* get pointer to assembly's PV */
 				UDINT temp;
-				inst->ErrorID = PV_xgetadr( (char*) inst->AssemblyName, (UDINT*) &inst->pAssembly, &temp );
+				inst->ErrorID = PV_xgetadr( reinterpret_cast<char*>(inst->AssemblyName), reinterpret_cast<UDINT*>(&inst->pAssembly), &temp );
 				if( inst->ErrorID == 0 ){					
 					inst->Busy = true;
 					/* */
@@ -86,13 +86,13 @@ void TD_Recorder(struct TD_Recorder* inst)
 					if( std::strlen(inst->DataObjectName) == 0 ){
 						std::strcpy( inst->DataObjectName, "$$tdrec" );
 					}
-					inst->fbDatObjInfo.pName = (UDINT) inst->DataObjectName;
+					inst->fbDatObjInfo.pName =  reinterpret_cast<UDINT>(inst->DataObjectName);
 					DatObjInfo( &inst->fbDatObjInfo );
 					inst->fbDatObjDelete.enable = false; /* reset fb */
 					DatObjDelete( &inst->fbDatObjDelete );
 					inst->fbDatObjCreate.enable = false; /* reset fb */
 					inst->fbDatObjCreate.grp = 0;
-					inst->fbDatObjCreate.pName = (UDINT) inst->DataObjectName;
+					inst->fbDatObjCreate.pName =  reinterpret_cast<UDINT>(inst->DataObjectName);
 
 					inst->pBuffer = 0;
 					inst->fbDatObjCreate.len = inst->maxRecords * sizeof(Record) + BUFFER_SIZE;
@@ -117,12 +117,12 @@ void TD_Recorder(struct TD_Recorder* inst)
 					inst->fbCopySegmentData.Command =  mcACPTRAK_SEG_DATA_ALL;
 					inst->fbCopySegmentData.AdvancedParameters.Trigger = mcACPTRAK_SEG_DATA_TRIGGER_IMM;
 					inst->fbCopySegmentData.AdvancedParameters.SegmentID = 0;
-					inst->fbCopySegmentData.AdvancedParameters.DataAddress = (UDINT) &inst->SegInfo.segmentData;
+					inst->fbCopySegmentData.AdvancedParameters.DataAddress =  reinterpret_cast<UDINT>( &inst->SegInfo.segmentData );
 					inst->fbCopySegmentData.AdvancedParameters.DataSize = 0;
 
 					/* */
-					inst->fbFileCreate.pDevice = (UDINT) &inst->FileDeviceName;
-					inst->fbFileCreate.pFile = (UDINT) &inst->OutputFileName;
+					inst->fbFileCreate.pDevice =  reinterpret_cast<UDINT>( &inst->FileDeviceName );
+					inst->fbFileCreate.pFile =  reinterpret_cast<UDINT>( &inst->OutputFileName );
 					inst->fbFileCreate.enable = false; /* reset fb */
 					FileCreate( &inst->fbFileCreate );
 					inst->fbFileRead.enable = false; /* reset fb */
@@ -131,8 +131,8 @@ void TD_Recorder(struct TD_Recorder* inst)
 					/* */
 					std::strcpy( inst->svgFileName, inst->AssemblyName );
 					std::strcat( inst->svgFileName, ".svg" );
-					inst->fbFileOpen.pDevice = (UDINT)"SvgData";
-					inst->fbFileOpen.pFile = (UDINT) &inst->svgFileName;
+					inst->fbFileOpen.pDevice =  reinterpret_cast<UDINT>( "SvgData" );
+					inst->fbFileOpen.pFile =  reinterpret_cast<UDINT>( &inst->svgFileName );
 					inst->fbFileOpen.mode = fiREAD_ONLY;
 					inst->fbFileOpen.enable = false; /* reset fb */
 					FileOpen( &inst->fbFileOpen );
@@ -147,8 +147,8 @@ void TD_Recorder(struct TD_Recorder* inst)
 					/*  */
 					inst->fbSystemDump.enable = false; 
 					inst->fbSystemDump.configuration = sdm_SYSTEMDUMP_DATA;
-					inst->fbSystemDump.pDevice = (UDINT) &inst->FileDeviceName;
-					inst->fbSystemDump.pFile = (UDINT) &inst->DumpFileName;
+					inst->fbSystemDump.pDevice = reinterpret_cast<UDINT>(  &inst->FileDeviceName );
+					inst->fbSystemDump.pFile = reinterpret_cast<UDINT>(  &inst->DumpFileName );
 					inst->fbSystemDump.pParam = 0;
 					SdmSystemDump( &inst->fbSystemDump ); /* reset fb */
 
@@ -303,7 +303,8 @@ void TD_Recorder(struct TD_Recorder* inst)
 				}
 				else if( inst->tonTriggerDelay.Q and inst->Valid ) { /* we got a trigger and now we save everything */
 					std::strcpy( inst->OutputFileName, inst->FileNamePrefix );
-					TD_filenameDT( (UDINT) "TD_Recorder_", (UDINT) ((char*) &inst->OutputFileName + std::strlen(inst->FileNamePrefix)), sizeof(inst->OutputFileName)-1 );
+					TD_filenameDT(reinterpret_cast<UDINT>( "TD_Recorder_" ), 
+						(UDINT) ((char*) &inst->OutputFileName + std::strlen(inst->FileNamePrefix)), sizeof(inst->OutputFileName)-1 );
 					std::strcat( (char*) &inst->OutputFileName, (char*) ".html" );
 					std::strcpy( inst->DumpFileName, inst->FileNamePrefix );
 					TD_filenameDT( (UDINT) "TD_Recorder_Dump_", (UDINT) ((char*) &inst->DumpFileName + std::strlen(inst->FileNamePrefix)), sizeof(inst->DumpFileName)-1 );
