@@ -6,6 +6,7 @@
 <!-- ### C_COMMENT( styles ) -->
 	<style type="text/css" media="screen">
 		body { overflow: hidden; }
+		button { width: 40px; height: 40px; border-radius: 5px;}
 		.shuttleDisabled { fill: grey; stroke: black; stroke-width: 0.01; }
 		.shuttleReady {fill: white; stroke: black; stroke-width: 0.01; }
 		.shuttleErrorStop { fill: red; stroke: black; stroke-width: 0.01; }
@@ -20,8 +21,9 @@
 		.segMovementDetected { stroke: green !important; }	
 		.highlightShuttle { stroke-width: 0.02; }
 		.highlightSegment { fill: #ff8f0f  !important;}
-		#controlContainer { border: 2px solid grey; background-color: lightgray; position: fixed; padding: 5px; border-radius: 5px; bottom: 10px; right: 10px; width:50%; opacity:70%;}
+		#controlContainer { border: 2px solid grey; background-color: lightgray; position: fixed; padding: 5px; border-radius: 5px; bottom: 10px; right: 10px; opacity:70%;}
 		#sliderTime { width: 100%; accent-color: #ff8f0f; }
+		#currentTime { display: block; text-align: center;}
 		#dlgHoverInfo { border: 2px solid grey; background-color: lightgray; position: absolute; margin: 0px; opacity:70%; z-index: 2147483647; }
 	</style>
 <!-- ### C_COMMENT( scripting ) -->	
