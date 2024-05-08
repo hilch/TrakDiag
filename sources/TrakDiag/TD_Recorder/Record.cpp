@@ -103,17 +103,20 @@ size_t Record::toJavascript( char* s, const size_t maxLength, const unsigned rec
 	for( unsigned n = 0; n < TD_MAX_SUPPORTED_SEGMENTS_ASM; ++n ){
 		auto &sd = m_segmentData[n];
 		if( sd.id != 0xffff ){
-			int len = std::snprintf( buffer, sizeof(buffer), "%s new SegmentData( %u, 0x%x, 0x%x, %d, %d, %d, %d, %d, %d )",
+			UINT flags{};
+			flags |= sd.bits.communicationReady ? 0x01 : 0;
+			flags |= sd.bits.readyForPowerOn ? 0x02 : 0;
+			flags |= sd.bits.powerOn ? 0x04 : 0;
+			flags |= sd.bits.segmentEnable ? 0x08 : 0;
+			flags |= sd.bits.errorInitiator ? 0x10 : 0;
+			flags |= sd.bits.movementDetected ? 0x20 : 0;
+			flags |= sd.PlcOpenState == mcACPTRAK_ERRORSTOP ? 0x80 : 0;
+			int len = std::snprintf( buffer, sizeof(buffer), "%s new SegmentData( %u, 0x%x, 0x%x, 0x%x )",
 											n == 0 ? "" : "\n\t\t\t\t,", 
 											sd.id,
 											sd.PlcOpenState,
 											sd.errorReason,
-											sd.bits.communicationReady,
-											sd.bits.readyForPowerOn,
-											sd.bits.powerOn,
-											sd.bits.segmentEnable,
-											sd.bits.movementDetected,
-											sd.bits.errorInitiator );
+											flags );
 			if( (static_cast<size_t>(totalLength) + len) <= maxLength ){
 				totalLength += len;
 				std::strcat( s, buffer );
