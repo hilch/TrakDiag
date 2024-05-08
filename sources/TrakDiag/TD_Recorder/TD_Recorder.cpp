@@ -660,8 +660,8 @@ void TD_Recorder(struct TD_Recorder* inst)
 			if( inst->fbFileClose.status == ERR_OK ){ /* successful */
 				inst->fbFileClose.enable = false; /* reset fb */
 				FileClose( &inst->fbFileClose );
-				inst->fbFileWrite.pSrc = (UDINT) HTML_FOOTER;
-				inst->fbFileWrite.len = std::strlen( HTML_FOOTER );
+				inst->fbFileWrite.pSrc = reinterpret_cast<UDINT>(inst->pBuffer);
+				inst->fbFileWrite.len = std::snprintf( reinterpret_cast<char*>(inst->pBuffer), BUFFER_SIZE, HTML_FOOTER );
 				inst->fbFileWrite.enable = true; /* start fb */
 				FileWriteEx( &inst->fbFileWrite );	
 				inst->step = WRITE_HTML_FOOTER;

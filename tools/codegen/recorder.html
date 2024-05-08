@@ -20,7 +20,8 @@
 		.segMovementDetected { stroke: green !important; }	
 		.highlightShuttle { stroke-width: 0.02; }
 		.highlightSegment { fill: #ff8f0f  !important;}
-		#controlContainer { border: 2px solid grey; background-color: lightgray; position: fixed; bottom: 10px; right: 10px; width:50%; opacity:70%;}
+		#controlContainer { border: 2px solid grey; background-color: lightgray; position: fixed; padding: 5px; border-radius: 5px; bottom: 10px; right: 10px; width:50%; opacity:70%;}
+		#sliderTime { width: 100%; accent-color: #ff8f0f; }
 		#dlgHoverInfo { border: 2px solid grey; background-color: lightgray; position: absolute; margin: 0px; opacity:70%; z-index: 2147483647; }
 	</style>
 <!-- ### C_COMMENT( scripting ) -->	
@@ -6919,7 +6920,7 @@
 <!-- ### HTML_FOOTER -->
 	</div>
 	<div id="controlContainer">
-	<input type="range" min="1" max="100" value="0" class="slider" id="sliderTime" style="width:90%;"><br />
+	<input type="range" min="1" max="100" value="0" class="slider" id="sliderTime"><br />
 	<label id="currentTime" for="sliderTime"></label><br />
 	<button id="btnPlay"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg></button>
 	<button id="btnLeft"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" ><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg></button>
