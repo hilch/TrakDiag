@@ -5846,10 +5846,10 @@
 
 <!-- ### C_COMMENT( adjust view box ) -->			
 			const svg = document.querySelector('#svgData svg');
-			svg.viewBox.baseVal.x = svg.getBBox().x-0.02;
-			svg.viewBox.baseVal.width = svg.getBBox().width+0.04;
-			svg.viewBox.baseVal.y = svg.getBBox().y-0.02;
-			svg.viewBox.baseVal.height = svg.getBBox().height+0.04;
+			svg.viewBox.baseVal.x = svg.getBBox().x-0.05;
+			svg.viewBox.baseVal.width = svg.getBBox().width+0.1;
+			svg.viewBox.baseVal.y = svg.getBBox().y-0.05;
+			svg.viewBox.baseVal.height = svg.getBBox().height+0.1;
 			record.forEach( r => r.createSVG());
 			const shuttleParent = document.createElementNS('http://www.w3.org/2000/svg', 'g');
 			shuttleParent.setAttribute('id', 'shuttles');
