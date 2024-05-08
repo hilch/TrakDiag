@@ -33,6 +33,20 @@
 				this.name = name;
 				this.length = length;
 				this.plcAddress = plcAddress;
+				this.segmentBody = undefined;
+				this.segmentBody2 = undefined;
+				this.segmentParent = undefined;
+				this.PLCopen = 5; // startup 
+				this.errReason = 0; // none
+				this.errInitiator = false;
+			}
+<!-- ### C_COMMENT( Segment.plcOpenStatus ) -->			
+			plcOpenText() {
+				return ['disabled', 'homing', 'ready', 'stopping', 'errorstop', 'startup', 'invalid configuration'][this.PLCopen];
+			}
+<!-- ### C_COMMENT( Segment.errorReason ) -->			
+			errorReasonText() {
+				return ['none', 'unspecified', 'no gripper', 'command', 'segment', 'assembly', 'channel', 'shuttle unobservable', 'encoder difference'][this.errReason];
 			}
 <!-- ### C_COMMENT( Segment.addEvents ) -->
 			addEvents(){
@@ -40,9 +54,16 @@
 					const dlg = document.getElementById('dlgHoverInfo');
 					dlg.style.left = event.pageX + 10 + 'px';
 					dlg.style.top = event.pageY + 10 + 'px';
-					dlg.innerHTML = 'name: ' + this.name + '<br />' + 'length: ' + this.length
-						+ '<br />' + 'ID: ' + this.ID
-						+ '<br />' + 'PLC address: ' + this.plcAddress;
+					let content = `name: ${this.name}`
+						+ '<br />ID: ' + this.ID
+						+ '<br />PLC address: ' + this.plcAddress
+						+ `<br />length: ${this.length.toPrecision(3)} m`;
+						+ '<br />PLCopen: ' + this.plcOpenText();						
+					if( this.PLCopen == 4){ // error stop ?
+						content = content + '<br />Error Reason: ' + this.errorReasonText();
+						content = content + `<br />Error Initiator: ${this.errInitiator ? 'yes' : 'no'}`;
+					}
+					dlg.innerHTML = content;
 					this.segmentBody.classList.add('highlightSegment');
 					this.segmentBody2.classList.add('highlightSegment');					
 					dlg.show();
@@ -81,8 +102,10 @@
 				const relpos = segmentPosition / this.length;
 				return relpos * this.pathElement.getTotalLength();
 			}
-<!-- ### C_COMMENT( Segment.paintShuttle ) -->
-			setStatus( flags ){
+<!-- ### C_COMMENT( Segment.setStatus ) -->
+			setStatus( flags, po, er ){
+				this.PLCopen = po;
+				this.errReason = er;
 				const commReady = !!(flags &0x01);
 				const readyForPowerOn = !!(flags & 0x02);
 				const power = !!(flags & 0x04);
@@ -146,7 +169,7 @@
 			}
 <!-- ### C_COMMENT( SegmentData.paint ) -->
 			paint(){
-				segment[this.id].setStatus( this.flags );
+				segment[this.id].setStatus( this.flags, this.PLCopen, this.errReason );
 			}
 		}
 <!-- ### C_COMMENT( class Shuttle ) -->
