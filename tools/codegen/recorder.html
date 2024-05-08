@@ -16,7 +16,8 @@
 		.segNotReadyForPowerOn { fill: darkgray; }
 		.segNotEnabled { fill: yellow; }
 		.segDisabled { 	fill: dimgray; }
-		.segOffline { 	fill: magenta }		
+		.segOffline { 	fill: magenta; }
+		.segMovementDetected { stroke: green !important; }	
 		.highlightShuttle { stroke-width: 0.02; }
 		.highlightSegment { fill: #ff8f0f  !important;}
 		#controlContainer { border: 2px solid grey; background-color: lightgray; position: fixed; bottom: 10px; right: 10px; width:50%; opacity:70%;}
@@ -36,6 +37,7 @@
 				this.segmentBody = undefined;
 				this.segmentBody2 = undefined;
 				this.segmentParent = undefined;
+				this.arrowElement = undefined;
 				this.PLCopen = 5; // startup 
 				this.errReason = 0; // none
 				this.errInitiator = false;
@@ -150,7 +152,13 @@
 				else {
 					this.segmentBody.classList.add('segOffline');
 					this.segmentBody2.classList.add('segOffline');
-				}				
+				}
+				if( movementDetected ){
+					this.pathElement.classList.add('segMovementDetected');
+				}
+				else {
+					this.pathElement.classList.remove('segMovementDetected');					
+				}
 			}				
 <!-- ### C_COMMENT( Segment.paintShuttle ) -->
 			paintShuttle( svg ){
