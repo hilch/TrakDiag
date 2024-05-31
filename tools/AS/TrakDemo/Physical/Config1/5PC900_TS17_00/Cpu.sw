@@ -44,6 +44,7 @@
     <BinaryObject Name="Config_3" Source="" Memory="UserROM" Language="Binary" />
     <BinaryObject Name="Config_2" Source="" Memory="UserROM" Language="Binary" />
     <BinaryObject Name="Config" Source="" Memory="UserROM" Language="Binary" />
+    <BinaryObject Name="Hierarchy" Source="" Memory="UserROM" Language="Binary" />
   </Binaries>
   <Libraries>
     <LibraryObject Name="McBase" Source="Libraries.McBase.lby" Memory="UserROM" Language="binary" Debugging="true" />
