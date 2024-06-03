@@ -94,7 +94,7 @@ void TD_SegmentsInfo(struct TD_SegmentsInfo* inst)
 		switch( inst->step ){
 			case START: /* start */
 			inst->Busy = 1;
-			inst->StatusID = 0;
+			inst->ErrorID = 0;
 			inst->n = 0;
 			inst->fbGetSegment.Assembly = inst->Assembly;
 			inst->fbGetSegment.AdvancedParameters.SelectionMode = mcACPTRAK_GET_SEG_ALL;
@@ -135,7 +135,7 @@ void TD_SegmentsInfo(struct TD_SegmentsInfo* inst)
 				}
 			}
 			else if( inst->fbGetSegment.Error ){ /* internal error */
-				inst->StatusID = inst->fbGetSegment.ErrorID;
+				inst->ErrorID = inst->fbGetSegment.ErrorID;
 				inst->fbGetSegment.Next = false;
 				inst->fbGetSegment.Enable = false; /* reset fb */
 				MC_BR_AsmGetSegment_AcpTrak( &inst->fbGetSegment );
@@ -167,7 +167,7 @@ void TD_SegmentsInfo(struct TD_SegmentsInfo* inst)
 				}
 			}
 			else if( inst->fbSegGetInfo.Error ){ /* internal error */
-				inst->StatusID = inst->fbSegGetInfo.ErrorID;
+				inst->ErrorID = inst->fbSegGetInfo.ErrorID;
 				inst->fbSegGetInfo.Execute = false; /* reset fb */
 				MC_BR_SegGetInfo_AcpTrak( &inst->fbSegGetInfo );
 				inst->step = INTERNAL_ERROR_SEGGETINFO;
@@ -195,7 +195,7 @@ void TD_SegmentsInfo(struct TD_SegmentsInfo* inst)
 		inst->step = START;
 		inst->Count = 0;
 		inst->Error = false;
-		inst->StatusID = 0;
+		inst->ErrorID = 0;
 		inst->Busy = false;
 		inst->Done = false;
 	}

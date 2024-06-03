@@ -47,7 +47,7 @@ void TD_LogWrite(struct TD_LogWrite* inst)
 		switch( inst->step ){
 			case 0: /* start */
 			inst->Busy = 1;
-			inst->StatusID = 0;
+			inst->ErrorID = 0;
 			std::memset( &inst->fbLogGetIdent, 0, sizeof(inst->fbLogGetIdent) );
 			std::strcpy( (char*) &inst->fbLogGetIdent.Name, inst->Name );
 			inst->fbLogGetIdent.Execute = 1;
@@ -77,7 +77,7 @@ void TD_LogWrite(struct TD_LogWrite* inst)
 					inst->step = 100;
 				}
 				else if( inst->fbLogWrite.Error ){
-					inst->StatusID = inst->fbLogWrite.StatusID;
+					inst->ErrorID = inst->fbLogWrite.StatusID;
 					inst->fbLogWrite.Execute = 0; /* reset fb */
 					ArEventLogWrite( &inst->fbLogWrite );
 					inst->step = 9001;
@@ -94,7 +94,7 @@ void TD_LogWrite(struct TD_LogWrite* inst)
 					inst->step = 10;
 				}
 				else {
-					inst->StatusID = inst->fbLogGetIdent.StatusID;
+					inst->ErrorID = inst->fbLogGetIdent.StatusID;
 					inst->step = 9000;
 				}
 				inst->fbLogGetIdent.Execute = 0; /* reset fb */
@@ -110,7 +110,7 @@ void TD_LogWrite(struct TD_LogWrite* inst)
 				inst->step = 0;
 			}
 			else if( inst->fbLogCreate.Error ){
-				inst->StatusID = inst->fbLogCreate.StatusID;
+				inst->ErrorID = inst->fbLogCreate.StatusID;
 				inst->fbLogCreate.Execute = 0;
 				ArEventLogCreate( &inst->fbLogCreate );
 				inst->step = 9002;

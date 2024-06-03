@@ -70,7 +70,7 @@ void TD_LogWatchDINT(struct TD_LogWatchDINT* inst)
 				}
 				else if( inst->fbLogWrite.Error ){
 					inst->Busy = 0;
-					inst->StatusID = inst->fbLogWrite.StatusID;
+					inst->ErrorID = inst->fbLogWrite.ErrorID;
 					inst->fbLogWrite.Execute = 0;
 					TD_LogWrite( &inst->fbLogWrite );
 					inst->step = 9999;				
@@ -89,7 +89,7 @@ void TD_LogWatchDINT(struct TD_LogWatchDINT* inst)
 	else {
 		inst->Busy = 0;
 		inst->Valid = 0;
-		inst->StatusID = 0;
+		inst->ErrorID = 0;
 		inst->Error = 0;
 		inst->step = 0;
 	}

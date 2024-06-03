@@ -86,7 +86,7 @@ void TD_WebServices(struct TD_WebServices* inst)
 			}
 			else if( inst->fbSegmentsInfo.Error ){
 				inst->Error = true;
-				inst->ErrorID = inst->fbSegmentsInfo.StatusID;
+				inst->ErrorID = inst->fbSegmentsInfo.ErrorID;
 				inst->step = INTERNAL_ERROR_SEGMENTINFO;				
 				inst->fbSegmentsInfo.Execute = false; /* reset fb */
 				TD_SegmentsInfo( &inst->fbSegmentsInfo );
@@ -538,7 +538,7 @@ void TD_WebServices(struct TD_WebServices* inst)
 				inst->step = SEND_SHUTTLE_INFO;
 			}
 			else if( inst->fbShuttleErrorTexts.Error ) { /* error */
-				std::sprintf( inst->webData.responseData, "{ \"result\" : \"%ld\" }", inst->fbShuttleErrorTexts.StatusID  );
+				std::sprintf( inst->webData.responseData, "{ \"result\" : \"%ld\" }", inst->fbShuttleErrorTexts.ErrorID  );
 				inst->fbShuttleErrorTexts.Execute = false; /* reset fb */
 				TD_ShuttleErrorTexts( &inst->fbShuttleErrorTexts );
 				SendResponse( inst, "application/json; charset=iso-8859-1" );

@@ -255,7 +255,7 @@ void TD_Recorder(struct TD_Recorder* inst)
 			}
 			else if( inst->fbSegmentsInfo.Error ){
 				inst->Error = true;
-				inst->ErrorID = inst->fbSegmentsInfo.StatusID;
+				inst->ErrorID = inst->fbSegmentsInfo.ErrorID;
 				inst->step = INTERNAL_ERROR_SEGMENTINFO;				
 				inst->fbSegmentsInfo.Execute = false; /* reset fb */
 				TD_SegmentsInfo( &inst->fbSegmentsInfo );

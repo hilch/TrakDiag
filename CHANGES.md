@@ -1,10 +1,13 @@
 V3.0.0
+some incompatible changes compared to V2.x were needed.
+
 - mappMotion 5.26.x required as minimum. Discard support of older firmware.
 - Rename TD_ServicesSegInfoType to TD_SegInfoType
 - Remove obsolete datatype TD_RecorderSegInfoType
 
 TD_WebServices:
 - Remove output SegInfo.segmentCyclicInfo
+- All fb now uniformly use output 'ErrorID' instead of 'StatusID'
 - Add output SegInfo.segmentData
 - Segments are colored dark red when in ErrorStop. Segments that initiate errors are colored red.
 - Segments are colored yellow when enable input not active.

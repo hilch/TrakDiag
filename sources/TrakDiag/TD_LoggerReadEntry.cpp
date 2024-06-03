@@ -60,22 +60,22 @@ void TD_LoggerReadEntry( struct TD_LoggerReadEntry* inst ){
 
 	inst->Error = inst->fbRead.Error || inst->fbReadObjectID.Error || inst->fbReadDescription.Error;
 	if( inst->fbRead.Error )
-		inst->StatusID = inst->fbRead.StatusID;
+		inst->ErrorID = inst->fbRead.StatusID;
 	else if( inst->fbReadObjectID.Error )
-		inst->StatusID = inst->fbReadObjectID.StatusID;
+		inst->ErrorID = inst->fbReadObjectID.StatusID;
 	else if( inst->fbReadDescription.Error ) {
 		if( inst->fbReadDescription.StatusID == arEVENTLOG_ERR_NO_DESCRIPTION ){  /* no description found, but that's ok */
-			inst->StatusID = 0;
+			inst->ErrorID = 0;
 			inst->Error = 0; 
 			inst->fbReadDescription.Done = 1;  /* force done */
 			std::strcpy( inst->Entry.Description, "(no description)" );
 		}
 		else {
-			inst->StatusID = inst->fbReadDescription.StatusID;
+			inst->ErrorID = inst->fbReadDescription.StatusID;
 		}
 	}
 	else
-		inst->StatusID = 0;
+		inst->ErrorID = 0;
 
 	/* convert TimeStamp which is UTC to local time */
 	if( inst->fbRead.Done )
@@ -105,7 +105,7 @@ void TD_LoggerReadEntry( struct TD_LoggerReadEntry* inst ){
 	if( !inst->Execute ) {
 		inst->Done = 0;
 		inst->Error = 0;
-		inst->StatusID = 0;
+		inst->ErrorID = 0;
 		std::memset( &inst->Entry, 0, sizeof(inst->Entry) );
 		inst->UtcToLocalTime_Done = 0;
 	}

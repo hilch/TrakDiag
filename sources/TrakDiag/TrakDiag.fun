@@ -27,7 +27,7 @@ END_FUNCTION
 		Valid : BOOL;
 		Busy : BOOL;
 		Error : BOOL;
-		StatusID : DINT;
+		ErrorID : DINT;
 	END_VAR
 	VAR
 		signalOld : BOOL;
@@ -49,7 +49,7 @@ END_FUNCTION_BLOCK
 		Valid : BOOL;
 		Busy : BOOL;
 		Error : BOOL;
-		StatusID : DINT;
+		ErrorID : DINT;
 	END_VAR
 	VAR
 		signalOld : USINT;
@@ -70,7 +70,7 @@ END_FUNCTION_BLOCK
 		Valid : BOOL;
 		Busy : BOOL;
 		Error : BOOL;
-		StatusID : DINT;
+		ErrorID : DINT;
 	END_VAR
 	VAR
 		signalOld : DINT;
@@ -91,7 +91,7 @@ END_FUNCTION_BLOCK
 		Valid : BOOL;
 		Busy : BOOL;
 		Error : BOOL;
-		StatusID : DINT;
+		ErrorID : DINT;
 	END_VAR
 	VAR
 		signalOld : STRING[120];
@@ -112,7 +112,7 @@ END_FUNCTION_BLOCK
 		Done : BOOL;
 		Busy : BOOL;
 		Error : BOOL;
-		StatusID : DINT;
+		ErrorID : DINT;
 	END_VAR
 	VAR
 		fbLogCreate : ArEventLogCreate;
@@ -138,7 +138,7 @@ END_FUNCTION_BLOCK
 		Done : BOOL;
 		Busy : BOOL;
 		Error : BOOL;
-		StatusID : DINT;
+		ErrorID : DINT;
 	END_VAR
 	VAR
 		step : UINT;
@@ -164,7 +164,7 @@ END_FUNCTION_BLOCK
 		Done : BOOL;
 		Busy : BOOL;
 		Error : BOOL;
-		StatusID : DINT;
+		ErrorID : DINT;
 	END_VAR
 	VAR
 		fbSegCommandError : MC_BR_SegCommandError_AcpTrak;
@@ -183,7 +183,7 @@ END_FUNCTION_BLOCK
 		Entry : TD_LoggerEntryType; (*TD_LoggerEntryType*)
 		Done : BOOL;
 		Error : BOOL;
-		StatusID : DINT;
+		ErrorID : DINT;
 	END_VAR
 	VAR
 		fbRead : ArEventLogRead;
@@ -227,7 +227,7 @@ END_FUNCTION_BLOCK
 		Done : BOOL;
 		Busy : BOOL;
 		Error : BOOL;
-		StatusID : DINT;
+		ErrorID : DINT;
 		NumberOfRecords : UINT;
 		Records : McErrorRecordsType;
 	END_VAR
@@ -251,7 +251,7 @@ END_FUNCTION_BLOCK
 		Done : BOOL;
 		Busy : BOOL;
 		Error : BOOL;
-		StatusID : DINT;
+		ErrorID : DINT;
 		Count : UINT;
 	END_VAR
 	VAR
