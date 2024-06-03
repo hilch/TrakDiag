@@ -8,7 +8,7 @@ TD_WebServices:
 - Add output SegInfo.segmentData
 - Segments are colored dark red when in ErrorStop. Segments that initiate errors are colored red.
 - Segments are colored yellow when enable input not active.
-- Add PLCopen state and error reason to segment info dialog
+- Add PLCopen state, PLK-Interface, error reason and Channel count to segment info dialog
 TD_Recorder:
 - Change datatype of .SegInfo to TD_SegInfoType
 - Add logging segment datatype

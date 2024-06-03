@@ -163,7 +163,7 @@ void SendResponse_SingleShuttleInfo(struct TD_WebServices* inst){
 			}
 
 			std::sprintf( inst->webData.responseData, 
-				"{ \"result\" : \"ok\", \"index\":%d, \"active\": %s, \"virtual\": %s, \"segmentID\":%d, \"segmentName\":\"%s\", \"segmentPosition\":%f, \"PLCopen\":\"%s\" }", 
+				"{ \"result\" : \"ok\", \"index\":%d, \"active\": %s, \"virtual\": %s, \"segmentID\":%d, \"segmentName\":\"%s\", \"segmentPosition\":%.4f, \"PLCopen\":\"%s\" }", 
 				shuttleIndex, shuttle->flags&0x01 ? "true" : "false", shuttle->flags&0x02 ? "true" : "false", shuttle->segmentID, 
 				segmentName, shuttle->segmentPosition/100.0*segmentLength, GetAxisPlcOpenStateString(shuttle->plcOpenState) );
 		}
@@ -190,10 +190,13 @@ void SendResponse_SegmentList(struct TD_WebServices* inst){
 	size_t length = 2;
 	for( int n = 0; n < inst->SegInfo.numberOfSegments; ++n ){
 		char s[256];
-		length += std::sprintf( s, "%s \"name\": \"%s\", \"ID\": %d, \"length\": %01.15lf }", n == 0 ? "{" : ",{", 
+		length += std::sprintf( s, "%s \"name\": \"%s\", \"ID\": %d, \"plk\": \"%s\", \"length\": %01.15lf, \"channels\": %d }", n == 0 ? "{" : ",{", 
 				inst->SegInfo.segmentInfo[n].Name,
 				inst->SegInfo.segmentInfo[n].ID,
-				inst->SegInfo.segmentInfo[n].Length	);
+				inst->SegInfo.segmentInfo[n].PlkInterface,			
+				inst->SegInfo.segmentInfo[n].Length,
+				inst->SegInfo.segmentInfo[n].ChannelCount
+			);
 		if( length < sizeof(inst->webData.responseData) ){
 			std::strcat( (char*) inst->webData.responseData, s ); /* copy segment info */
 		}

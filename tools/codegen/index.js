@@ -3,10 +3,12 @@
 /* @ */
 
 class Segment {
-	constructor(ID, name, length) {
+	constructor(ID, plk, name, channels, length) {
 		this.ID = ID;
+		this.plk = plk;
 		this.name = name;
 		this.length = length;
+		this.channels = channels;
 		this.segmentPath = undefined;
 		this.segmentBody = undefined;
 		this.segmentBodyStyle = undefined;
@@ -32,10 +34,12 @@ class Segment {
 	showSegmentDialog = (event) => {
 		const content = [
 			['ID: ', this.ID],
+			['PLK Interface: ', this.plk ],
 			['PLCopen:', this.plcOpenStatus()],
 			['Error Reason:', this.errorReason()],
 			['Error Initiator:', this.errorInitator()],
 			['Name: ', `"${this.name}"` ],
+			['Channel Count:', this.channels ],
 			['Length: ', `${this.length.toFixed(3)} m`],
 		];
 		assembly.showModalDialog( `Segment "${this.name}"`, content, event );
@@ -331,7 +335,7 @@ class Assembly {
 		try {
 			let response = await fetch('/TrakWebApi/segments');
 			let segmentInfo = await response.json()
-			segmentInfo.forEach(item => this.segment[item.ID] = new Segment(item.ID, item.name, item.length));
+			segmentInfo.forEach(item => this.segment[item.ID] = new Segment(item.ID, item.plk, item.name, item.channels, item.length));
 		}
 		catch( err ){
 			document.getElementById('timeoutBox').style.display = 'block';
