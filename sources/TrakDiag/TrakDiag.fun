@@ -262,7 +262,7 @@ END_FUNCTION_BLOCK
 	END_VAR
 END_FUNCTION_BLOCK
 
-{REDUND_ERROR} FUNCTION_BLOCK TD_LimitFileNumber (*(internal use)*)
+{REDUND_ERROR} FUNCTION_BLOCK TD_LimitFileNumber (*Limit number of files in a certain folder*)
 	VAR_INPUT
 		Execute : BOOL;
 		FileDeviceName : STRING[32]; (*file device*)

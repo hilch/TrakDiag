@@ -63,7 +63,7 @@ SOFTWARE.
 #define PASS_DELETE_FILES				2
 
 
-/* Recorder */
+/* Limit number of files in a certain folder */
 void TD_LimitFileNumber(struct TD_LimitFileNumber* inst)
 {
 
