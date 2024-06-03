@@ -15,7 +15,7 @@ Finally, a web-based diagnostic interface can be generated with this library, wh
 - ArEventLog
 - astime
 - DataObj
-- McAcpTrak >= 5.21.1
+- McAcpTrak >= 5.21.1 (V2.x), >= 5.26.0 (V3.x)
 - standard
 - McBase
 - sys_lib
@@ -271,7 +271,7 @@ output:
 
 ![example_recorder](https://github.com/hilch/TrakDiag/blob/main/examples/screenshot_recorder.png)
 
-[download this example and open it in your browser](https://github.com/hilch/TrakDiag/blob/main/examples/TD_Recorder_2023-07-06T13_40_34.html)
+[download this example and open it in your browser](https://github.com/hilch/TrakDiag/blob/main/examples/Demo_TD_Recorder_2024-06-03T13_45_50.html)
 
 
 ## TD_WebServices
@@ -307,7 +307,7 @@ END_PROGRAM
 HTML page with assembly's SvgData and shuttle positions.
 Simply embedd this path into mappView's WebViewer widget.
 
-![screenshot_mappView.png](https://github.com/hilch/TrakDiag/blob/main/examples/screenshot_mappView.png)
+![screenshot_mappView.png](https://github.com/hilch/TrakDiag/blob/main/examples/screenshot_webservices.png)
 
 ### /TrakWebApi/info
 
