@@ -2,10 +2,12 @@
 <?AutomationStudio FileVersion="4.9"?>
 <Package xmlns="http://br-automation.co.at/AS/Package">
   <Objects>
+    <Object Type="File" Private="true">Segments.var</Object>
     <Object Type="File">Assembly.typ</Object>
     <Object Type="Package">Libraries</Object>
     <Object Type="File" Private="true">TrakConstants.var</Object>
     <Object Type="Program" Language="IEC">TrakInit</Object>
-    <Object Type="Program" Language="IEC">AssCtrl</Object>
+    <Object Type="Program" Language="IEC">AssCtrl1</Object>
+    <Object Type="Program" Language="IEC">AssCtrl2</Object>
   </Objects>
 </Package>

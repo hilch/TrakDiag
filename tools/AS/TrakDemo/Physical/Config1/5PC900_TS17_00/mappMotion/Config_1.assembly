@@ -147,12 +147,20 @@
       </Group>
       <Property ID="ScopeOfErrorReaction" Value="Assembly" />
       <Property ID="ShuttleIdentificationTime" Value="0" />
+      <Selector ID="PositionControllerLagMonitor" Value="Inactive" />
+      <Group ID="Diverter">
+        <Property ID="DiverterWeakEndOverrideFactor" Value="1.0" />
+        <Property ID="DiverterStrenEndOverrideFactor" Value="1.0" />
+      </Group>
     </Group>
     <Group ID="Shuttles">
       <Property ID="MaxShuttleCount" Value="50" />
       <Property ID="MaxShuttleCommandCount" Value="0" />
       <Property ID="Deceleration" Value="0.0" />
       <Property ID="UseConvoys" Value="Inactive" />
+      <Selector ID="SwitchSectorAfterStop" Value="SwitchOntoSegmentSector">
+        <Property ID="Scope" Value="ShSs" />
+      </Selector>
       <Group ID="DistanceReserve">
         <Property ID="Collision" Value="0.002" />
         <Property ID="ErrorStop" Value="0.006" />
@@ -165,6 +173,7 @@
       </Group>
       <Group ID="CollisionAvoidance">
         <Selector ID="Strategy" Value="Constant" />
+        <Selector ID="Exclusion" Value="NotUsed" />
         <Group ID="MaximumModelDimensions">
           <Group ID="Length">
             <Property ID="ExtentToFront" Value="0.025" />
@@ -173,6 +182,132 @@
           <Group ID="Width">
             <Property ID="Width" Value="0.046" />
           </Group>
+        </Group>
+      </Group>
+      <Group ID="Coupling">
+        <Group ID="CouplingFeature">
+          <Property ID="EliminateShuttleToShuttleDelay" Value="FALSE" />
+        </Group>
+      </Group>
+    </Group>
+    <Group ID="Visualization">
+      <Property ID="MonitoringPv" />
+      <Property ID="ProcessingTaskClass" Value="4" />
+    </Group>
+    <Selector ID="Alarms" Value="None" />
+  </Element>
+  <Element ID="gAssembly_2" Type="assembly">
+    <Group ID="Tracks">
+      <Property ID="TrackSeparation" Value="0.030" />
+      <Group ID="Track[1]">
+        <Group ID="Segments">
+          <Property ID="SegmentRef[1]" Value="::gSegC2" />
+          <Property ID="SegmentRef[2]" Value="::gSegC3" />
+          <Property ID="SegmentRef[3]" Value="::gSegC4" />
+          <Property ID="SegmentRef[4]" Value="::gSegC5" />
+          <Property ID="SegmentRef[5]" Value="::gSegC6" />
+          <Property ID="SegmentRef[6]" Value="::gSegC7" />
+          <Property ID="SegmentRef[7]" Value="::gSegC8" />
+          <Property ID="SegmentRef[8]" Value="::gSegC9" />
+          <Property ID="SegmentRef[9]" Value="::gSegC10" />
+          <Property ID="SegmentRef[10]" Value="::gSegC11" />
+          <Property ID="SegmentRef[11]" Value="::gSegC12" />
+          <Property ID="SegmentRef[12]" Value="::gSegC1" />
+        </Group>
+        <Selector ID="Position" Value="Absolute">
+          <Property ID="SegmentRef" Value="::gSegC2" />
+          <Property ID="SegmentCountDirection" Value="RightToLeft" />
+          <Group ID="Translation">
+            <Property ID="X" Value="0.0" />
+            <Property ID="Y" Value="0.0" />
+            <Property ID="Z" Value="0.0" />
+          </Group>
+          <Group ID="Orientation">
+            <Property ID="Angle1" Value="0.0" />
+            <Property ID="Angle2" Value="0.0" />
+            <Property ID="Angle3" Value="0.0" />
+          </Group>
+        </Selector>
+      </Group>
+    </Group>
+    <Group ID="CommonSegmentSettings">
+      <Property ID="SegmentSimulationOnPLC" Value="On" />
+      <Selector ID="CoggingCompensation" Value="Active">
+        <Property ID="UpperVelLimit" Value="0.5" />
+      </Selector>
+      <Property ID="ElongationCompensation" Value="Inactive" />
+      <Selector ID="StopReaction" Value="InductionHalt" />
+      <Selector ID="SpeedFilter" Value="NotUsed" />
+      <Group ID="ControllerParameters">
+        <Group ID="DefaultParameter">
+          <Group ID="Controller">
+            <Group ID="Position">
+              <Property ID="ProportionalGain" Value="0.0" />
+            </Group>
+            <Group ID="Speed">
+              <Property ID="ProportionalGain" Value="0.0" />
+              <Property ID="IntegrationTime" Value="0.0" />
+            </Group>
+            <Group ID="FeedForward">
+              <Property ID="TotalMass" Value="0.0" />
+              <Property ID="ForcePositive" Value="0.0" />
+              <Property ID="ForceNegative" Value="0.0" />
+              <Property ID="SpeedForceFactor" Value="0.0" />
+              <Property ID="ForceLoad" Value="0.0" />
+            </Group>
+          </Group>
+          <Group ID="MovementErrorLimits">
+            <Property ID="PositionError" Value="0.004" />
+            <Property ID="VelocityError" Value="1.2" />
+          </Group>
+          <Group ID="Diverter">
+            <Property ID="ForceOverride" Value="1.0" />
+          </Group>
+        </Group>
+        <Selector ID="AdditionalParameterSets" Value="NotUsed" />
+      </Group>
+      <Property ID="ScopeOfErrorReaction" Value="Assembly" />
+      <Property ID="ShuttleIdentificationTime" Value="0" />
+      <Selector ID="PositionControllerLagMonitor" Value="Inactive" />
+      <Group ID="Diverter">
+        <Property ID="DiverterWeakEndOverrideFactor" Value="1.0" />
+        <Property ID="DiverterStrenEndOverrideFactor" Value="1.0" />
+      </Group>
+    </Group>
+    <Group ID="Shuttles">
+      <Property ID="MaxShuttleCount" Value="50" />
+      <Property ID="MaxShuttleCommandCount" Value="0" />
+      <Property ID="Deceleration" Value="0.0" />
+      <Property ID="UseConvoys" Value="Inactive" />
+      <Selector ID="SwitchSectorAfterStop" Value="SwitchOntoSegmentSector">
+        <Property ID="Scope" Value="ShSs" />
+      </Selector>
+      <Group ID="DistanceReserve">
+        <Property ID="Collision" Value="0.002" />
+        <Property ID="ErrorStop" Value="0.006" />
+      </Group>
+      <Group ID="ShuttleStereotypes">
+        <Property ID="ShuttleStRef[1]" Value="ShuttleStereotype_1" />
+      </Group>
+      <Group ID="MagnetPlateConfigurations">
+        <Selector ID="ShuttleType[1]" Value="8F1SA.100.xxxxxx-x" />
+      </Group>
+      <Group ID="CollisionAvoidance">
+        <Selector ID="Strategy" Value="Constant" />
+        <Selector ID="Exclusion" Value="NotUsed" />
+        <Group ID="MaximumModelDimensions">
+          <Group ID="Length">
+            <Property ID="ExtentToFront" Value="0.025" />
+            <Property ID="ExtentToBack" Value="0.025" />
+          </Group>
+          <Group ID="Width">
+            <Property ID="Width" Value="0.046" />
+          </Group>
+        </Group>
+      </Group>
+      <Group ID="Coupling">
+        <Group ID="CouplingFeature">
+          <Property ID="EliminateShuttleToShuttleDelay" Value="FALSE" />
         </Group>
       </Group>
     </Group>
