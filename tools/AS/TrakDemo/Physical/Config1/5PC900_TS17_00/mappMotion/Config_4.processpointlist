@@ -10,4 +10,13 @@
       <Selector ID="BarrierFunctionality" Value="Off" />
     </Selector>
   </Element>
+  <Element ID="ProcessPointList_2" Type="processpointlist">
+    <Selector ID="ProcessPoint[0]">
+      <Property ID="Name" Value="PP_ErrorPosition2" />
+      <Property ID="SectorRef" Value="gSecC1" />
+      <Property ID="Position" Value="0.1" />
+      <Property ID="TriggerEventBufferSize" Value="10" />
+      <Selector ID="BarrierFunctionality" Value="Off" />
+    </Selector>
+  </Element>
 </Configuration>

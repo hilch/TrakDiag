@@ -25,6 +25,6 @@
     <Safety SafetyRelease="0.0" />
     <Transfer AddToUserPart="True" AdditionalUserDir="\USER" AllowDowngrade="False" AllowInitialTransfer="False" AllowPartitioning="False" ExecuteInitExitProgram="True" ForceInitialTransfer="True" IdentificationTypeValue="" IgnoreVersion="True" KeepNonVolatileMemory="False" PreserveVariableValues="False" ProjectConsistent="False" RebootDuringTransfer="False" SavedOfflineInstallationFolder="" SavedPipDestinationFolder="" SavedRuntimeUtilityCenterPackagePath="" TargetIdentificationType="Always" TryToBootInRunMode="True" UserFilesIgnoreDifference="True" />
     <Vc FirmwareVersion="" />
-    <OnlineConfiguration Name="5PC910.SX05-00_1" DeviceType="TCPIP" DeviceParameters="/IF=tcpip /LOPO=11159 /SA=113" ConnectionParameters="/COMT=2500 /RT=1000 /AM=* /SDT=5 /DAIP=10.49.40.236 /REPO=11159 /ANSL=1 /PT=11169" Description="" />
+    <OnlineConfiguration Name="ARsim_TCPIP" DeviceType="TCPIP" DeviceParameters="/IF=tcpip /LOPO=11159 /SA=1" ConnectionParameters="/COMT=2500 /RT=1000 /AM=* /DAIP=127.0.0.1 /REPO=11160 /ANSL=1" Description="" />
   </Configuration>
 </Cpu>

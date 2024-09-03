@@ -5,7 +5,8 @@
     <Task Name="TrakInit" Source="Trak.TrakInit.prg" Memory="UserROM" Language="IEC" Debugging="true" />
   </TaskClass>
   <TaskClass Name="Cyclic#2">
-    <Task Name="AssCtrl" Source="Trak.AssCtrl.prg" Memory="UserROM" Language="IEC" Debugging="true" />
+    <Task Name="AssCtrl1" Source="Trak.AssCtrl1.prg" Memory="UserROM" Language="IEC" Debugging="true" />
+    <Task Name="AssCtrl2" Source="Trak.AssCtrl2.prg" Memory="UserROM" Language="IEC" Debugging="true" />
   </TaskClass>
   <TaskClass Name="Cyclic#3" />
   <TaskClass Name="Cyclic#4" />
@@ -69,5 +70,7 @@
     <LibraryObject Name="powerlnk" Source="" Memory="UserROM" Language="Binary" Debugging="true" />
     <LibraryObject Name="arssl" Source="" Memory="UserROM" Language="Binary" Debugging="true" />
     <LibraryObject Name="asieccon" Source="" Memory="UserROM" Language="Binary" Debugging="true" />
+    <LibraryObject Name="MpAxis" Source="Libraries.MpAxis.lby" Memory="UserROM" Language="binary" Debugging="true" />
+    <LibraryObject Name="McAcpAx" Source="Libraries.McAcpAx.lby" Memory="UserROM" Language="binary" Debugging="true" />
   </Libraries>
 </SwConfiguration>
