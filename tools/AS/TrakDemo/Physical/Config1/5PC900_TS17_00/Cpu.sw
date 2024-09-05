@@ -7,6 +7,8 @@
   <TaskClass Name="Cyclic#2">
     <Task Name="AssCtrl1" Source="Trak.AssCtrl1.prg" Memory="UserROM" Language="IEC" Debugging="true" />
     <Task Name="AssCtrl2" Source="Trak.AssCtrl2.prg" Memory="UserROM" Language="IEC" Debugging="true" />
+    <Task Name="AssCtrl1" Source="Trak.AssCtrl1.prg" Memory="UserROM" Language="IEC" Debugging="true" />
+    <Task Name="AssCtrl2" Source="Trak.AssCtrl2.prg" Memory="UserROM" Language="IEC" Debugging="true" />
   </TaskClass>
   <TaskClass Name="Cyclic#3" />
   <TaskClass Name="Cyclic#4" />

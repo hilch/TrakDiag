@@ -89,7 +89,7 @@ void TD_Recorder(struct TD_Recorder* inst)
 					if( std::strlen(inst->DataObjectName) == 0 ){
 						char name[256]{0};
 						std::sprintf( name, "tdrec%s", inst->AssemblyName );
-						std::sprintf( inst->DataObjectName, "$$%8x", Djb2( (USINT*) name ) );	
+						std::sprintf( inst->DataObjectName, "$$%8lx", Djb2( (USINT*) name ) );	
 					}
 					inst->fbDatObjInfo.pName =  reinterpret_cast<UDINT>(inst->DataObjectName);
 					DatObjInfo( &inst->fbDatObjInfo );

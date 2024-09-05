@@ -102,7 +102,7 @@ void InitalizeInstance(struct TD_WebServices* inst){
 	if( std::strlen(inst->DataObjectName) == 0 ){
 		char name[256]{0};
 		std::sprintf( name, "tdws%s", inst->AssemblyName );
-		std::sprintf( inst->DataObjectName, "$$%8x", Djb2( (USINT*) name ) );	
+		std::sprintf( inst->DataObjectName, "$$%8lx", Djb2( (USINT*) name ) );	
 	}
 	inst->fbDatObjInfo.pName = (UDINT) inst->DataObjectName;
 	DatObjInfo( &inst->fbDatObjInfo );
@@ -140,7 +140,7 @@ unsigned long Djb2(unsigned char *str) {
 	unsigned long hash = 5381;
 	int c;
 
-	while (c = *str++)
+	while ( (c = *str++) )
 		hash = ((hash << 5) + hash) + c; /* hash * 33 + c */
 	return hash;
 }
