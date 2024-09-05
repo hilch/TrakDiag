@@ -79,7 +79,8 @@ void InitalizeInstance(struct TD_WebServices* inst){
 	inst->fbAsmReadInfo.Enable = true;
 
 	/* */
-	std::strcpy( inst->webData.serviceName, "TrakWebApi" );
+	std::strcpy( inst->webData.serviceName, "TrakWebApi/" );
+	std::strcat( inst->webData.serviceName, inst->AssemblyName );
 	inst->webData.fbHttpService.enable = false; /* reset fb */
 	inst->webData.fbHttpService.option = httpOPTION_HTTP_11 + httpOPTION_SERVICE_TYPE_ROOT;
 	inst->webData.fbHttpService.pServiceName = (UDINT) &inst->webData.serviceName;
@@ -96,10 +97,12 @@ void InitalizeInstance(struct TD_WebServices* inst){
 	/* */
 	inst->fbShuttleErrorTexts.Assembly = inst->pAssembly;
 
-	/* */
+	/* create data object for dynamic memory allocation */
 	inst->fbDatObjInfo.enable = false; /* reset fb */
 	if( std::strlen(inst->DataObjectName) == 0 ){
-		std::strcpy( inst->DataObjectName, "$$tdwmem" );
+		char name[256]{0};
+		std::sprintf( name, "tdws%s", inst->AssemblyName );
+		std::sprintf( inst->DataObjectName, "$$%8x", Djb2( (USINT*) name ) );	
 	}
 	inst->fbDatObjInfo.pName = (UDINT) inst->DataObjectName;
 	DatObjInfo( &inst->fbDatObjInfo );
@@ -132,14 +135,14 @@ void InitalizeInstance(struct TD_WebServices* inst){
 
 
 
-/* calculates djb2 hash */
-UDINT Djb2(USINT *str, size_t length ) {
-    UDINT hash = 5381;
+/* calculates djb2 hash http://www.cse.yorku.ca/~oz/hash.html */
+unsigned long Djb2(unsigned char *str) {
+	unsigned long hash = 5381;
+	int c;
 
-    while (length--) {
-        hash = ((hash << 5) + hash) + *str++; /* hash * 33 + c */
-    }
-    return hash;
+	while (c = *str++)
+		hash = ((hash << 5) + hash) + c; /* hash * 33 + c */
+	return hash;
 }
 
 /* gets length and ID of segment or -1 if not found */

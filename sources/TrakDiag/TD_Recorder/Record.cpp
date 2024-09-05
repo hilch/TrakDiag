@@ -2,6 +2,10 @@
 #include <cstring>
 #include "Record.h"
 
+
+
+
+
 /* class Record */
 Record::Record(){
 
@@ -136,3 +140,4 @@ size_t Record::toJavascript( char* s, const size_t maxLength, const unsigned rec
 	}
 	return totalLength;
 }
+

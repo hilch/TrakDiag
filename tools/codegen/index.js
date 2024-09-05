@@ -171,7 +171,7 @@ class Shuttle {
 
 	async showShuttleDialog(event){
 		try {
-			let response = await fetch(`/TrakWebApi/shuttle?index=${this.index}`);
+			let response = await fetch(`./shuttle?index=${this.index}`);
 			let shuttle = await response.json()
 			const title = `${!shuttle.active ? 'deleted ! ' : ''} Shuttle ${shuttle.index}`;
 			if( shuttle.result != "ok"){
@@ -333,7 +333,7 @@ class Assembly {
 		hoverInfo.innerText='loading SVG...';
 		hoverInfo.style.visibility='visible';
 		try {
-			let response = await fetch('/TrakWebApi/segments');
+			let response = await fetch('./segments');
 			let segmentInfo = await response.json()
 			segmentInfo.forEach(item => this.segment[item.ID] = new Segment(item.ID, item.plk, item.name, item.channels, item.length));
 		}
@@ -348,7 +348,7 @@ class Assembly {
 		svgParent.setAttribute('id', 'svgParent');
 		let response = undefined;
 		try {
-			response = await fetch('/TrakWebApi/svgdata');
+			response = await fetch('./svgdata');
 			if (response.status !== 200)
 				throw new Error(`Error fetching ${response.url}`);
 			svgParent.innerHTML = await response.text();
@@ -391,7 +391,7 @@ class Assembly {
 	/* read shuttle positions */
 	async readShuttlePositions() {
 		try {
-			const res = await fetch('/TrakWebApi/positions', { signal: AbortSignal.timeout(5000) });
+			const res = await fetch('./positions', { signal: AbortSignal.timeout(5000) });
 			if (res.status === 200) {
 				if( this.offline ) document.querySelector('#timeoutBox').style.display = 'none';
 				this.offline = false;
@@ -414,7 +414,7 @@ class Assembly {
 	/* read segment flags */
 	async readSegmentFlags() {
 		try {
-			const res = await fetch('/TrakWebApi/segment_status');
+			const res = await fetch('./segment_status');
 			if (res.status === 200) {
 				const flags = await res.json();
 				this.segment.forEach( (s,i) => s.setStatus(flags[i]) );

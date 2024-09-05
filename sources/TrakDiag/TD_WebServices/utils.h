@@ -2,7 +2,7 @@
 #define UTILS_H
 
 void InitalizeInstance(struct TD_WebServices* inst);
-UDINT Djb2(USINT *str, size_t length );
+unsigned long Djb2(unsigned char *);
 bool GetSegmentData(struct TD_WebServices* inst, char* segmentName, UINT* ID, LREAL* position );
 void CollectShuttleInfo(struct TD_WebServices* inst);
 void CollectAssemblyInformation(struct TD_WebServices* inst);

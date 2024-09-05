@@ -11,6 +11,7 @@ TYPE
 		tempDINT : DINT;
 		serviceName : STRING[80];
 		uri : STRING[256];
+		uri_part : ARRAY[0..5]OF STRING[128];
 		requestHeader : httpRequestHeader_t;
 		requestData : STRING[2048];
 		responseHeader : httpResponseHeader_t;

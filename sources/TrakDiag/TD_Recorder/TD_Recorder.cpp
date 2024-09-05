@@ -46,6 +46,9 @@ SOFTWARE.
 #include "Record.h"
 
 
+unsigned long Djb2(unsigned char *str);
+
+
 /* Recorder */
 void TD_Recorder(struct TD_Recorder* inst)
 {
@@ -81,10 +84,12 @@ void TD_Recorder(struct TD_Recorder* inst)
 					inst->fbSegmentsInfo.Execute = false; /* reset fb */
 					TD_SegmentsInfo( &inst->fbSegmentsInfo );
 	
-					/* */
+					/* create data object for dynamic memory allocation */
 					inst->fbDatObjInfo.enable = false; /* reset fb */
 					if( std::strlen(inst->DataObjectName) == 0 ){
-						std::strcpy( inst->DataObjectName, "$$tdrec" );
+						char name[256]{0};
+						std::sprintf( name, "tdrec%s", inst->AssemblyName );
+						std::sprintf( inst->DataObjectName, "$$%8x", Djb2( (USINT*) name ) );	
 					}
 					inst->fbDatObjInfo.pName =  reinterpret_cast<UDINT>(inst->DataObjectName);
 					DatObjInfo( &inst->fbDatObjInfo );
@@ -820,3 +825,4 @@ void TD_Recorder(struct TD_Recorder* inst)
 		inst->Busy = false;
 	} 
 }
+
