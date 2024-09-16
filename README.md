@@ -236,8 +236,7 @@ Read logger entry (internal use).
 
 ## TD_Recorder
 
-Scene Viewer like shuttle 'flight recorder'.
-Records shuttle data cyclically. 
+Records shuttle data cyclically and provides a video for playing back the last seconds before a failure happend as scene viewer would do.
 
 If 'Trigger' is set a html file containing the 'SvgData' with shuttle movements and a system dump file is created.
 
