@@ -461,7 +461,6 @@ void TD_WebServices(struct TD_WebServices* inst)
 							std::strcat( inst->webData.responseData, tail );
 						}
 						SendResponse( inst, "application/json; charset=iso-8859-1" );
-						inst->step = SEND_SHUTTLE_INFO;
 					} else {  /* active shuttle in error stop */
 						inst->fbShuttleErrorTexts.Axis = 0;
 						inst->fbShuttleErrorTexts.Index = inst->webData.shuttle.Index;
@@ -475,18 +474,15 @@ void TD_WebServices(struct TD_WebServices* inst)
 				else { /* shuttle with given index not found */
 					std::sprintf( inst->webData.responseData, "{ \"result\" : \"shuttle with given index not found\", \"index\":%lu }", UDINT(inst->webData.shuttle.Index) );
 					SendResponse( inst, "application/json; charset=iso-8859-1" );
-					inst->step = SEND_SHUTTLE_INFO;
 				}
 			}
 			else if( inst->webData.fbGetParamUrl.status == httpERR_NOT_FOUND ){  /* GET parameter invalid */
 				std::sprintf( inst->webData.responseData, "{ \"result\" : \"GET parameter invalid\" }" );
 				SendResponse( inst, "application/json; charset=iso-8859-1" );	
-				inst->step = SEND_SHUTTLE_INFO;
 			}
 			else { /* internal error */
 				std::sprintf( inst->webData.responseData, "{ \"result\" : \"%d\" }", inst->webData.fbGetParamUrl.status  );
 				SendResponse( inst, "application/json; charset=iso-8859-1" );
-				inst->step = SEND_SHUTTLE_INFO;
 			}
 			inst->webData.fbGetParamUrl.enable = false; /* reset fb */
 			httpGetParamUrl( &inst->webData.fbGetParamUrl );
@@ -524,34 +520,18 @@ void TD_WebServices(struct TD_WebServices* inst)
 				inst->fbShuttleErrorTexts.Execute = false; /* reset fb */
 				TD_ShuttleErrorTexts( &inst->fbShuttleErrorTexts );
 				SendResponse( inst, "application/json; charset=iso-8859-1" );
-				inst->step = SEND_SHUTTLE_INFO;
 			}
 			else if( inst->fbShuttleErrorTexts.Error ) { /* error */
 				std::sprintf( inst->webData.responseData, "{ \"result\" : \"%ld\" }", inst->fbShuttleErrorTexts.ErrorID  );
 				inst->fbShuttleErrorTexts.Execute = false; /* reset fb */
 				TD_ShuttleErrorTexts( &inst->fbShuttleErrorTexts );
 				SendResponse( inst, "application/json; charset=iso-8859-1" );
-				inst->step = SEND_SHUTTLE_INFO;
 			}
 			else { /* busy */
 				TD_ShuttleErrorTexts( &inst->fbShuttleErrorTexts );
 			}
 			break;
 
-			case SEND_SHUTTLE_INFO:
-			httpService( &inst->webData.fbHttpService); 
-			if( inst->webData.fbHttpService.status == 0 ){
-				if( inst->webData.fbHttpService.phase == httpPHASE_WAITING ){
-					inst->webData.fbHttpService.send = false;
-					inst->step = W_HTTP_REQUESTS;	
-				}
-			}
-			else if( inst->webData.fbHttpService.status != 65535 ){
-				inst->webData.lastError = inst->webData.fbHttpService.status;
-				inst->webData.fbHttpService.enable = false;
-				inst->step = INTERNAL_ERROR_HTTP;
-			}			
-			break;
 
 			case INTERNAL_ERROR:
 			case INTERNAL_ERROR_SEGMENTINFO:
