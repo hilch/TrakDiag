@@ -236,6 +236,7 @@ END_FUNCTION_BLOCK
 		axis : McAxisType;
 		fbAsmGetShuttle : MC_BR_AsmGetShuttle_AcpTrak;
 		fbReadErrorText : MC_BR_ReadErrorText;
+		cycleCounter : UINT;
 	END_VAR
 END_FUNCTION_BLOCK
 

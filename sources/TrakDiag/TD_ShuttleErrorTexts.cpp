@@ -104,6 +104,7 @@ void TD_ShuttleErrorTexts(struct TD_ShuttleErrorTexts* inst)
 						MC_BR_AsmGetShuttle_AcpTrak( &inst->fbAsmGetShuttle ); /* reset fb */
 						inst->fbReadErrorText.Enable = true;
 						MC_BR_ReadErrorText( &inst->fbReadErrorText );
+						inst->cycleCounter = 0;
 						inst->step = READ_ERRORS;
 					}
 					else { /* get next shuttle */
@@ -128,6 +129,7 @@ void TD_ShuttleErrorTexts(struct TD_ShuttleErrorTexts* inst)
 
 
 			case READ_ERRORS: /* read error texts */
+			++ inst->cycleCounter;
 			if( inst->fbReadErrorText.Valid ){
 				inst->NumberOfRecords = inst->fbReadErrorText.NumberOfRecords;
 				if( inst->NumberOfRecords > 0 ){
@@ -149,6 +151,11 @@ void TD_ShuttleErrorTexts(struct TD_ShuttleErrorTexts* inst)
 			}
 			else if( inst->fbReadErrorText.Busy ){ /* busy */
 				MC_BR_ReadErrorText( &inst->fbReadErrorText );
+				if( inst->cycleCounter > 20 ){ /* if there are no matching entries in the logger, we are unfortunately stuck in busy. */
+					inst->fbReadErrorText.Enable = false;
+					MC_BR_ReadErrorText( &inst->fbReadErrorText ); /* reset fb */
+					inst->step = DONE;
+				}
 			}
 
 			break;
