@@ -166,6 +166,9 @@ void TD_ShuttleErrorTexts(struct TD_ShuttleErrorTexts* inst)
 				std::memcpy( &inst->Records, &inst->fbReadErrorText.ErrorRecords, sizeof(inst->Records) );
 				inst->fbReadErrorText.Enable = false;
 				MC_BR_ReadErrorText( &inst->fbReadErrorText ); /* reset fb */
+				if( inst->fbReadErrorText.ErrorRecords.Record[0].TimeStamp.Seconds == 0 && inst->fbReadErrorText.ErrorRecords.Record[0].TimeStamp.Nanoseconds == 0 ){
+					inst->NumberOfRecords = 0;
+				}
 				inst->step = DONE;
 			}
 			else if( inst->fbReadErrorText.Error ){

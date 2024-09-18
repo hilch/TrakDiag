@@ -189,10 +189,12 @@ class Shuttle {
 					['Sector-Position: ', `${shuttle.sectorPosition.toFixed(3)} m`]				
 				];
 				if( 'errorTexts' in shuttle ){
-					for( let n = 0; n < shuttle.errorTexts.length; ++n ){
-						const row = [`${new Date(shuttle.errorTexts[n].t).toISOString()}: `, shuttle.errorTexts[n].txt]
-						content.push(row);
-					}	
+					if( shuttle.errorTexts.length > 0 ) {
+						for( let n = 0; n < shuttle.errorTexts.length; ++n ){
+							const row = [`${new Date(shuttle.errorTexts[n].t).toISOString()}: `, shuttle.errorTexts[n].txt]
+							content.push(row);
+						}	
+					}
 				}
 				assembly.showModalDialog( title, content, event );
 			}
