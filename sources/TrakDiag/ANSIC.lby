@@ -15,19 +15,18 @@
     <Object Type="File">TD_CrashReport.cpp</Object>
     <Object Type="File">TD_SegCommandError.cpp</Object>
     <Object Type="File">TD_LoggerReadEntry.cpp</Object>
-    <Object Type="Package">TD_Recorder</Object>	
+    <Object Type="Package">TD_Recorder</Object>
     <Object Type="Package">TD_WebServices</Object>
     <Object Type="File">TD_ShuttleErrorTexts.cpp</Object>
     <Object Type="File">TD_SegmentsInfo.cpp</Object>
     <Object Type="File">TD_LimitFileNumber.cpp</Object>
     <Object Type="File">TD_GetShuttles.cpp</Object>
-
   </Objects>
   <Dependencies>
     <Dependency ObjectName="ArEventLog" />
     <Dependency ObjectName="astime" />
     <Dependency ObjectName="DataObj" />
-    <Dependency ObjectName="McAcpTrak" FromVersion="5.26.0" />
+    <Dependency ObjectName="McAcpTrak" FromVersion="5.27.1" />
     <Dependency ObjectName="standard" />
     <Dependency ObjectName="McBase" />
     <Dependency ObjectName="sys_lib" />
