@@ -162,7 +162,8 @@ TYPE
 	(
 		mcACPTRAK_BARRIER_OPEN,			(*open the barrier*)
 		mcACPTRAK_BARRIER_CLOSE,		(*close the barrier*)
-		mcACPTRAK_BARRIER_ADD_TICKETS	(*adds tickets to or subtracts tickets from the barrier*)
+		mcACPTRAK_BARRIER_ADD_TICKETS,	(*adds tickets to or subtracts tickets from the barrier*)
+		mcACPTRAK_BARRIER_CLEAR_TICKETS	(*close the barrier, clear the list of accepted shuttles, and reset the number of tickets to zero*)
 	);
 
 	McAcpTrakBarrierStatusEnum :
@@ -297,6 +298,8 @@ TYPE
 	McAcpTrakShManeuverInfoType : STRUCT
 		Type : McAcpTrakShManeuverTypeEnum; (*maneuver type*)
 		Reason : McAcpTrakShManeuverReasonEnum; (*maneuver reason*)
+		Shuttle : McAxisType; (*Reference to a shuttle*)
+		Barrier : McProcessPointType; (*Reference to a barrier*)
 	END_STRUCT;
 
 	McAcpTrakShCurrentValuesType : STRUCT
@@ -1127,5 +1130,12 @@ TYPE
 		Segment2 : McAcpTrakSegIntervalType; (*segment interval of the second segment of the dual track area*)
 	END_STRUCT;
 
+	McAcpTrakShReadRecInfoTrigEnum :
+	(
+		mcACPTRAK_UNCONTROLLEDERRORSTOP (*Recovery info saved in the cycle in which the shuttle was controlled and not in error stop, but became uncontrolled or had an error stop in the following cycle*)
+	);
+	McAcpTrakAdvShReadRecInfoParType : STRUCT
+		Trigger : McAcpTrakShReadRecInfoTrigEnum; (*Trigger of the recovery info update*)
+	END_STRUCT;
 END_TYPE
 

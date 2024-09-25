@@ -1,6 +1,6 @@
 /* Automation Studio generated header file */
 /* Do not edit ! */
-/* McBase 5.26.1 */
+/* McBase 5.27.1 */
 
 #ifndef _MCBASE_
 #define _MCBASE_
@@ -9,7 +9,7 @@ extern "C"
 {
 #endif
 #ifndef _McBase_VERSION
-#define _McBase_VERSION 5.26.1
+#define _McBase_VERSION 5.27.1
 #endif
 
 #include <bur/plctypes.h>
@@ -385,6 +385,8 @@ typedef enum McCfgTypeEnum
 	mcCFG_SEC_COMP = 31301,
 	mcCFG_SEC_SUB = 31302,
 	mcCFG_SH_STEREO_TYP = 31400,
+	mcCFG_SH_JERK_FILT = 31401,
+	mcCFG_SH_STATE_TRANS = 31402,
 	mcCFG_SEG = 31500,
 	mcCFG_MS_CUS_STD = 50001,
 	mcCFG_MS_2AX_CNC_XY = 51201,

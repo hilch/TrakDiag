@@ -689,6 +689,12 @@ TYPE
 		CollisionAvoidance : McSSTColAvType; (*Parameter settings for the collision avoidance*)
 		StateTransitions : McSSTStatTransType; (*Parameter settings for state transitions*)
 	END_STRUCT;
+	McCfgShJerkFiltType : STRUCT (*Main data type corresponding to McCfgTypeEnum mcCFG_SH_JERK_FILT*)
+		JerkFilter : McSSTJerkFltrType; (*Jerk filter*)
+	END_STRUCT;
+	McCfgShStateTransType : STRUCT (*Main data type corresponding to McCfgTypeEnum mcCFG_SH_STATE_TRANS*)
+		StateTransitions : McSSTStatTransType; (*Parameter settings for state transitions*)
+	END_STRUCT;
 	McSEGSegSecDirEnum :
 		( (*Direction of the referenced sector component*)
 		mcSEGSSD_POS := 0, (*Positive - Create the segment sector with positive direction*)

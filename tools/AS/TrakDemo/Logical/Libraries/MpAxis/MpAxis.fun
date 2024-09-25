@@ -167,3 +167,22 @@ FUNCTION_BLOCK MpAxisCyclicSet (* *) (* $GROUP=mapp,$CAT=Multi Axis,$GROUPICON=I
 		Internal : {REDUND_UNREPLICABLE} MpComInternalDataType; (*Internal data*)
 	END_VAR
 END_FUNCTION_BLOCK
+
+FUNCTION_BLOCK MpAxisBasicConfig
+	VAR_INPUT
+		MpLink : REFERENCE TO McAxisType; (*The axis reference creates a link between the function block and an axis.*) (* *) (*#PAR#;*)
+		Execute : BOOL; (*The function block is active as long as this input is set.*) (* *) (*#PAR#;*)
+		Parameters : MpAxisBasicConfigParType; (*Parameters used for function block call*) (* *) (*#PAR#;*)
+		Command : MpAxisBasicConfigCmdEnum; (*Command executed with positive edge of Execute command*) (* *) (*#PAR#;*)
+	END_VAR
+	VAR_OUTPUT
+		Done : BOOL; (*Execution successful, function block completed*) (* *) (*#CMD#OPT#;*)
+		PLCRestartRequired : BOOL; (*Additional output indicating if a PLC restart is required to apply changes to axis. E.g configuration was modified, or a new HW module was created*) (* *) (*#CMD#OPT#;*)
+		Busy : BOOL; (*Function block currently executing a command*) (* *) (*#CMD#OPT#;*)
+		Error : BOOL; (*Error occurred during operation*) (* *) (*#PAR#;*)
+		ErrorID : DINT; (*Status information about the function block*) (* *) (*#PAR#;*)
+	END_VAR
+	VAR
+		Internal : {REDUND_UNREPLICABLE} MpComInternalDataType; (*Internal data*)
+	END_VAR
+END_FUNCTION_BLOCK

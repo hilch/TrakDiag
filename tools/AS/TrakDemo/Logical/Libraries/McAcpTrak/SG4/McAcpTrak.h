@@ -1,6 +1,6 @@
 /* Automation Studio generated header file */
 /* Do not edit ! */
-/* McAcpTrak 5.26.1 */
+/* McAcpTrak 5.27.1 */
 
 #ifndef _MCACPTRAK_
 #define _MCACPTRAK_
@@ -9,7 +9,7 @@ extern "C"
 {
 #endif
 #ifndef _McAcpTrak_VERSION
-#define _McAcpTrak_VERSION 5.26.1
+#define _McAcpTrak_VERSION 5.27.1
 #endif
 
 #include <bur/plctypes.h>
@@ -146,7 +146,8 @@ typedef enum McAcpTrakMoveCmdEnum
 typedef enum McAcpTrakBarrierCmdEnum
 {	mcACPTRAK_BARRIER_OPEN,
 	mcACPTRAK_BARRIER_CLOSE,
-	mcACPTRAK_BARRIER_ADD_TICKETS
+	mcACPTRAK_BARRIER_ADD_TICKETS,
+	mcACPTRAK_BARRIER_CLEAR_TICKETS
 } McAcpTrakBarrierCmdEnum;
 
 typedef enum McAcpTrakBarrierStatusEnum
@@ -374,6 +375,10 @@ typedef enum McAcpTrakCopySegDataModeEnum
 typedef enum McAcpTrakCopySegDataTriggerEnum
 {	mcACPTRAK_SEG_DATA_TRIGGER_IMM
 } McAcpTrakCopySegDataTriggerEnum;
+
+typedef enum McAcpTrakShReadRecInfoTrigEnum
+{	mcACPTRAK_UNCONTROLLEDERRORSTOP
+} McAcpTrakShReadRecInfoTrigEnum;
 
 typedef enum McASMTrkPosEnum
 {	mcASMTP_ABS = 0,
@@ -707,6 +712,8 @@ typedef struct McAcpTrakAdvRouteParType
 typedef struct McAcpTrakShManeuverInfoType
 {	enum McAcpTrakShManeuverTypeEnum Type;
 	enum McAcpTrakShManeuverReasonEnum Reason;
+	struct McAxisType Shuttle;
+	struct McProcessPointType Barrier;
 } McAcpTrakShManeuverInfoType;
 
 typedef struct McAcpTrakSegPositionType
@@ -1400,6 +1407,10 @@ typedef struct McAcpTrakDualTrackInfoType
 	struct McAcpTrakSegIntervalType Segment2;
 } McAcpTrakDualTrackInfoType;
 
+typedef struct McAcpTrakAdvShReadRecInfoParType
+{	enum McAcpTrakShReadRecInfoTrigEnum Trigger;
+} McAcpTrakAdvShReadRecInfoParType;
+
 typedef struct McASMTrkSegType
 {	struct McCfgUnboundedArrayType SegmentReference;
 } McASMTrkSegType;
@@ -1957,6 +1968,14 @@ typedef struct McCfgShStereoTypType
 	struct McSSTColAvType CollisionAvoidance;
 	struct McSSTStatTransType StateTransitions;
 } McCfgShStereoTypType;
+
+typedef struct McCfgShJerkFiltType
+{	struct McSSTJerkFltrType JerkFilter;
+} McCfgShJerkFiltType;
+
+typedef struct McCfgShStateTransType
+{	struct McSSTStatTransType StateTransitions;
+} McCfgShStateTransType;
 
 typedef struct McSEGStopReacType
 {	enum McSEGStopReacEnum Type;

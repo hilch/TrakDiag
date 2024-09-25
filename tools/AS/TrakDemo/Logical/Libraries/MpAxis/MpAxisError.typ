@@ -14,6 +14,8 @@ TYPE
 		mcAXIS_ERR_MPLINK_CHANGED := -1064239100, (* MpLink modified [Error: 4, 0xc0910004] *)
 		mcAXIS_ERR_MPLINK_CORRUPT := -1064239099, (* Invalid MpLink contents [Error: 5, 0xc0910005] *)
 		mcAXIS_ERR_MPLINK_IN_USE := -1064239098, (* MpLink already in use [Error: 6, 0xc0910006] *)
-		mcAXIS_ERR_PAR_NULL := -1064239097 (* Parameters structure is a null pointer [Error: 7, 0xc0910007] *)
+		mcAXIS_ERR_PAR_NULL := -1064239097, (* Parameters structure is a null pointer [Error: 7, 0xc0910007] *)
+		mcAXIS_ERR_CONFIG_NULL := -1064239096, (* Configuration structure is a null pointer [Error: 8, 0xc0910008] *)
+		mcAXIS_ERR_CONFIG_CMD_FAILED := -1067278070 (* Configuration read command failed [Error: 41226, 0xC062A10A] *)
 		);
 END_TYPE

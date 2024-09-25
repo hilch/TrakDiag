@@ -171,6 +171,8 @@ TYPE
 		mcCFG_SEC_COMP := 31301, (*Associated with data type McCfgSecCompType*)
 		mcCFG_SEC_SUB := 31302, (*Associated with data type McCfgSecSubType*)
 		mcCFG_SH_STEREO_TYP := 31400, (*Associated with data type McCfgShStereoTypType*)
+		mcCFG_SH_JERK_FILT := 31401, (*Associated with data type McCfgShJerkFiltType*)
+		mcCFG_SH_STATE_TRANS := 31402, (*Associated with data type McCfgShStateTransType*)
 		mcCFG_SEG := 31500, (*Associated with data type McCfgSegType*)
 		mcCFG_MS_CUS_STD := 50001, (*Associated with data type McCfgMSCusStdType*)
 		mcCFG_MS_2AX_CNC_XY := 51201, (*Associated with data type McCfgMS2AxCncXYType*)
