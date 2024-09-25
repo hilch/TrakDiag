@@ -15,7 +15,7 @@ Finally, a web-based diagnostic interface can be generated with this library, wh
 - ArEventLog
 - astime
 - DataObj
-- McAcpTrak >= 5.26.0 (>= 5.21.1 for V2.x)
+- McAcpTrak >= 5.27.1 (>= 5.21.1 for V2.x)
 - standard
 - McBase
 - sys_lib
