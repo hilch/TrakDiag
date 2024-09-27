@@ -785,6 +785,7 @@
     <Parameter ID="McTypeID" Location="DriveConfiguration" Value="LLMConfig" />
     <Parameter ID="Shape" Location="DriveConfiguration/Segment" Value="CIRCULAR_TO_STRAIGHT105" />
     <Parameter ID="SegmentReference" Location="DriveConfiguration/Segment" Value="gSegC7" />
+    <Parameter ID="SegmentSectorReference" Location="DriveConfiguration/Segment" Value="gSecC7" />
     <Parameter ID="SegmentSectorDirection" Location="DriveConfiguration/Segment" Value="Positive" />
     <Parameter ID="ElongationCompensation" Location="DriveConfiguration/Segment" Value="UseAssemblySetting" />
     <Parameter ID="ACC" Location="DriveConfiguration/Segment" Value="Inactive" />
