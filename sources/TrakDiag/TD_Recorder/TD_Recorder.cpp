@@ -160,9 +160,9 @@ void TD_Recorder(struct TD_Recorder* inst)
 					/* */
 					std::strncpy( inst->fbLimitFileNumber.FileDeviceName, inst->FileDeviceName, sizeof(inst->fbLimitFileNumber.FileDeviceName) );
 					std::strcpy( inst->fbLimitFileNumber.DirectoryName, "" );
-					std::strncpy( inst->fbLimitFileNumber.FileNamePattern, 
-						R"([\w-]*(TD_Recorder)(_Dump)?(_\d{4}-\d{2}-\d{2}T\d{2}_\d{2}_\d{2}.)((html)|(tar.gz)))",
-						sizeof(inst->fbLimitFileNumber.FileNamePattern));
+					char temp[256];
+					std::sprintf( temp, R"([\w-]*(TD_Recorder)(_Dump_%s)?(_\d{4}-\d{2}-\d{2}T\d{2}_\d{2}_\d{2}.)((html)|(tar.gz)))", inst->AssemblyName );
+					std::strncpy( inst->fbLimitFileNumber.FileNamePattern, temp, sizeof(inst->fbLimitFileNumber.FileNamePattern));
 					inst->fbLimitFileNumber.MaxCount = inst->MaxNumberOfRecordings * 2;
 					inst->fbLimitFileNumber.Execute = false; /* reset fb */
 					TD_LimitFileNumber( &inst->fbLimitFileNumber );
@@ -308,11 +308,15 @@ void TD_Recorder(struct TD_Recorder* inst)
 				}
 				else if( inst->tonTriggerDelay.Q and inst->Valid ) { /* we got a trigger and now we save everything */
 					std::strcpy( inst->OutputFileName, inst->FileNamePrefix );
-					TD_filenameDT(reinterpret_cast<UDINT>( "TD_Recorder_" ), 
+					char temp[256];
+					sprintf( temp, "TD_Recorder_%s_", inst->AssemblyName );
+					TD_filenameDT(reinterpret_cast<UDINT>( temp ), 
 						(UDINT) ((char*) &inst->OutputFileName + std::strlen(inst->FileNamePrefix)), sizeof(inst->OutputFileName)-1 );
 					std::strcat( (char*) &inst->OutputFileName, (char*) ".html" );
 					std::strcpy( inst->DumpFileName, inst->FileNamePrefix );
-					TD_filenameDT( (UDINT) "TD_Recorder_Dump_", (UDINT) ((char*) &inst->DumpFileName + std::strlen(inst->FileNamePrefix)), sizeof(inst->DumpFileName)-1 );
+
+					std::sprintf( temp, "TD_Recorder_Dump_%s_", inst->AssemblyName );
+					TD_filenameDT( (UDINT) temp, (UDINT) ((char*) &inst->DumpFileName + std::strlen(inst->FileNamePrefix)), sizeof(inst->DumpFileName)-1 );
 					std::strcat( (char*) &inst->DumpFileName, (char*) ".tar.gz" );
 					inst->Valid = false;
 					inst->Busy = true;
