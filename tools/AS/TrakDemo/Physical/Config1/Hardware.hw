@@ -42,7 +42,7 @@
     <Group ID="FileDevice2" />
     <Parameter ID="FileDeviceName2" Value="Diagnosis" />
     <Parameter ID="FileDevicePath2" Value="USER_PATH\web\Diagnosis" />
-    <Parameter ID="EthernetDefaultGateway" Value="10.49.40.1" />
+    <Parameter ID="EthernetDefaultGateway" Value="10.24.153.1" />
     <Group ID="FtpUser1" />
     <Parameter ID="FtpUsername1" Value="bur" />
     <Parameter ID="FtpUserPassword1" Value="efcpoAfz3gk2rn0a9Nq2v7CfehAGIZc7rIbAOhV34KU=" />
@@ -60,8 +60,9 @@
       <Parameter ID="AssignedOperatingSystem" Value="ARemb" />
       <Parameter ID="ActivateDevice" Value="1" />
       <Parameter ID="Mode" Value="Manual" />
-      <Parameter ID="InternetAddress" Value="10.49.40.236" />
-      <Parameter ID="SubnetMask" Value="255.255.255.0" />
+      <Parameter ID="InternetAddress" Value="10.24.153.43" />
+      <Parameter ID="SubnetMask" Value="255.255.255.192" />
+      <Parameter ID="ActivateIna" Value="0" />
       <Parameter ID="ActivateSnmp" Value="2" />
     </Connector>
     <Connector Name="IF4">
