@@ -28,9 +28,6 @@ SOFTWARE.
 */
 
 #include <bur/plctypes.h>
-#include <cstring>
-#include <algorithm>
-
 #ifdef __cplusplus
 	extern "C"
 	{
@@ -40,17 +37,31 @@ SOFTWARE.
 	};
 #endif
 
+#include <bur/plctypes.h>
+#include <cstring>
+#include <cstdio>
+#include <algorithm>
+
+
+#define STARTUP 0
+#define CREATE_NEW_LOG 10
+#define DONE 100
+#define ERROR_LOGGETIDENT 9000
+#define ERROR_LOGWRITE 9001
+#define ERROR_LOGCREATE 9002
+
+
 /* Write into Logger */
 void TD_LogWrite(struct TD_LogWrite* inst)
 {
 	if( inst->Execute ){
 		switch( inst->step ){
-			case 0: /* start */
-			inst->Busy = 1;
-			inst->StatusID = 0;
+			case STARTUP: /* start */
+			inst->Busy = true;
+			inst->ErrorID = 0;
 			std::memset( &inst->fbLogGetIdent, 0, sizeof(inst->fbLogGetIdent) );
 			std::strcpy( (char*) &inst->fbLogGetIdent.Name, inst->Name );
-			inst->fbLogGetIdent.Execute = 1;
+			inst->fbLogGetIdent.Execute = true;
 			ArEventLogGetIdent( &inst->fbLogGetIdent );
 			if( inst->fbLogGetIdent.Done ){ /* ArEventLogGetIdent is executed synchronously ! */
 				std::memset( &inst->fbLogWrite, 0, sizeof(inst->fbLogWrite) );
@@ -63,57 +74,57 @@ void TD_LogWrite(struct TD_LogWrite* inst)
 				inst->fbLogWrite.AddDataFormat = arEVENTLOG_ADDFORMAT_TEXT;
 				std::strcpy( (char*) &inst->fbLogWrite.ObjectID, (char*) &inst->ObjectID );
 				inst->fbLogWrite.TimeStamp = 0;
-				inst->fbLogWrite.Execute = 1;
+				inst->fbLogWrite.Execute = true;
 
 				inst->fbLogGetIdent.Execute = 0; /* reset fb */
 				ArEventLogGetIdent( &inst->fbLogGetIdent );	
 
 				ArEventLogWrite( &inst->fbLogWrite );
 				if( inst->fbLogWrite.Done ){ /* ArEventLogWrite is executed synchronously !  */
-					inst->fbLogWrite.Execute = 0; /* reset fb */
+					inst->fbLogWrite.Execute = false; /* reset fb */
 					ArEventLogWrite( &inst->fbLogWrite );
-					inst->Busy = 0;
-					inst->Done = 1;
-					inst->step = 100;
+					inst->Busy = false;
+					inst->Done = true;
+					inst->step = DONE;
 				}
 				else if( inst->fbLogWrite.Error ){
-					inst->StatusID = inst->fbLogWrite.StatusID;
-					inst->fbLogWrite.Execute = 0; /* reset fb */
+					inst->ErrorID = inst->fbLogWrite.StatusID;
+					inst->fbLogWrite.Execute = false; /* reset fb */
 					ArEventLogWrite( &inst->fbLogWrite );
-					inst->step = 9001;
+					inst->step = ERROR_LOGWRITE;
 				}
 			}
 			else if (inst->fbLogGetIdent.Error ) {
 				if( inst->fbLogGetIdent.StatusID == arEVENTLOG_ERR_LOGBOOK_NOT_FOUND ){
 					std::memset( &inst->fbLogCreate, 0, sizeof(inst->fbLogCreate) );
-					inst->fbLogCreate.Execute = 1;
+					inst->fbLogCreate.Execute = true;
 					std::strcpy( (char*) inst->fbLogCreate.Name, (char*) inst->Name );
 					inst->fbLogCreate.Size = 200 * 1024;
 					inst->fbLogCreate.Persistence = arEVENTLOG_PERSISTENCE_PERSIST;
 					ArEventLogCreate( &inst->fbLogCreate );
-					inst->step = 10;
+					inst->step = CREATE_NEW_LOG;
 				}
 				else {
-					inst->StatusID = inst->fbLogGetIdent.StatusID;
-					inst->step = 9000;
+					inst->ErrorID = inst->fbLogGetIdent.StatusID;
+					inst->step = ERROR_LOGGETIDENT;
 				}
-				inst->fbLogGetIdent.Execute = 0; /* reset fb */
+				inst->fbLogGetIdent.Execute = false; /* reset fb */
 				ArEventLogGetIdent( &inst->fbLogGetIdent );
 			}
 			break;
 
 
-			case 10: /* create a new log */
+			case CREATE_NEW_LOG: /* create a new log */
 			if( inst->fbLogCreate.Done ){
-				inst->fbLogCreate.Execute = 0;
+				inst->fbLogCreate.Execute = false;
 				ArEventLogCreate( &inst->fbLogCreate );
-				inst->step = 0;
+				inst->step = STARTUP;
 			}
 			else if( inst->fbLogCreate.Error ){
-				inst->StatusID = inst->fbLogCreate.StatusID;
-				inst->fbLogCreate.Execute = 0;
+				inst->ErrorID = inst->fbLogCreate.StatusID;
+				inst->fbLogCreate.Execute = false;
 				ArEventLogCreate( &inst->fbLogCreate );
-				inst->step = 9002;
+				inst->step = ERROR_LOGCREATE;
 			}
 			else {
 				ArEventLogCreate( &inst->fbLogCreate );
@@ -121,24 +132,24 @@ void TD_LogWrite(struct TD_LogWrite* inst)
 			break;
 			
 
-			case 100: /* done */
+			case DONE: /* done */
 
 			break;
 
 
-			case 9000: /* error */
-			case 9001:
-			case 9002:
-			inst->Busy = 0;
-			inst->Error = 1;				
+			case ERROR_LOGGETIDENT: /* error */
+			case ERROR_LOGWRITE:
+			case ERROR_LOGCREATE:
+			inst->Busy = false;
+			inst->Error = true;				
 			break;
 
 		}
 	}
 	else {
-		inst->step = 0;
-		inst->Error = 0;
-		inst->Busy = 0;
-		inst->Done = 0;
+		inst->step = STARTUP;
+		inst->Error = false;
+		inst->Busy = false;
+		inst->Done = false;
 	}
 }

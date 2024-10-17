@@ -27,7 +27,7 @@ END_FUNCTION
 		Valid : BOOL;
 		Busy : BOOL;
 		Error : BOOL;
-		StatusID : DINT;
+		ErrorID : DINT;
 	END_VAR
 	VAR
 		signalOld : BOOL;
@@ -49,7 +49,7 @@ END_FUNCTION_BLOCK
 		Valid : BOOL;
 		Busy : BOOL;
 		Error : BOOL;
-		StatusID : DINT;
+		ErrorID : DINT;
 	END_VAR
 	VAR
 		signalOld : USINT;
@@ -70,7 +70,7 @@ END_FUNCTION_BLOCK
 		Valid : BOOL;
 		Busy : BOOL;
 		Error : BOOL;
-		StatusID : DINT;
+		ErrorID : DINT;
 	END_VAR
 	VAR
 		signalOld : DINT;
@@ -91,7 +91,7 @@ END_FUNCTION_BLOCK
 		Valid : BOOL;
 		Busy : BOOL;
 		Error : BOOL;
-		StatusID : DINT;
+		ErrorID : DINT;
 	END_VAR
 	VAR
 		signalOld : STRING[120];
@@ -112,7 +112,7 @@ END_FUNCTION_BLOCK
 		Done : BOOL;
 		Busy : BOOL;
 		Error : BOOL;
-		StatusID : DINT;
+		ErrorID : DINT;
 	END_VAR
 	VAR
 		fbLogCreate : ArEventLogCreate;
@@ -138,7 +138,7 @@ END_FUNCTION_BLOCK
 		Done : BOOL;
 		Busy : BOOL;
 		Error : BOOL;
-		StatusID : DINT;
+		ErrorID : DINT;
 	END_VAR
 	VAR
 		step : UINT;
@@ -164,7 +164,7 @@ END_FUNCTION_BLOCK
 		Done : BOOL;
 		Busy : BOOL;
 		Error : BOOL;
-		StatusID : DINT;
+		ErrorID : DINT;
 	END_VAR
 	VAR
 		fbSegCommandError : MC_BR_SegCommandError_AcpTrak;
@@ -183,7 +183,7 @@ END_FUNCTION_BLOCK
 		Entry : TD_LoggerEntryType; (*TD_LoggerEntryType*)
 		Done : BOOL;
 		Error : BOOL;
-		StatusID : DINT;
+		ErrorID : DINT;
 	END_VAR
 	VAR
 		fbRead : ArEventLogRead;
@@ -227,7 +227,7 @@ END_FUNCTION_BLOCK
 		Done : BOOL;
 		Busy : BOOL;
 		Error : BOOL;
-		StatusID : DINT;
+		ErrorID : DINT;
 		NumberOfRecords : UINT;
 		Records : McErrorRecordsType;
 	END_VAR
@@ -236,6 +236,7 @@ END_FUNCTION_BLOCK
 		axis : McAxisType;
 		fbAsmGetShuttle : MC_BR_AsmGetShuttle_AcpTrak;
 		fbReadErrorText : MC_BR_ReadErrorText;
+		cycleCounter : UINT;
 	END_VAR
 END_FUNCTION_BLOCK
 
@@ -251,7 +252,7 @@ END_FUNCTION_BLOCK
 		Done : BOOL;
 		Busy : BOOL;
 		Error : BOOL;
-		StatusID : DINT;
+		ErrorID : DINT;
 		Count : UINT;
 	END_VAR
 	VAR
@@ -262,7 +263,7 @@ END_FUNCTION_BLOCK
 	END_VAR
 END_FUNCTION_BLOCK
 
-{REDUND_ERROR} FUNCTION_BLOCK TD_LimitFileNumber (*(internal use)*)
+{REDUND_ERROR} FUNCTION_BLOCK TD_LimitFileNumber (*Limit number of files in a certain folder*)
 	VAR_INPUT
 		Execute : BOOL;
 		FileDeviceName : STRING[32]; (*file device*)
@@ -295,7 +296,7 @@ END_FUNCTION_BLOCK
 		Enable : BOOL;
 		AssemblyName : {REDUND_UNREPLICABLE} STRING[32]; (*name of the assembly*)
 		DataAddress : UDINT; (*address of shuttle data array*)
-		DataSize : UDINT; (*sizeo of shuttle data array. 
+		DataSize : UDINT; (*sizeof shuttle data array. 
 type of McAcpTrakShuttleData[] if no shuttle user data is defined, see MC_BR_AsmCopyShuttleData_AcpTrak *)
 		UserDataSize : USINT; (*shuttle user data size in bytes*)
 		DataObjectName : STRING[10]; (*optional: temporary data object for memory allocation*)
@@ -311,7 +312,7 @@ type of McAcpTrakShuttleData[] if no shuttle user data is defined, see MC_BR_Asm
 		Error : BOOL;
 		Saved : BOOL; (*output file was saved*)
 		ErrorID : DINT;
-		SegInfo : TD_RecorderSegInfoType; (*segment information*)
+		SegInfo : TD_SegInfoType; (*segment information*)
 		OutputFileName : STRING[255]; (*name of output file*)
 		DumpFileName : STRING[255];
 	END_VAR
@@ -332,14 +333,13 @@ type of McAcpTrakShuttleData[] if no shuttle user data is defined, see MC_BR_Asm
 		fbFileOpen : FileOpen;
 		fbFileRead : FileReadEx;
 		fbCopyShuttleData : MC_BR_AsmCopyShuttleData_AcpTrak;
-		fbGetSegment : MC_BR_AsmGetSegment_AcpTrak;
-		fbSegGetInfo : MC_BR_SegGetInfo_AcpTrak;
+		fbCopySegmentData : MC_BR_AsmCopySegmentData_AcpTrak;
+		fbSegmentsInfo : TD_SegmentsInfo;
 		fbSystemDump : SdmSystemDump;
 		fbLimitFileNumber : TD_LimitFileNumber;
 		pAssembly : REFERENCE TO McAssemblyType;
 		tonTriggerDelay : TON;
 		fbRtInfo : RTInfo;
-		tempudint : UDINT;
 		pDataObject : UDINT;
 		pBuffer : UDINT;
 		pTimestamps : UDINT;
@@ -360,7 +360,7 @@ END_FUNCTION_BLOCK
 		Busy : BOOL;
 		Error : BOOL;
 		ErrorID : DINT;
-		SegInfo : TD_ServicesSegInfoType; (*segment information*)
+		SegInfo : TD_SegInfoType; (*segment information*)
 		ShuttleInfo : TD_ServicesShuttlesType; (*cyclic shuttle information*)
 	END_VAR
 	VAR
@@ -382,6 +382,7 @@ END_FUNCTION_BLOCK
 		fbFileOpen : FileOpen;
 		fbFileRead : FileReadEx;
 		fbSegmentsInfo : TD_SegmentsInfo;
+		fbCopySegmentData : MC_BR_AsmCopySegmentData_AcpTrak;
 		fbAsmReadInfo : MC_BR_AsmReadInfo_AcpTrak;
 		fbSegReadInfo : ARRAY[0..TD_MAX_SUPPORTED_SEGMENTS_ASM] OF MC_BR_SegReadInfo_AcpTrak;
 		fbShuttleErrorTexts : TD_ShuttleErrorTexts;

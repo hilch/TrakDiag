@@ -1,6 +1,6 @@
 /* Automation Studio generated header file */
 /* Do not edit ! */
-/* McAxis 5.21.2 */
+/* McAxis 5.27.1 */
 
 #ifndef _MCAXIS_
 #define _MCAXIS_
@@ -9,7 +9,7 @@ extern "C"
 {
 #endif
 #ifndef _McAxis_VERSION
-#define _McAxis_VERSION 5.21.2
+#define _McAxis_VERSION 5.27.1
 #endif
 
 #include <bur/plctypes.h>
@@ -50,27 +50,46 @@ typedef enum McCamAutCouplingSourceEnum
 
 typedef enum McPlcopenParEnum
 {	mcPAR_COMMANDED_AX_POSITION = 1,
-	mcPAR_SW_LIMIT_POSITIVE,
-	mcPAR_SW_LIMIT_NEGATIVE,
-	mcPAR_ENABLE_LIMIT_POSITIVE,
-	mcPAR_ENABLE_LIMIT_NEGATIVE,
-	mcPAR_ENABLE_POS_LAG_MONITORING,
-	mcPAR_MAX_AX_POSITION_LAG,
-	mcPAR_MAX_AX_VELOCITY_SYSTEM,
-	mcPAR_MAX_AX_VELOCITY_APPL,
-	mcPAR_ACTUAL_AX_VELOCITY,
-	mcPAR_COMMANDED_AX_VELOCITY,
-	mcPAR_MAX_AX_ACCELERATION_SYSTEM,
-	mcPAR_MAX_AX_ACCELERATION_APPL,
-	mcPAR_MAX_AX_DECELERATION_SYSTEM,
-	mcPAR_MAX_AX_DECELERATION_APPL,
-	mcPAR_MAX_AX_JERK,
+	mcPAR_SW_LIMIT_POSITIVE = 2,
+	mcPAR_SW_LIMIT_NEGATIVE = 3,
+	mcPAR_ENABLE_LIMIT_POSITIVE = 4,
+	mcPAR_ENABLE_LIMIT_NEGATIVE = 5,
+	mcPAR_ENABLE_POS_LAG_MONITORING = 6,
+	mcPAR_MAX_AX_POSITION_LAG = 7,
+	mcPAR_MAX_AX_VELOCITY_SYSTEM = 8,
+	mcPAR_MAX_AX_VELOCITY_APPL = 9,
+	mcPAR_ACTUAL_AX_VELOCITY = 10,
+	mcPAR_COMMANDED_AX_VELOCITY = 11,
+	mcPAR_MAX_AX_ACCELERATION_SYSTEM = 12,
+	mcPAR_MAX_AX_ACCELERATION_APPL = 13,
+	mcPAR_MAX_AX_DECELERATION_SYSTEM = 14,
+	mcPAR_MAX_AX_DECELERATION_APPL = 15,
+	mcPAR_MAX_AX_JERK = 16,
+	mcPAR_OVERRIDE = 1000,
+	mcPAR_MOVE_VELOCITY_POS = 1001,
+	mcPAR_MOVE_VELOCITY_NEG = 1002,
+	mcPAR_MOVE_ACCELERATION_POS = 1003,
+	mcPAR_MOVE_DECELERATION_POS = 1004,
+	mcPAR_MOVE_ACCELERATION_NEG = 1005,
+	mcPAR_MOVE_DECELERATION_NEG = 1006,
 	mcPAR_AX_PERIOD = 1008,
+	mcPAR_AUT_POS_TOLERANCE = 1009,
+	mcPAR_MOVE_CYCL_POS_IPL_MODE = 1010,
+	mcPAR_MOVE_CYCL_VEL_IPL_MODE = 1011,
+	mcPAR_DEFAULT_MOVE_PARAMETERS = 1012,
+	mcPAR_STOP_INDEX = 1013,
 	mcPAR_SW_END_IGNORE = 1014,
+	mcPAR_MAX_LOAD_SYSTEM = 1015,
+	mcPAR_MAX_POSITION_CHANGE = 1016,
+	mcPAR_NETWORK_CYCLE_TIME = 1017,
+	mcPAR_AXIS_NETWORK_CYCLE_TIME = 1018,
 	mcPAR_HOMING_OFFSET = 1019,
 	mcPAR_AX_MEASUREMENT_RESOLUTION = 1020,
 	mcPAR_REFERENCE_PULSE_DISTANCE = 1021,
-	mcPAR_DISTANCE_PER_ENCODER_REV = 1022
+	mcPAR_DISTANCE_PER_ENCODER_REV = 1022,
+	mcPAR_CURRENT_POS_LAG_ERROR = 1023,
+	mcPAR_CURRENT_MDC_POS_DIFFERENCE = 1024,
+	mcPAR_CAM_AUTOMAT_SET_POSITION = 1025
 } McPlcopenParEnum;
 
 typedef enum McCamIplModeEnum
@@ -393,6 +412,13 @@ typedef enum McMechDevCompCmdEnum
 	mcMDC_CMD_CALC_COMP_DATA
 } McMechDevCompCmdEnum;
 
+typedef enum McCheckAutCompModeEnum
+{	mcCAC_CHECK_ALL = 1,
+	mcCAC_CALC_MASTER_COMP_DIST = 2,
+	mcCAC_CALC_SLAVE_COMP_DIST_POS = 3,
+	mcCAC_CALC_SLAVE_COMP_DIST_NEG = 4
+} McCheckAutCompModeEnum;
+
 typedef enum McABTEnum
 {	mcABT_LIN_BD = 0,
 	mcABT_LIN = 1,
@@ -422,6 +448,22 @@ typedef enum McAMoveLimDecEnum
 {	mcAMLD_BASIC = 0,
 	mcAMLD_ADV = 1
 } McAMoveLimDecEnum;
+
+typedef enum McAFPGJFEnum
+{	mcAFPGJF_NOT_USE = 0,
+	mcAFPGJF_USE = 1,
+	mcAFPGJF_JERK_LIM = 2
+} McAFPGJFEnum;
+
+typedef enum McAFPGZVFEnum
+{	mcAFPGZVF_NOT_USE = 0,
+	mcAFPGZVF_USE = 1
+} McAFPGZVFEnum;
+
+typedef enum McAFPGCSMaSetValSrcEnum
+{	mcAFPGCSMSVS_PROF_GEN_SET_POS = 0,
+	mcAFPGCSMSVS_ACP_SET_POS = 1
+} McAFPGCSMaSetValSrcEnum;
 
 typedef enum McAFDCSTypEnum
 {	mcAFDCST_ACP = 0
@@ -977,6 +1019,8 @@ typedef struct McAdvBrTouchProbeParType
 	plcbit UseAxisPeriod;
 	plcbit UpdatePeriod;
 	plcbit ReadTriggerWidth;
+	plcbit SubstituteValueWindowPosition;
+	plcbit IncreaseTriggerCountNoTrigger;
 } McAdvBrTouchProbeParType;
 
 typedef struct McBrTriggerInfoType
@@ -1129,7 +1173,7 @@ typedef struct McHwInfoDriveType
 {	plcstring ModelNumber[20];
 	plcstring ModuleID[12];
 	plcstring SerialNumber[20];
-	plcstring Revision[4];
+	plcstring Revision[12];
 	plcstring FirmwareVersion[8];
 } McHwInfoDriveType;
 
@@ -1157,6 +1201,27 @@ typedef struct McHardwareInfoType
 typedef struct McDigitalOutputType
 {	plcstring FeatureName[251];
 } McDigitalOutputType;
+
+typedef struct McCheckAutCompDataType
+{	float MaxMasterVelocity;
+	double MasterCompDistance;
+	double SlaveCompDistance;
+	float StartSlope;
+	float EndSlope;
+	float MaxSlaveCompVelocity;
+	float MinSlaveCompVelocity;
+	float MaxSlaveAccelComp1;
+	float MaxSlaveAccelComp2;
+} McCheckAutCompDataType;
+
+typedef struct McAdvCheckAutCompType
+{	float MaxSlaveJerk;
+} McAdvCheckAutCompType;
+
+typedef struct McCheckAutCompResultType
+{	plcbit LimitsExceeded;
+	double CalculatedValue;
+} McCheckAutCompResultType;
 
 typedef struct McABTLinBdType
 {	enum McCfgLocLenUnitEnum MeasurementUnit;
@@ -1268,6 +1333,58 @@ typedef struct McCfgAxBaseTypType
 typedef struct McCfgAxMoveLimType
 {	struct McAMLType MovementLimits;
 } McCfgAxMoveLimType;
+
+typedef struct McAFPGJFUseType
+{	float MaximumJerkTime;
+	float JerkTime;
+} McAFPGJFUseType;
+
+typedef struct McAFPGJFJerkLimType
+{	float JerkLimit;
+} McAFPGJFJerkLimType;
+
+typedef struct McAFPGJFType
+{	enum McAFPGJFEnum Type;
+	struct McAFPGJFUseType Used;
+	struct McAFPGJFJerkLimType JerkLimited;
+} McAFPGJFType;
+
+typedef struct McAFPGZVFUseType
+{	float MaximumZeroVibrationFilterTime;
+	float ZeroVibrationFilterCoefficient;
+	float ZeroVibrationFilterTime;
+} McAFPGZVFUseType;
+
+typedef struct McAFPGZVFType
+{	enum McAFPGZVFEnum Type;
+	struct McAFPGZVFUseType Used;
+} McAFPGZVFType;
+
+typedef struct McAFPGCSMaSetValSrcType
+{	enum McAFPGCSMaSetValSrcEnum Type;
+} McAFPGCSMaSetValSrcType;
+
+typedef struct McAFPGCSType
+{	struct McAFPGCSMaSetValSrcType MasterSetValueSource;
+} McAFPGCSType;
+
+typedef struct McCfgAxFeatProfGenType
+{	struct McAFPGJFType JerkFilter;
+	struct McAFPGZVFType ZeroVibrationFilter;
+	struct McAFPGCSType CouplingSettings;
+} McCfgAxFeatProfGenType;
+
+typedef struct McCfgAxFeatPgJerkFltrType
+{	struct McAFPGJFType JerkFilter;
+} McCfgAxFeatPgJerkFltrType;
+
+typedef struct McCfgAxFeatPgZeroVibFltrType
+{	struct McAFPGZVFType ZeroVibrationFilter;
+} McCfgAxFeatPgZeroVibFltrType;
+
+typedef struct McCfgAxFeatPgCplgSetType
+{	struct McAFPGCSType CouplingSettings;
+} McCfgAxFeatPgCplgSetType;
 
 typedef struct McAFDCSTypAcpValSrcRTOAUseType
 {	struct McCfgReferenceType AxisReference;
@@ -1661,6 +1778,10 @@ typedef struct McAFANERNetwErrReacType
 typedef struct McCfgAxFeatAcpNetwErrReacType
 {	struct McAFANERNetwErrReacType NetworkErrorReaction;
 } McCfgAxFeatAcpNetwErrReacType;
+
+typedef struct McCfgAxFeatAcpCycDatProcType
+{	enum McPTCEnum ProcessingTaskClass;
+} McCfgAxFeatAcpCycDatProcType;
 
 typedef struct MC_BR_CyclicDriveErrorDecel
 {
@@ -3281,6 +3402,44 @@ typedef struct MC_WriteDigitalOutput
 	plcbit Error;
 } MC_WriteDigitalOutput_typ;
 
+typedef struct MC_BR_CamGetObjectData
+{
+	/* VAR_INPUT (analog) */
+	struct McCamDefineType Data;
+	/* VAR_OUTPUT (analog) */
+	signed long ErrorID;
+	unsigned short DataObjectVersion;
+	/* VAR (analog) */
+	struct McExec1InternalType Internal;
+	/* VAR_INPUT (digital) */
+	plcbit Execute;
+	/* VAR_OUTPUT (digital) */
+	plcbit Done;
+	plcbit Busy;
+	plcbit Error;
+} MC_BR_CamGetObjectData_typ;
+
+typedef struct MC_BR_CheckAutCompensation
+{
+	/* VAR_INPUT (analog) */
+	struct McAxisType* Master;
+	struct McAxisType* Slave;
+	enum McCheckAutCompModeEnum Mode;
+	struct McCheckAutCompDataType CompensationData;
+	struct McAdvCheckAutCompType AdvancedParameters;
+	/* VAR_OUTPUT (analog) */
+	signed long ErrorID;
+	struct McCheckAutCompResultType Result;
+	/* VAR (analog) */
+	struct McInternalTwoRefType Internal;
+	/* VAR_INPUT (digital) */
+	plcbit Execute;
+	/* VAR_OUTPUT (digital) */
+	plcbit Done;
+	plcbit Busy;
+	plcbit Error;
+} MC_BR_CheckAutCompensation_typ;
+
 
 
 /* Prototyping of functions and function blocks */
@@ -3357,6 +3516,8 @@ _BUR_PUBLIC void MC_BR_LimitLoadCam(struct MC_BR_LimitLoadCam* inst);
 _BUR_PUBLIC void MC_BR_MechDeviationComp(struct MC_BR_MechDeviationComp* inst);
 _BUR_PUBLIC void MC_BR_GetHardwareInfo(struct MC_BR_GetHardwareInfo* inst);
 _BUR_PUBLIC void MC_WriteDigitalOutput(struct MC_WriteDigitalOutput* inst);
+_BUR_PUBLIC void MC_BR_CamGetObjectData(struct MC_BR_CamGetObjectData* inst);
+_BUR_PUBLIC void MC_BR_CheckAutCompensation(struct MC_BR_CheckAutCompensation* inst);
 
 
 #ifdef __cplusplus

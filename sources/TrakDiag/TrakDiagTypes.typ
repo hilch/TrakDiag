@@ -11,6 +11,7 @@ TYPE
 		tempDINT : DINT;
 		serviceName : STRING[80];
 		uri : STRING[256];
+		uri_part : ARRAY[0..5]OF STRING[128];
 		requestHeader : httpRequestHeader_t;
 		requestData : STRING[2048];
 		responseHeader : httpResponseHeader_t;
@@ -19,11 +20,11 @@ TYPE
 		lastError : UINT;
 		shuttle : McAcpTrakShuttleData;
 	END_STRUCT;
-	TD_ServicesSegInfoType : 	STRUCT  (*segment information*)
+	TD_SegInfoType : 	STRUCT  (*segment information*)
 		numberOfSegments : UINT;
 		segment : ARRAY[0..TD_MAX_SUPPORTED_SEGMENTS_ASM]OF McSegmentType;
 		segmentInfo : ARRAY[0..TD_MAX_SUPPORTED_SEGMENTS_ASM]OF McAcpTrakSegGetInfoType;
-		segmentCyclicInfo : ARRAY[0..TD_MAX_SUPPORTED_SEGMENTS_ASM]OF McAcpTrakSegInfoType;
+		segmentData : ARRAY[0..TD_MAX_SUPPORTED_SEGMENTS_ASM]OF McAcpTrakSegmentData;
 	END_STRUCT;
 	TD_ServicesShuttleType : 	STRUCT 
 		index : UDINT; (*internal shuttle index*)
@@ -37,13 +38,6 @@ Bit1: shuttle is virtual*)
 		numberOfEntries : USINT; (*number of *all* shuttles (deleted shuttles included)*)
 		numberOfActiveShuttles : USINT; (*number of active shuttles*)
 		shuttle : ARRAY[0..TD_MAX_SUPPORTED_SHUTTLES_ASM]OF TD_ServicesShuttleType;
-	END_STRUCT;
-	TD_RecorderSegInfoType : 	STRUCT  (*segment information*)
-		numberOfSegments : UINT;
-		fill1 : USINT;
-		fill2 : USINT;
-		segment : ARRAY[0..TD_MAX_SUPPORTED_SEGMENTS_ASM]OF McSegmentType;
-		segmentInfo : ARRAY[0..TD_MAX_SUPPORTED_SEGMENTS_ASM]OF McAcpTrakSegGetInfoType;
 	END_STRUCT;
 	TD_SegErrorCommandEnum : 
 		( (*error type for TD_SegCommandError*)

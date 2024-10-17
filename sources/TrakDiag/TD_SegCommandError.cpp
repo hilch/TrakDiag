@@ -53,7 +53,7 @@ void TD_SegCommandError(struct TD_SegCommandError* inst)
 		inst->Busy = 0;
 		inst->Done = 0;
 		inst->Error = 0;
-		inst->StatusID = 0;
+		inst->ErrorID = 0;
 		if( inst->Execute ){
 			inst->Busy = 1;
 			std::memset( &inst->fbSegPowerOn, 0, sizeof(inst->fbSegPowerOn) );
@@ -87,7 +87,7 @@ void TD_SegCommandError(struct TD_SegCommandError* inst)
 			}
 		}
 		else if( inst->fbSegCommandError.Error ){
-			inst->StatusID = inst->fbSegCommandError.ErrorID;
+			inst->ErrorID = inst->fbSegCommandError.ErrorID;
 			inst->step = 9001;
 		}
 		else { /* busy */

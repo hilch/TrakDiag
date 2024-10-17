@@ -3,19 +3,43 @@
 /* @ */
 
 class Segment {
-	constructor(ID, name, length) {
+	constructor(ID, plk, name, channels, length) {
 		this.ID = ID;
+		this.plk = plk;
 		this.name = name;
 		this.length = length;
+		this.channels = channels;
 		this.segmentPath = undefined;
 		this.segmentBody = undefined;
+		this.segmentBodyStyle = undefined;
 		this.segmentBody2 = undefined;
+		this.arrowElement = undefined;
+		this.PLCopen = 5; /* startup */
+		this.errReason = 0; /* none */
+		this.errInitiator = false; /* no */
+	}
+
+	plcOpenStatus() {
+		return ['disabled', 'homing', 'ready', 'stopping', 'errorstop', 'startup', 'invalid configuration'][this.PLCopen];
+	}
+
+	errorReason() {
+		return ['none', 'unspecified', 'no gripper', 'command', 'segment', 'assembly', 'channel', 'shuttle unobservable', 'encoder difference'][this.errReason];
+	}
+
+	errorInitator() {
+		return ['no', 'yes'][Number(this.errInitiator)];
 	}
 
 	showSegmentDialog = (event) => {
 		const content = [
 			['ID: ', this.ID],
+			['PLK Interface: ', this.plk ],
+			['PLCopen:', this.plcOpenStatus()],
+			['Error Reason:', this.errorReason()],
+			['Error Initiator:', this.errorInitator()],
 			['Name: ', `"${this.name}"` ],
+			['Channel Count:', this.channels ],
 			['Length: ', `${this.length.toFixed(3)} m`],
 		];
 		assembly.showModalDialog( `Segment "${this.name}"`, content, event );
@@ -36,32 +60,24 @@ class Segment {
 	}
 
 	addTooltip(segmentParent){
-		let tooltipContent = 'Segment name: "' + this.name + '" / length: ' + this.length.toFixed(3)
-		+ ' / ID: ' + this.ID
+		let tooltipContent = 'Segment name: "' + this.name 
+		+ '" / length: ' + this.length.toFixed(3) + ' / ID: ' + this.ID
 		let tooltipNode = document.createElementNS('http://www.w3.org/2000/svg', 'title');
 		tooltipNode.appendChild(document.createTextNode(tooltipContent));
 		segmentParent.appendChild(tooltipNode);
 	}
 
 
-	findElementsV1(container) { /* < 5.23 */
-		this.segmentBody = container.querySelector(`g polygon[id]#${this.name}`);
-		this.segmentBody.style.fill = '';
-		this.segmentBody2 = this.segmentBody.nextElementSibling;		this.segmentBody2.style.fill = '';
-		const segmentParent = this.segmentBody.parentElement;
-		this.segmentPath = segmentParent.querySelector('polyline');
-		this.addEvents(segmentParent);
-		this.addTooltip(segmentParent);
-	}
-
-	findElementsV2(container) { /* >= 5.23 */
+	findElements(container) { /* >= 5.26 */
 		this.segmentBody = container.querySelector(`#pgsg_${this.name}`);
 		this.segmentBody.style.fill = '';
+		this.segmentBodyStyle = this.segmentBody.getAttribute('style');
 		this.segmentBody2 = this.segmentBody.nextElementSibling;		this.segmentBody2.style.fill = '';
 		const segmentParent = container.querySelector(`#gsg_${this.name}`);
-		this.segmentPath = container.querySelector(`#plsg_${this.name}`);				
+		this.segmentPath = container.querySelector(`#plsg_${this.name}`);
+		this.arrowElement = container.querySelector(`#bsg_${this.name}`);
 		this.addEvents(segmentParent);
-		this.addTooltip(segmentParent);		
+		this.addTooltip(segmentParent);	
 	}
 
 	xy(percentage) { /* get coords from percentage position */
@@ -75,13 +91,28 @@ class Segment {
 
 	setStatus(flags) {
 		const commReady = !!(flags &0x01);
-		const ready = !!(flags & 0x02);
+		const readyForPowerOn = !!(flags & 0x02);
 		const power = !!(flags & 0x04);
 		const enable = !!(flags & 0x08);
-		this.segmentBody.classList.remove('segReady', 'segNotReadyForPowerOn', 'segDisabled', 'segOffline' );
-		this.segmentBody2.classList.remove('segReady', 'segNotReadyForPowerOn', 'segDisabled', 'segOffline' );
+		this.errInitiator = !!(flags & 0x10);
+		const movementDetected = !!(flags & 0x20);		
+		const errorStop = !!(flags & 0x80);
+		this.PLCopen = (flags &0xff00)>>8;
+		this.errReason = (flags &0xf0000) >> 16;
+		this.segmentBody.classList.remove('segReady', 'segNotReadyForPowerOn', 'segDisabled', 'segOffline', 'segErrorStop', 'segErrorInitiator', 'segNotEnabled' );
+		this.segmentBody2.classList.remove('segReady', 'segNotReadyForPowerOn', 'segDisabled', 'segOffline', 'segErrorStop', 'segErrorInitiator', 'segNotEnabled' );
 		if( commReady ){
-			if( ready ){
+			if( errorStop ){
+				if( this.errInitiator) {
+					this.segmentBody.classList.add('segErrorInitiator');
+					this.segmentBody2.classList.add('segErrorInitiator');
+				}
+				else {
+					this.segmentBody.classList.add('segErrorStop');
+					this.segmentBody2.classList.add('segErrorStop');
+				}
+			}
+			else if( readyForPowerOn ){
 				if( power ){
 					this.segmentBody.classList.add('segReady');
 					this.segmentBody2.classList.add('segReady');
@@ -91,9 +122,15 @@ class Segment {
 					this.segmentBody2.classList.add('segDisabled');
 				}
 			}
-			else {
-				this.segmentBody.classList.add('segNotReadyForPowerOn');
-				this.segmentBody2.classList.add('segNotReadyForPowerOn');
+			else { /* not ready for power on */
+				if( enable ){
+					this.segmentBody.classList.add('segNotReadyForPowerOn');
+					this.segmentBody2.classList.add('segNotReadyForPowerOn');
+				}
+				else {
+					this.segmentBody.classList.add('segNotEnabled');
+					this.segmentBody2.classList.add('segNotEnabled');
+				}
 			}
 		}
 		else {
@@ -134,26 +171,33 @@ class Shuttle {
 
 	async showShuttleDialog(event){
 		try {
-			let response = await fetch(`/TrakWebApi/shuttle?index=${this.index}`);
+			let response = await fetch(`./shuttle?index=${this.index}`);
 			let shuttle = await response.json()
 			const title = `${!shuttle.active ? 'deleted ! ' : ''} Shuttle ${shuttle.index}`;
-			const content = [
-				['controlled: ', `${shuttle.controlled}`],
-				['virtual: ', `${shuttle.virtual}`],				
-				['User-ID: ', `"${shuttle.userID}"`],
-				['PLCopen: ', shuttle.PLCopen],
-				['Segment-Name: ', `"${shuttle.segmentName}"`],
-				['Segment-Position: ', `${shuttle.segmentPosition.toFixed(3)} m`],
-				['Sector-Name: ', `"${shuttle.sectorName}"`],
-				['Sector-Position: ', `${shuttle.sectorPosition.toFixed(3)} m`]				
-			];
-			if( 'errorTexts' in shuttle ){
-				for( let n = 0; n < shuttle.errorTexts.length; ++n ){
-					const row = [`${new Date(shuttle.errorTexts[n].t).toISOString()}: `, shuttle.errorTexts[n].txt]
-					content.push(row);
-				}	
-			}			
-			assembly.showModalDialog( title, content, event );
+			if( shuttle.result != "ok"){
+				assembly.showModalDialog( title, `error: ${shuttle.result}`, event );
+			}
+			else {
+				let content = [
+					['controlled: ', `${shuttle.controlled}`],
+					['virtual: ', `${shuttle.virtual}`],				
+					['User-ID: ', `"${shuttle.userID}"`],
+					['PLCopen: ', shuttle.PLCopen],
+					['Segment-Name: ', `"${shuttle.segmentName}"`],
+					['Segment-Position: ', `${shuttle.segmentPosition.toFixed(3)} m`],
+					['Sector-Name: ', `"${shuttle.sectorName}"`],
+					['Sector-Position: ', `${shuttle.sectorPosition.toFixed(3)} m`]				
+				];
+				if( 'errorTexts' in shuttle ){
+					if( shuttle.errorTexts.length > 0 ) {
+						for( let n = 0; n < shuttle.errorTexts.length; ++n ){
+							const row = [`${new Date(shuttle.errorTexts[n].t).toISOString()}: `, shuttle.errorTexts[n].txt]
+							content.push(row);
+						}	
+					}
+				}
+				assembly.showModalDialog( title, content, event );
+			}
 		}
 		catch( err ){
 			console.log(err);
@@ -291,9 +335,9 @@ class Assembly {
 		hoverInfo.innerText='loading SVG...';
 		hoverInfo.style.visibility='visible';
 		try {
-			let response = await fetch('/TrakWebApi/segments');
+			let response = await fetch('./segments');
 			let segmentInfo = await response.json()
-			segmentInfo.forEach(item => this.segment[item.ID] = new Segment(item.ID, item.name, item.length));
+			segmentInfo.forEach(item => this.segment[item.ID] = new Segment(item.ID, item.plk, item.name, item.channels, item.length));
 		}
 		catch( err ){
 			document.getElementById('timeoutBox').style.display = 'block';
@@ -306,7 +350,7 @@ class Assembly {
 		svgParent.setAttribute('id', 'svgParent');
 		let response = undefined;
 		try {
-			response = await fetch('/TrakWebApi/svgdata');
+			response = await fetch('./svgdata');
 			if (response.status !== 200)
 				throw new Error(`Error fetching ${response.url}`);
 			svgParent.innerHTML = await response.text();
@@ -315,35 +359,17 @@ class Assembly {
 			const workspace = svgParent.querySelector('#workspace');
 			const container = workspace.parentElement;
 			const segmentObjects = container.querySelector('#segments');
-			if (segmentObjects) { /* >= 5.23 */
-				segmentObjects.querySelector('#sg_legend').remove();
-				const sectors = container.querySelector('#sectors');
-					if( sectors ) sectors.remove();
-				const barriers = container.querySelector('#barriers');
-					if( barriers ) barriers.remove();
-				container.querySelector('#workspace').remove();
-				const processpoints = container.querySelector('#processpoints');
-					if( processpoints ) processpoints.remove();
-				this.segment.forEach(s => s.findElementsV2(segmentObjects.querySelector('#sg_layout')));
-			}
-			else { /* < 5.23 */
-				/* remove all sectors */
-				container.querySelectorAll('#sector').forEach((e) => { e.remove(); })
+			/* >= 5.26 required */
+			segmentObjects.querySelector('#sg_legend').remove();
+			const sectors = container.querySelector('#sectors');
+				if( sectors ) sectors.remove();
+			const barriers = container.querySelector('#barriers');
+				if( barriers ) barriers.remove();
+			container.querySelector('#workspace').remove();
+			const processpoints = container.querySelector('#processpoints');
+				if( processpoints ) processpoints.remove();
+			this.segment.forEach(s => s.findElements(segmentObjects.querySelector('#sg_layout')));
 
-				/* remove triggerpoints and barriers */
-				container.querySelectorAll('#triggerpoint').forEach((e) => { e.remove(); })
-				container.querySelectorAll('polyline[stroke="darkorange"]').forEach((e) => { e.remove(); })
-				container.querySelectorAll('polyline[stroke="purple"]').forEach((e) => { e.remove(); })
-				/* remove all legend tables */
-				svgParent.querySelectorAll('text').forEach((e) => {
-					if (e.innerHTML == ' Sectors' || e.textContent == ' Segments')
-						e.parentElement.parentElement.remove();
-					else if (/Process\s*points/.test(e.innerHTML))
-						e.parentElement.parentElement.remove();
-				})
-				workspace.remove();
-				this.segment.forEach(s => s.findElementsV1(container));
-			}
 			document.querySelector('#svgParent').replaceWith(svgParent);
 			this.shuttleParent = document.createElementNS('http://www.w3.org/2000/svg', 'g');
 			this.shuttleParent.setAttribute('id', 'shuttles');
@@ -367,7 +393,7 @@ class Assembly {
 	/* read shuttle positions */
 	async readShuttlePositions() {
 		try {
-			const res = await fetch('/TrakWebApi/positions', { signal: AbortSignal.timeout(5000) });
+			const res = await fetch('./positions', { signal: AbortSignal.timeout(5000) });
 			if (res.status === 200) {
 				if( this.offline ) document.querySelector('#timeoutBox').style.display = 'none';
 				this.offline = false;
@@ -390,7 +416,7 @@ class Assembly {
 	/* read segment flags */
 	async readSegmentFlags() {
 		try {
-			const res = await fetch('/TrakWebApi/segment_status');
+			const res = await fetch('./segment_status');
 			if (res.status === 200) {
 				const flags = await res.json();
 				this.segment.forEach( (s,i) => s.setStatus(flags[i]) );

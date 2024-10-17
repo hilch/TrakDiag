@@ -29,6 +29,7 @@ SOFTWARE.
 
 #include <bur/plctypes.h>
 #include <cstring>
+#include <algorithm>
 
 #ifdef __cplusplus
 	extern "C"
@@ -46,6 +47,46 @@ SOFTWARE.
 #define INTERNAL_ERROR_GETSEGMENT 9000
 #define INTERNAL_ERROR_SEGGETINFO 9001
 
+/* help structure to sort McSegmentType */
+struct Segment { 
+	McSegmentType segment;
+	UINT id;
+};
+
+/* compare function for help structure */
+bool compareSegments ( Segment seg1, Segment seg2 ){
+	return( seg1.id < seg2.id );
+}
+
+/* compare function for McAcpTrakSegGetInfoType */
+bool compareSegmentInfo( McAcpTrakSegGetInfoType info1, McAcpTrakSegGetInfoType info2 ){
+	return( info1.ID < info2.ID );
+}
+
+/* sort Segments and SegmentsInfo */
+void sortSegments( struct TD_SegmentsInfo* inst ){
+	Segment segments[inst->Count];
+
+	/* copy McSegmentType to help structure */
+	for( unsigned n = 0; n < inst->Count; ++n ){
+		std::memcpy( &segments[n].segment, &inst->Segments[n], sizeof(McSegmentType) );
+		segments[n].id = inst->SegmentsInfo[n].ID;
+	}
+
+	/* sort McSegmentTyp by ID */
+	std::sort( &segments[0], &segments[inst->Count], compareSegments );
+
+	/* store sorted McSegmentType back in output array */
+	for( unsigned n = 0; n < inst->Count; ++n ){
+		std::memcpy( &inst->Segments[n], &segments[n].segment, sizeof(McSegmentType) );
+	}
+	
+	/* sort McAcpTrakSegGetInfoType by ID */
+	std::sort( &inst->SegmentsInfo[0], &inst->SegmentsInfo[inst->Count], compareSegmentInfo );
+
+}
+
+
 /* Gets information about all segments in assembly */
 void TD_SegmentsInfo(struct TD_SegmentsInfo* inst)
 {
@@ -53,7 +94,7 @@ void TD_SegmentsInfo(struct TD_SegmentsInfo* inst)
 		switch( inst->step ){
 			case START: /* start */
 			inst->Busy = 1;
-			inst->StatusID = 0;
+			inst->ErrorID = 0;
 			inst->n = 0;
 			inst->fbGetSegment.Assembly = inst->Assembly;
 			inst->fbGetSegment.AdvancedParameters.SelectionMode = mcACPTRAK_GET_SEG_ALL;
@@ -94,7 +135,7 @@ void TD_SegmentsInfo(struct TD_SegmentsInfo* inst)
 				}
 			}
 			else if( inst->fbGetSegment.Error ){ /* internal error */
-				inst->StatusID = inst->fbGetSegment.ErrorID;
+				inst->ErrorID = inst->fbGetSegment.ErrorID;
 				inst->fbGetSegment.Next = false;
 				inst->fbGetSegment.Enable = false; /* reset fb */
 				MC_BR_AsmGetSegment_AcpTrak( &inst->fbGetSegment );
@@ -115,7 +156,8 @@ void TD_SegmentsInfo(struct TD_SegmentsInfo* inst)
 				if( inst->n >= inst->Count  || /* there are still some segments left */
 					 inst->n >= inst->MaxCount || inst->n >= TD_MAX_SUPPORTED_SEGMENTS_ASM ){ // max. permitted number reached
 					inst->fbSegGetInfo.Execute = false; /* reset fb */
-					MC_BR_SegGetInfo_AcpTrak( &inst->fbSegGetInfo );					
+					MC_BR_SegGetInfo_AcpTrak( &inst->fbSegGetInfo );
+					sortSegments(inst);
 					inst->step = DONE;
 				}
 				else { /* there are still some segments left */
@@ -125,7 +167,7 @@ void TD_SegmentsInfo(struct TD_SegmentsInfo* inst)
 				}
 			}
 			else if( inst->fbSegGetInfo.Error ){ /* internal error */
-				inst->StatusID = inst->fbSegGetInfo.ErrorID;
+				inst->ErrorID = inst->fbSegGetInfo.ErrorID;
 				inst->fbSegGetInfo.Execute = false; /* reset fb */
 				MC_BR_SegGetInfo_AcpTrak( &inst->fbSegGetInfo );
 				inst->step = INTERNAL_ERROR_SEGGETINFO;
@@ -153,7 +195,7 @@ void TD_SegmentsInfo(struct TD_SegmentsInfo* inst)
 		inst->step = START;
 		inst->Count = 0;
 		inst->Error = false;
-		inst->StatusID = 0;
+		inst->ErrorID = 0;
 		inst->Busy = false;
 		inst->Done = false;
 	}

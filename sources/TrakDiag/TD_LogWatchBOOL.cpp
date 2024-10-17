@@ -27,10 +27,6 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-#include <bur/plctypes.h>
-#include <cstring>
-#include <cstdio>
-
 #ifdef __cplusplus
 	extern "C"
 	{
@@ -39,58 +35,87 @@ SOFTWARE.
 #ifdef __cplusplus
 	};
 #endif
+
+#include <bur/plctypes.h>
+#include <cstring>
+#include <cstdio>
+
+
+#define STARTUP 0
+#define CHECK_SIGNAL 10
+#define W_DONE 20
+#define ERROR 9999
+
 /* Write status of BOOL variable into log */
 void TD_LogWatchBOOL(struct TD_LogWatchBOOL* inst)
 {
 	if( inst->Enable ){
-		switch( inst->step ){
-			case 0: /* startup */
-			inst->Busy = 1;
-			std::memset( &inst->fbLogWrite, 0, sizeof(inst->fbLogWrite) );
-			std::strcpy( (char*) inst->fbLogWrite.Name, (char*) inst->LogName );
-			inst->signalOld = !inst->Signal;
-			inst->step = 10;
-			break;
-
-
-			case 10: /* check signal */
-			inst->Valid = 1;
-			if( inst->Signal != inst->signalOld){
-				inst->signalOld = inst->Signal;
-				std::strcpy( (char*) inst->fbLogWrite.ObjectID, (char*) inst->SignalName );
-				std::strcpy( (char*) inst->fbLogWrite.Ascii, inst->Signal ? "TRUE" : "FALSE" );
-				inst->fbLogWrite.EventID = inst->EventID;
-				inst->fbLogWrite.Execute = 1;
-				inst->Busy = 1;
-				TD_LogWrite( &inst->fbLogWrite );
-				if( inst->fbLogWrite.Done ){
-					inst->Busy = 0;
-					inst->fbLogWrite.Execute = 0;
+		for(;;){
+			switch( inst->step ){
+				case STARTUP: /* startup */
+				inst->Busy = false;
+				inst->Valid = false;
+				inst->Error = false;
+				inst->ErrorID = 0;
+				std::memset( &inst->fbLogWrite, 0, sizeof(inst->fbLogWrite) );
+				std::strcpy( (char*) inst->fbLogWrite.Name, (char*) inst->LogName );
+				TD_LogWrite( &inst->fbLogWrite ); /* reset fb */
+				inst->signalOld = !inst->Signal; /* force writing when fb is enabled */
+				inst->step = CHECK_SIGNAL;
+				continue; /* save one cycle */
+	
+	
+				case CHECK_SIGNAL: /* check signal */
+				inst->Valid = 1;
+				if( inst->Signal != inst->signalOld){
+					inst->signalOld = inst->Signal;
+					std::strcpy( (char*) inst->fbLogWrite.ObjectID, (char*) inst->SignalName );
+					std::strcpy( (char*) inst->fbLogWrite.Ascii, inst->Signal ? "TRUE" : "FALSE" );
+					inst->fbLogWrite.EventID = inst->EventID;
+					inst->fbLogWrite.Execute = true;
 					TD_LogWrite( &inst->fbLogWrite );
+					inst->Busy = true;
+					inst->Valid = false;
+					inst->step = W_DONE;
+				}			
+				break;
+	
+	
+				case W_DONE:
+				if( inst->fbLogWrite.Done ){
+					inst->Busy = false;
+					inst->Valid = true;
+					inst->fbLogWrite.Execute = false; /* reset fb */
+					TD_LogWrite( &inst->fbLogWrite );
+					inst->step = CHECK_SIGNAL;
+					continue; /* save one cycle */
 				}
 				else if( inst->fbLogWrite.Error ){
-					inst->Busy = 0;
-					inst->StatusID = inst->fbLogWrite.StatusID;
-					inst->fbLogWrite.Execute = 0;
+					inst->Busy = false;
+					inst->Error = true;
+					inst->ErrorID = inst->fbLogWrite.ErrorID;
+					inst->fbLogWrite.Execute = false; /* reset fb */
 					TD_LogWrite( &inst->fbLogWrite );
-					inst->step = 9999;				
+					inst->step = ERROR;				
 				}
-			}			
-			break;
-
-			case 9999: /* error */
-			inst->Valid = 0;
-			inst->Busy = 0;
-			inst->Error = 1;
-			break;
-
-		}
+				else {  /* busy */
+					TD_LogWrite( &inst->fbLogWrite );
+				}
+				break;
+	
+	
+				case ERROR: /* error */
+				break;
+	
+			}
+			break; /* leave endless loop */
+		} /* end for(;;) */
 	}
 	else {
-		inst->Busy = 0;
-		inst->Valid = 0;
-		inst->StatusID = 0;
-		inst->Error = 0;
-		inst->step = 0;
+		inst->Busy = false;
+		inst->Valid = false;
+		inst->ErrorID = 0;
+		inst->Error = false;
+		inst->step = STARTUP;
 	}
 }

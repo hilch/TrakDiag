@@ -15,7 +15,7 @@ Finally, a web-based diagnostic interface can be generated with this library, wh
 - ArEventLog
 - astime
 - DataObj
-- McAcpTrak >= 5.21.1
+- McAcpTrak >= 5.27.1 (>= 5.21.1 for V2.x)
 - standard
 - McBase
 - sys_lib
@@ -270,12 +270,11 @@ output:
 
 ![example_recorder](https://github.com/hilch/TrakDiag/blob/main/examples/screenshot_recorder.png)
 
-[download this example and open it in your browser](https://github.com/hilch/TrakDiag/blob/main/examples/TD_Recorder_2023-07-06T13_40_34.html)
+[download this example and open it in your browser](https://github.com/hilch/TrakDiag/blob/main/examples/Demo_TD_Recorder_gAssembly_1_2024-09-27T13_04_53.html)
 
 
 ## TD_WebServices
 
-(>= V2.1.x)
 Provides some live information about Trak system via web based services.
 Data is provided by TD_Recorder or MC_BR_AsmCopyShuttleData_AcpTrak.
 
@@ -300,15 +299,19 @@ PROGRAM _CYCLIC
 END_PROGRAM
 ```
 
+starting with V3.0 this FB supports more than one Assembly. For this you have to include the assembly's name into the URL.
+In most cases you only want to see the main page. 
 
-### /TrakWebApi/index.html
+If the ip is 127.0.0.1 and the assembly's name is `gAssembly_1` the request should be `http://127.0.0.1/TrakWebApi/gAssembly_1/index.html`.
+
+### /TrakWebApi/<Assembly>/index.html
 
 HTML page with assembly's SvgData and shuttle positions.
 Simply embedd this path into mappView's WebViewer widget.
 
-![screenshot_mappView.png](https://github.com/hilch/TrakDiag/blob/main/examples/screenshot_mappView.png)
+![screenshot_mappView.png](https://github.com/hilch/TrakDiag/blob/main/examples/screenshot_webservices.png)
 
-### /TrakWebApi/info
+### /TrakWebApi/<Assembly>/info
 
 JSON with Basic information
 
@@ -316,7 +319,7 @@ JSON with Basic information
 {"TrakDiag" : "2.02.0","McAcpTrak" : "V5.22.1"}
 ```
 
-### /TrakWebApi/positions
+### /TrakWebApi/<Assembly>/positions
 
 JSON with shuttle information
 
@@ -332,7 +335,7 @@ we return an array of pairs of two UDINT:
 [[1,197149959],[2,102778119],[3,10503431],[4,121636103],[5,6291719],[6,98566407],[7,182454535],[8,90179847],[9,207621383],[10,113249543]]
 ```
 
-### /TrakWebApi/assembly
+### /TrakWebApi/<Assembly>/assembly
 
 assembly information (>= V2.2.x)
 
@@ -340,7 +343,7 @@ assembly information (>= V2.2.x)
 {"CommunicationReady" : true,"ReadyForPowerOn" : true,"PowerOn" : true,"SegmentsInDisabledCount" : 0,"SegmentsInStoppingCount" : 0,"SegmentsInErrorStopCount" : 0,"ShuttlesCount" : 10,"ShuttlesInErrorStopCount" : 0}
 ```
 
-### /TrakWebApi/segments
+### /TrakWebApi/<Assembly>/segments
 
 Deliver JSON with list of assembly's segments.
 
@@ -348,7 +351,7 @@ Deliver JSON with list of assembly's segments.
 [ { "name": "gSegB7", "ID": 31, "length": 0.450642056481534 },{ "name": "gSegB6", "ID": 30, "length": 0.450642056481534 },{ "name": "gSegB8", "ID": 29, "length": 0.450642056481534 },{ "name": "gSegB9", "ID": 28, "length": 0.450642056481534 },{ "name": "gSegB10", "ID": 27, "length": 0.450642056481534 },{ "name": "gSegB11", "ID": 26, "length": 0.240000000000000 },{ "name": "gSegB12", "ID": 25, "length": 0.240000000000000 },{ "name": "gSegB13", "ID": 24, "length": 0.240000000000000 },{ "name": "gSegB14", "ID": 23, "length": 0.450642056481534 },{ "name": "gSegB16", "ID": 22, "length": 0.450642056481534 },{ "name": "gSegB15", "ID": 21, "length": 0.450642056481534 },{ "name": "gSegB17", "ID": 20, "length": 0.450642056481534 },{ "name": "gSegB18", "ID": 19, "length": 0.450642056481534 },{ "name": "gSegB1", "ID": 18, "length": 0.450642056481534 },{ "name": "gSegB2", "ID": 17, "length": 0.240000000000000 },{ "name": "gSegB3", "ID": 16, "length": 0.240000000000000 },{ "name": "gSegB4", "ID": 15, "length": 0.240000000000000 },{ "name": "gSegB5", "ID": 14, "length": 0.450642056481534 },{ "name": "gSegA2", "ID": 13, "length": 0.660000000000000 },{ "name": "gSegA3", "ID": 12, "length": 0.450642056481534 },{ "name": "gSegA4", "ID": 11, "length": 0.240000000000000 },{ "name": "gSegA5", "ID": 10, "length": 0.240000000000000 },{ "name": "gSegA6", "ID": 9, "length": 0.240000000000000 },{ "name": "gSegA7", "ID": 8, "length": 0.450642056481534 },{ "name": "gSegA8", "ID": 7, "length": 0.660000000000000 },{ "name": "gSegA9", "ID": 6, "length": 0.660000000000000 },{ "name": "gSegA10", "ID": 5, "length": 0.450642056481534 },{ "name": "gSegA11", "ID": 4, "length": 0.240000000000000 },{ "name": "gSegA12", "ID": 3, "length": 0.240000000000000 },{ "name": "gSegA13", "ID": 2, "length": 0.240000000000000 },{ "name": "gSegA14", "ID": 1, "length": 0.450642056481534 },{ "name": "gSegA1", "ID": 0, "length": 0.660000000000000 }]
 ```
 
-### /TrakWebApi/segment_status
+### /TrakWebApi/<Assembly>/segment_status
 
 returns segments' status (bit coded).
 
@@ -356,7 +359,7 @@ returns segments' status (bit coded).
 [ 7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7]
 ```
 
-### /TrakWebApi/svgdata
+### /TrakWebApi/<Assembly>/svgdata
 
 Deliver assembly's generated SvgData (SVG).
 

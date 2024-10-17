@@ -44,7 +44,6 @@ FUNCTION_BLOCK MC_BR_GetCoordSystemIdent
 		Execute : BOOL; (*Execution of the function block begins on a rising edge of this input.*)
 		CoordSystemName : STRING[260]; (*frame name*)
 		Parameter : McGetCoordSystemIdentParType; (*references establishing connection between the function block and the axis group, axes etc.*)
-
 	END_VAR
 	VAR_OUTPUT
 		Done : BOOL; (*Execution successful. Function block is finished.*)
@@ -52,6 +51,26 @@ FUNCTION_BLOCK MC_BR_GetCoordSystemIdent
 		Error : BOOL; (*Error occurred during execution.*)
 		ErrorID : DINT; (*Error number*)
 		Ident : UDINT; (*coordinate system ident*)
+	END_VAR
+	VAR
+		Internal : McInternalType; (*Internal data*)
+	END_VAR
+END_FUNCTION_BLOCK
+
+FUNCTION_BLOCK MC_BR_TransformPosition
+	VAR_INPUT
+		Execute : BOOL; (*Execution of the function block begins on a rising edge of this input.*)
+		Position : McFrameType; (*Position to be transformed*)
+		SourceCoordSystem : UDINT; (*Source coordinate system*)
+		TargetCoordSystem : UDINT; (*Target coordinate system*)
+		Parameter : McTransformPositionParType; (*references establishing connection between the function block and the axis group, axes etc.*)
+	END_VAR
+	VAR_OUTPUT
+		Done : BOOL; (*Execution successful. Function block is finished.*)
+		Busy : BOOL; (*Function block is active and must continue to be called.*)
+		Error : BOOL; (*Error occurred during execution.*)
+		ErrorID : DINT; (*Error number*)
+		Offset : McFrameType; (*Offset of transformed position*)
 	END_VAR
 	VAR
 		Internal : McInternalType; (*Internal data*)

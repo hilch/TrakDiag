@@ -97,7 +97,7 @@ void TD_CrashReport(struct TD_CrashReport* inst) {
 			inst->Busy = 0;
 			inst->Done = 0;
 			inst->Error = 0;
-			inst->StatusID = 0;
+			inst->ErrorID = 0;
 	
 			if( inst->Execute && inst->pLoggerEntries && (inst->SizeLoggerEntries >= sizeof(TD_LoggerEntryType) ) ) {
 	
@@ -149,7 +149,7 @@ void TD_CrashReport(struct TD_CrashReport* inst) {
 				inst->step = W_ENTRIES_WRITTEN;
 			}
 			else if( inst->fbGetIdent.Error ) { /* error getting logger ident for module copy */
-				inst->StatusID = inst->fbGetIdent.StatusID;
+				inst->ErrorID = inst->fbGetIdent.StatusID;
 				inst->step = ERROR_GET_IDENT;
 			}
 			else { /* busy */
@@ -182,7 +182,7 @@ void TD_CrashReport(struct TD_CrashReport* inst) {
 				continue;								
 			}
 			else if( inst->fbGetLatestRecordID.Error ){
-				inst->StatusID = inst->fbGetLatestRecordID.StatusID;
+				inst->ErrorID = inst->fbGetLatestRecordID.StatusID;
 				inst->step = ERROR_GET_LATEST_RECORD_ID;
 			}
 			else {
@@ -210,7 +210,7 @@ void TD_CrashReport(struct TD_CrashReport* inst) {
 						ArEventLogGetPreviousRecordID( &inst->fbGetPreviousRecordID );
 					}
 					else {
-						inst->StatusID = inst->fbGetPreviousRecordID.StatusID;
+						inst->ErrorID = inst->fbGetPreviousRecordID.StatusID;
 						inst->step = ERROR_GET_PREVIOUS_RECORD_ID;
 					}
 				}
@@ -254,7 +254,7 @@ void TD_CrashReport(struct TD_CrashReport* inst) {
 				}
 			}
 			else if( inst->fbReadEntry.Error ) {
-				inst->StatusID = inst->fbReadEntry.StatusID;
+				inst->ErrorID = inst->fbReadEntry.ErrorID;
 				inst->step = ERROR_READ_ENTRY;
 			}
 			TD_LoggerReadEntry( &inst->fbReadEntry );

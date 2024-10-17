@@ -52,7 +52,7 @@ void TD_ShuttleErrorTexts(struct TD_ShuttleErrorTexts* inst)
 		switch( inst->step ){
 			case START: /* start */
 			inst->Busy = 1;
-			inst->StatusID = 0;
+			inst->ErrorID = 0;
 			inst->NumberOfRecords = 0;
 			inst->fbReadErrorText.Component = 0;
 			inst->fbReadErrorText.Enable = false;
@@ -104,6 +104,7 @@ void TD_ShuttleErrorTexts(struct TD_ShuttleErrorTexts* inst)
 						MC_BR_AsmGetShuttle_AcpTrak( &inst->fbAsmGetShuttle ); /* reset fb */
 						inst->fbReadErrorText.Enable = true;
 						MC_BR_ReadErrorText( &inst->fbReadErrorText );
+						inst->cycleCounter = 0;
 						inst->step = READ_ERRORS;
 					}
 					else { /* get next shuttle */
@@ -116,7 +117,7 @@ void TD_ShuttleErrorTexts(struct TD_ShuttleErrorTexts* inst)
 				}
 			}
 			else if( inst->fbAsmGetShuttle.Error ){
-				inst->StatusID = inst->fbAsmGetShuttle.ErrorID;
+				inst->ErrorID = inst->fbAsmGetShuttle.ErrorID;
 				inst->fbAsmGetShuttle.Enable = false;
 				MC_BR_AsmGetShuttle_AcpTrak( &inst->fbAsmGetShuttle ); /* reset fb */
 				inst->step = 9001;
@@ -128,6 +129,7 @@ void TD_ShuttleErrorTexts(struct TD_ShuttleErrorTexts* inst)
 
 
 			case READ_ERRORS: /* read error texts */
+			++ inst->cycleCounter;
 			if( inst->fbReadErrorText.Valid ){
 				inst->NumberOfRecords = inst->fbReadErrorText.NumberOfRecords;
 				if( inst->NumberOfRecords > 0 ){
@@ -142,13 +144,18 @@ void TD_ShuttleErrorTexts(struct TD_ShuttleErrorTexts* inst)
 				}
 			}
 			else if( inst->fbReadErrorText.Error ){
-				inst->StatusID = inst->fbReadErrorText.ErrorID;
+				inst->ErrorID = inst->fbReadErrorText.ErrorID;
 				inst->fbReadErrorText.Enable = false;
 				MC_BR_ReadErrorText( &inst->fbReadErrorText ); /* reset fb */				
 				inst->step = 9000;
 			}
 			else if( inst->fbReadErrorText.Busy ){ /* busy */
 				MC_BR_ReadErrorText( &inst->fbReadErrorText );
+				if( inst->cycleCounter > 20 ){ /* if there are no matching entries in the logger, we are unfortunately stuck in busy. */
+					inst->fbReadErrorText.Enable = false;
+					MC_BR_ReadErrorText( &inst->fbReadErrorText ); /* reset fb */
+					inst->step = DONE;
+				}
 			}
 
 			break;
@@ -159,10 +166,13 @@ void TD_ShuttleErrorTexts(struct TD_ShuttleErrorTexts* inst)
 				std::memcpy( &inst->Records, &inst->fbReadErrorText.ErrorRecords, sizeof(inst->Records) );
 				inst->fbReadErrorText.Enable = false;
 				MC_BR_ReadErrorText( &inst->fbReadErrorText ); /* reset fb */
+				if( inst->fbReadErrorText.ErrorRecords.Record[0].TimeStamp.Seconds == 0 && inst->fbReadErrorText.ErrorRecords.Record[0].TimeStamp.Nanoseconds == 0 ){
+					inst->NumberOfRecords = 0;
+				}
 				inst->step = DONE;
 			}
 			else if( inst->fbReadErrorText.Error ){
-				inst->StatusID = inst->fbReadErrorText.ErrorID;
+				inst->ErrorID = inst->fbReadErrorText.ErrorID;
 				inst->fbReadErrorText.Enable = false;
 				MC_BR_ReadErrorText( &inst->fbReadErrorText ); /* reset fb */				
 				inst->step = 9000;
@@ -190,7 +200,7 @@ void TD_ShuttleErrorTexts(struct TD_ShuttleErrorTexts* inst)
 	else {
 		inst->step = START;
 		inst->Error = false;
-		inst->StatusID = 0;
+		inst->ErrorID = 0;
 		inst->Busy = false;
 		inst->Done = false;
 	}

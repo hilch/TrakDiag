@@ -1600,3 +1600,41 @@ FUNCTION_BLOCK MC_WriteDigitalOutput (*Write digital output available directly o
 		Internal : McInternalType; (*Internal variable*)
 	END_VAR
 END_FUNCTION_BLOCK
+
+FUNCTION_BLOCK MC_BR_CamGetObjectData (*get the data from a cam data object*)
+    VAR_INPUT
+        Execute : BOOL; (*execution of this FB is started on rising edge of the input*)
+        Data : McCamDefineType; (*specify data to get*)
+    END_VAR
+    VAR_OUTPUT
+        Done : BOOL; (*execution successful. FB finished*)
+        Busy : BOOL; (*FB is active and needs to be called*)
+        Error : BOOL; (*error occurred during operation*)
+        ErrorID : DINT; (*error number*)
+        DataObjectVersion : UINT; (*version of the data object*)
+    END_VAR
+    VAR
+        Internal : McExec1InternalType; (*Data for internal use*)
+    END_VAR
+END_FUNCTION_BLOCK
+
+FUNCTION_BLOCK MC_BR_CheckAutCompensation (*Checks whether or not the compensation parameters for an automat state are within the limit values.*)
+	VAR_INPUT
+		Master : REFERENCE TO McAxisType; (*Master axis reference.*)
+		Slave : REFERENCE TO McAxisType; (*Slave axis reference.*)
+		Execute : BOOL;	(*Execution of the function block begins on a rising edge of this input.*)
+		Mode : McCheckAutCompModeEnum; (*Mode for checking compensation parameters.*)
+		CompensationData : McCheckAutCompDataType; (*Compensation parameters for checking or calculating.*)
+		AdvancedParameters : McAdvCheckAutCompType; (*Additional advanced parameters.*)
+	END_VAR
+	VAR_OUTPUT
+		Done : BOOL; (*Execution successful, the function block is finished.*)
+		Busy : BOOL; (*The function block is busy and must continue to be called.*)
+		Error : BOOL; (*An error occurred during operation.*)
+		ErrorID : DINT; (*Error ID number.*)
+		Result : McCheckAutCompResultType; (*The result of Check or Calculate function combining logical and numerical values.*)
+	END_VAR
+	VAR
+		Internal : McInternalTwoRefType; (*internal variable*)
+	END_VAR
+END_FUNCTION_BLOCK

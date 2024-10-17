@@ -1400,3 +1400,119 @@ FUNCTION_BLOCK MC_BR_ShSetUserId_AcpTrak (*sets the user id of a shuttle*)
 		Internal : McInternalType;
 	END_VAR
 END_FUNCTION_BLOCK
+
+FUNCTION_BLOCK MC_BR_AsmCamPrepare_AcpTrak (*Prepare cam for use with each or one specific coupling object.*)
+	VAR_INPUT
+		Assembly : REFERENCE TO McAssemblyType; (*The assembly reference establishes the connection between the function block and the assembly.*)
+		CouplingObjectName: STRING[32]; (*Name of an existing coupling object or empty.*)
+		CamID : UINT; (*index for cam data object*)
+		Cam : McCamDefineType; (*specify cam to use*)
+		Execute : BOOL;  (*Execution of the function block begins on a rising edge of this input.*)
+	END_VAR
+	VAR_OUTPUT
+		Done : BOOL; (*Execution successful. Function block is finished.*)
+		Busy : BOOL; (* Function block is active and must continue to be called.*)
+		Error : BOOL; (* Execution error*)
+		ErrorID : DINT; (* Error number*)
+	END_VAR
+	VAR
+		Internal : McInternalType;
+	END_VAR
+END_FUNCTION_BLOCK
+
+FUNCTION_BLOCK MC_BR_ShSetMotionFilter_AcpTrak (*sets motion filter parameter of a shuttle*)
+	VAR_INPUT
+		Axis : REFERENCE TO McAxisType; (*the shuttle reference establishes the connection between the function block and the shuttle.*)
+		Execute : BOOL; (*Execution of the function block begins on a rising edge of this input.*)
+		MotionFilterParameter : McAcpTrakShFilterParType; (*Motion filter parameter*)
+	END_VAR
+	VAR_OUTPUT
+		Done : BOOL; (*Function block is finished*)
+		Busy : BOOL; (*Function block is active and must continue to be called.*)
+		Error : BOOL; (*error occurred during operation*)
+		ErrorID : DINT; (*Error number*)
+	END_VAR
+	VAR
+		Internal : McInternalType;
+	END_VAR
+END_FUNCTION_BLOCK
+
+FUNCTION_BLOCK MC_BR_GetRouteInfo_AcpTrak (*Get information about the route prior to calling a routed-move command.*)
+	VAR_INPUT
+		Axis : REFERENCE TO McAxisType; (*the shuttle reference establishes the connection between the function block and the shuttle.*)
+		Sector: REFERENCE TO McSectorType; (*target sector*)
+		Position: LREAL; (*target position on Sector*)
+		Execute : BOOL; (*Execution of the function block begins on a rising edge of this input.*)
+		AdvancedParameters : McAcpTrakAdvRouteParType; (*Advanced parameters*)
+	END_VAR
+	VAR_OUTPUT
+		Done : BOOL; (*Execution successful. Function block is finished.*)
+		Busy : BOOL; (*Function block is active and must continue to be called.*)
+		Error : BOOL; (*Execution error*)
+		ErrorID : DINT; (*Error number*)
+		Info : McAcpTrakAdvRouteInfoType; (*Route information*)
+	END_VAR
+	VAR
+		Internal : McInternalType;
+	END_VAR
+END_FUNCTION_BLOCK
+
+FUNCTION_BLOCK MC_BR_GetPosition_AcpTrak (*Translates a position from a source component to a position on a target component*)
+	VAR_INPUT
+		Component: McComponentType; (*Reference to the component*)
+		Execute : BOOL; (*Execution of the function block begins on a rising edge of this input.*)
+		TargetComponent: McComponentType; (*Reference to the component*)
+		AdvancedParameters : McAcpTrakAdvGetPositionParType; (*Advanced position parameters*)
+	END_VAR
+	VAR_OUTPUT
+		Done : BOOL; (*Function block is finished*)
+		Busy : BOOL; (*Function block is active and must continue to be called*)
+		Error : BOOL; (*Error occurred during operation*)
+		ErrorID : DINT; (*Error number*)
+		Info :  McAcpTrakGetPositionInfoType; (*Additional information*)
+	END_VAR
+	VAR
+		Internal : McInternalType;
+	END_VAR
+END_FUNCTION_BLOCK
+
+FUNCTION_BLOCK MC_BR_AsmGetDualTrack_AcpTrak (*Loop through the dual-track-areas of an assembly.*)
+	VAR_INPUT
+		Assembly : REFERENCE TO McAssemblyType; (*The assembly reference establishes the connection between the function block and the assembly.*)
+		Enable : BOOL;  (* The FB is active as long as this input is set.*)
+		Next : BOOL; (* Show data of next segment.*)
+	END_VAR
+	VAR_OUTPUT
+		Valid : BOOL; (* Function block's output values can be used.*)
+		Busy : BOOL; (* Function block is active and must continue to be called.*)
+		Error : BOOL; (* Execution error*)
+		ErrorID : DINT; (* Error number*)
+		TotalCount : UINT; (* Total amount of sectors to loop through.*)
+		RemainingCount : UINT; (* Remaining sectors to loop through.*)
+		DualTrackInfo : McAcpTrakDualTrackInfoType;
+	END_VAR
+	VAR
+		Internal : McInternalType;
+	END_VAR
+END_FUNCTION_BLOCK
+
+FUNCTION_BLOCK  MC_BR_AsmCopySegmentData_AcpTrak (*Copies a snapshot of the last segment information*)
+	VAR_INPUT
+		Assembly : REFERENCE TO McAssemblyType; (*The assembly reference establishes the connection between the function block and the assembly.*)
+		Execute : BOOL;  (*Execution of the function block begins on a rising edge of this input.*)
+		Abort : BOOL; (*Abort execution of the function block*)
+		Command : McAcpTrakCopySegDataModeEnum; (*Define which segments' data should be copied. *)
+		AdvancedParameters : McAcpTrakAdvCopySegDataType; (*Advanced parameters for copying segment data*)
+	END_VAR
+	VAR_OUTPUT
+		Done : BOOL; (*Function block is finished*)
+		Busy : BOOL; (*Function block is active and must continue to be called.*)
+		CommandAborted : BOOL; (*Command aborted by user.*)
+		Error : BOOL; (*error occurred during operation*)
+		ErrorID : DINT; (*Error number*)
+		Info :  McAcpTrakCopySegDataInfoType;  (* Information about segment data*)
+	END_VAR
+	VAR
+		Internal : McInternalType;
+	END_VAR
+END_FUNCTION_BLOCK
