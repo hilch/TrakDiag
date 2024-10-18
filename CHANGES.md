@@ -6,13 +6,16 @@ some incompatible changes compared to V2.x were needed.
 - Remove obsolete datatype TD_RecorderSegInfoType
 
 TD_WebServices:
+- can be used for more than one assembly
 - Remove output SegInfo.segmentCyclicInfo
 - All fb now uniformly use output 'ErrorID' instead of 'StatusID'
 - Add output SegInfo.segmentData
 - Segments are colored dark red when in ErrorStop. Segments that initiate errors are colored red.
 - Segments are colored yellow when enable input not active.
 - Add PLCopen state, PLK-Interface, error reason and Channel count to segment info dialog
+- 
 TD_Recorder:
+- can be used for more than one assembly
 - Change datatype of .SegInfo to TD_SegInfoType
 - Add logging segment datatype
 - TD_SegmentsInfo: Segments are now sorted by ID
