@@ -309,6 +309,9 @@ If the ip is 127.0.0.1 and the assembly's name is `gAssembly_1` the request shou
 HTML page with assembly's SvgData and shuttle positions.
 Simply embedd this path into mappView's WebViewer widget.
 
+
+![video_webservices.gif](https://github.com/hilch/TrakDiag/blob/main/examples/video_webservices.gif)
+
 ![screenshot_mappView.png](https://github.com/hilch/TrakDiag/blob/main/examples/screenshot_webservices.png)
 
 ### /TrakWebApi/<Assembly>/info
