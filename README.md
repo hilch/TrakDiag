@@ -367,6 +367,15 @@ returns segments' status (bit coded).
 
 Deliver assembly's generated SvgData (SVG).
 
+# Selective Logging
 
+ACOPOStrak already generates many entries in the motion logger. 
 
+By cyclically calling internal function blocks, even TD_Recorder and TD_Webservices generate many more entries.
+
+Currently, the entries can only be reduced by activating 'Selective Logging' in the [MappMotionConfiguration](https://help.br-automation.com/#/en/6/motion%2Fmapp_motion%2Fallgemeines%2Fkonfiguration%2Fbasiselemente%2Fmapp_motion_configuration.html).
+
+The following setting is therefore recommended:
+
+![selective_logging.png](https://github.com/hilch/TrakDiag/blob/main/doc/selective_logging.png)
 
