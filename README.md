@@ -237,11 +237,12 @@ Read logger entry (internal use).
 ## TD_Recorder
 
 Records shuttle data cyclically and provides a video for playing back the last seconds before a failure happend as scene viewer would do.
+Use an instance for each assembly.
 
 If 'Trigger' is set a html file containing the 'SvgData' with shuttle movements and a system dump file is created.
 
-Since MC_BR_AsmCopyShuttleData_AcpTrak is used internally and only one instance of this FB is allowed in
-project one can use the shuttle data provided by 'DataAddress'/'DataSize' for own usage instead.
+Since MC_BR_AsmCopyShuttleData_AcpTrak is used internally this FB is blocked for your application.
+If you still need this data you can use the shuttle data provided by 'DataAddress'/'DataSize' for own usage instead.
 
 usage:
 ```
