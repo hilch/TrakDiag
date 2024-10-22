@@ -110,7 +110,7 @@ void TD_Recorder(struct TD_Recorder* inst)
 					inst->fbCopyShuttleData.Assembly = inst->pAssembly;
 					inst->fbCopyShuttleData.Abort = false;
 					inst->fbCopyShuttleData.Command = mcACPTRAK_SH_DATA_ALL;
-					inst->fbCopyShuttleData.AdvancedParameters.ShuttleIndex = 0;
+					inst->fbCopyShuttleData.AdvancedParameters.ShuttleID = 0;
 					inst->fbCopyShuttleData.AdvancedParameters.DataAddress = inst->DataAddress;
 					inst->fbCopyShuttleData.AdvancedParameters.DataSize = inst->DataSize;
 					inst->fbCopyShuttleData.AdvancedParameters.Trigger = mcACPTRAK_TRIGGER_IMMEDIATELY;

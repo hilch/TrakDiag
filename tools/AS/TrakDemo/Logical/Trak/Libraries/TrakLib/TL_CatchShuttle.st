@@ -18,7 +18,7 @@ FUNCTION_BLOCK TL_CatchShuttle
 		ELSE
 			fbShReadInfo( Enable := FALSE );
 			fbTrgPointEnableEntry( Enable := FALSE );
-			fbTrgPointGetInfo( Execute := FALSE );
+			fbTrgPointReadInfo( Execute := FALSE );
 			Valid := FALSE;
 			Busy := FALSE;
 			Error := FALSE;
@@ -34,7 +34,7 @@ FUNCTION_BLOCK TL_CatchShuttle
 		IF fbTrgPointEnableEntry.Valid THEN 
 			Valid := TRUE;
 			IF fbTrgPointEnableEntry.EventCount <> 0 THEN
-				fbTrgPointGetInfo( ProcessPoint := fbTrgPointEnableEntry.ProcessPoint, Execute := TRUE );
+				fbTrgPointReadInfo( ProcessPoint := fbTrgPointEnableEntry.ProcessPoint, Execute := TRUE );
 				step := 110;
 			END_IF
 		ELSIF fbTrgPointEnableEntry.Error THEN
@@ -49,24 +49,24 @@ FUNCTION_BLOCK TL_CatchShuttle
 		   ------------------------------------------------------------------------------ *)
 
 		110: 
-		IF fbTrgPointGetInfo.Done THEN
-			Axis := fbTrgPointGetInfo.TrgPointInfo.Axis;
-			IF fbTrgPointGetInfo.TrgPointInfo.Event = mcACPTRAK_TP_PASSED_POSITIVE THEN (* only consider shuttles in positive direction *)
+		IF fbTrgPointReadInfo.Done THEN
+			Axis := fbTrgPointReadInfo.TrgPointInfo.Axis;
+			IF fbTrgPointReadInfo.TrgPointInfo.Event = mcACPTRAK_TP_PASSED_POSITIVE THEN (* only consider shuttles in positive direction *)
 				(* switch on reading shuttle info *)
 				fbShReadInfo( Axis := ADR(Axis), Enable := TRUE ); 
 				step := 120;
 			ELSE
 				step := 100;
 			END_IF
-			fbTrgPointGetInfo( Execute := FALSE );
+			fbTrgPointReadInfo( Execute := FALSE );
 
-		ELSIF fbTrgPointGetInfo.Error THEN
+		ELSIF fbTrgPointReadInfo.Error THEN
 			Valid := FALSE;
 			ErrorID := 111;
 			Error := TRUE;
 			step := 9000;
 		ELSE
-			fbTrgPointGetInfo();
+			fbTrgPointReadInfo();
 		END_IF
 
 		(* ------------------------------------------------------------------------------

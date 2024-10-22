@@ -30,7 +30,7 @@ PROGRAM _INIT
 	fbAddSimShuttle.Position := 0.5;
 
 	fbAddSimShuttle.AdvancedParameters.Velocity := 0.0;
-	fbAddSimShuttle.AdvancedParameters.Orientation := mcDIR_POSITIVE;
+	fbAddSimShuttle.Orientation := mcDIR_POSITIVE;
 	fbAddSimShuttle.AdvancedParameters.Deceleration := 6.0;
 	fbAddSimShuttle.AdvancedParameters.Virtual := FALSE;
 

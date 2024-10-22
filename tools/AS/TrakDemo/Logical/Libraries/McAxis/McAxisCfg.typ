@@ -263,10 +263,10 @@ TYPE
 	END_STRUCT;
 	McAFDCSACOPOSmultiDigOutEnum :
 		( (*Digital output selector setting*)
-		mcAFDCSACOPOSMULTIDO_SS1X111 := 0, (*SS1.X11.1 -*)
-		mcAFDCSACOPOSMULTIDO_SS1X113 := 1, (*SS1.X11.3 -*)
-		mcAFDCSACOPOSMULTIDO_SS1X115 := 2, (*SS1.X11.5 -*)
-		mcAFDCSACOPOSMULTIDO_SS1X116 := 3 (*SS1.X11.6 -*)
+		mcAFDCSACOPOSMULTIDO_SS2X111 := 0, (*SS2.X11.1 -*)
+		mcAFDCSACOPOSMULTIDO_SS2X113 := 1, (*SS2.X11.3 -*)
+		mcAFDCSACOPOSMULTIDO_SS2X115 := 2, (*SS2.X11.5 -*)
+		mcAFDCSACOPOSMULTIDO_SS2X116 := 3 (*SS2.X11.6 -*)
 		);
 	McAFDCSACOPOSmultiDigOutType : STRUCT
 		Type : McAFDCSACOPOSmultiDigOutEnum; (*Digital output selector setting*)
@@ -377,10 +377,10 @@ TYPE
 	END_STRUCT;
 	McAFDOACOPOSmultiDigOutEnum :
 		( (*Digital output selector setting*)
-		mcAFDOACOPOSMULTIDO_SS1X111 := 0, (*SS1.X11.1 -*)
-		mcAFDOACOPOSMULTIDO_SS1X113 := 1, (*SS1.X11.3 -*)
-		mcAFDOACOPOSMULTIDO_SS1X115 := 2, (*SS1.X11.5 -*)
-		mcAFDOACOPOSMULTIDO_SS1X116 := 3 (*SS1.X11.6 -*)
+		mcAFDOACOPOSMULTIDO_SS2X111 := 0, (*SS2.X11.1 -*)
+		mcAFDOACOPOSMULTIDO_SS2X113 := 1, (*SS2.X11.3 -*)
+		mcAFDOACOPOSMULTIDO_SS2X115 := 2, (*SS2.X11.5 -*)
+		mcAFDOACOPOSMULTIDO_SS2X116 := 3 (*SS2.X11.6 -*)
 		);
 	McAFDOACOPOSmultiDigOutType : STRUCT
 		Type : McAFDOACOPOSmultiDigOutEnum; (*Digital output selector setting*)
@@ -467,8 +467,14 @@ TYPE
 		( (*Value source 1-8 selector setting*)
 		mcAFAVSVS_ACP_PARID := 0 (*ACOPOS ParID - ParID of an ACOPOS drive*)
 		);
+	McAFAVSValSrcAcpParIDPosConvEnum :
+		( (*Related values are treated as axis positions*)
+		mcAFAVSVSAPP_USE := 0, (*Used - FB IOs in Measurement units and periodic*)
+		mcAFAVSVSAPP_NOT_USE := 1 (*Not used - FB IOs in units of the ParID and non-periodic*)
+		);
 	McAFAVSValSrcAcpParIDType : STRUCT (*Type mcAFAVSVS_ACP_PARID settings*)
 		ParID : UINT; (*ParID which is used as value source*)
+		PosConv : McAFAVSValSrcAcpParIDPosConvEnum; (*Related values are treated as axis positions*)
 	END_STRUCT;
 	McAFAVSValSrcType : STRUCT (*Selection of the value source*)
 		Type : McAFAVSValSrcEnum; (*Value source 1-8 selector setting*)

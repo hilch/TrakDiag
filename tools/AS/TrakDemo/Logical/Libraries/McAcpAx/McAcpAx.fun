@@ -470,43 +470,6 @@ FUNCTION_BLOCK MC_BR_AutoTuneFeedForward_AcpAx (*execute auto tuning for feed fo
 	END_VAR
 END_FUNCTION_BLOCK
 
-FUNCTION_BLOCK MC_BR_CamAutomatSetPar_AcpAx (*set parameter for configuration of cam automat*)
-	VAR_INPUT
-		Slave : REFERENCE TO McAxisType; (*axis reference*)
-		Execute : BOOL; (*execution of this FB is started on rising edge of the input*)
-		Command : McCamAutSetParCmdEnum; (*command for sending values*)
-		CamAutomat : McAcpAxCamAutDefineType; (*parameter source for cam automat*)
-		AdvancedParameters : McAcpAxAdvCamAutSetParType; (*advanced parameters for configuration options*)
-	END_VAR
-	VAR_OUTPUT
-		Done : BOOL; (*execution successful. FB finished*)
-		Busy : BOOL; (*FB is active and needs to be called*)
-		Error : BOOL; (*error occurred during operation*)
-		ErrorID : DINT; (*error number*)
-	END_VAR
-	VAR
-		Internal : McInternalType; (*internal variable*)
-	END_VAR
-END_FUNCTION_BLOCK
-
-FUNCTION_BLOCK  MC_BR_CamAutomatGetPar_AcpAx (*get parameter of configured cam automat*)
-	VAR_INPUT
-		Slave : REFERENCE TO McAxisType; (*axis reference*)
-		Execute : BOOL; (*execution of this FB is started on rising edge of the input*)
-		Command :  McCamAutGetParCmdEnum; (*command for sending values*)
-		CamAutomat : McAcpAxCamAutDefineType; (*parameter source for cam automat*)
-	END_VAR
-	VAR_OUTPUT
-		Done : BOOL; (*execution successful. FB finished*)
-		Busy : BOOL; (*FB is active and needs to be called*)
-		Error : BOOL; (*error occurred during operation*)
-		ErrorID : DINT; (*error number*)
-	END_VAR
-	VAR
-		Internal : McInternalType; (*internal variable*)
-	END_VAR
-END_FUNCTION_BLOCK
-
 FUNCTION_BLOCK  MC_BR_PhasingVelocity_AcpAx (*creates phase shift in the master position of a slave axis using a velocity motion profile*)
 	VAR_INPUT
 		Slave : REFERENCE TO McAxisType; (*axis reference*)

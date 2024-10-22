@@ -110,11 +110,13 @@
       </Group>
     </Group>
     <Group ID="CommonSegmentSettings">
+      <Group ID="Compensation">
+        <Property ID="ElongationCompensation" Value="Inactive" />
+        <Selector ID="CoggingCompensation" Value="Active">
+          <Property ID="UpperVelLimit" Value="1.2" />
+        </Selector>
+      </Group>
       <Property ID="SegmentSimulationOnPLC" Value="On" />
-      <Selector ID="CoggingCompensation" Value="Active">
-        <Property ID="UpperVelLimit" Value="0.5" />
-      </Selector>
-      <Property ID="ElongationCompensation" Value="Inactive" />
       <Selector ID="StopReaction" Value="InductionHalt" />
       <Selector ID="SpeedFilter" Value="NotUsed" />
       <Group ID="ControllerParameters">
@@ -156,7 +158,6 @@
     <Group ID="Shuttles">
       <Property ID="MaxShuttleCount" Value="50" />
       <Property ID="MaxShuttleCommandCount" Value="0" />
-      <Property ID="Deceleration" Value="0.0" />
       <Property ID="UseConvoys" Value="Inactive" />
       <Selector ID="SwitchSectorAfterStop" Value="SwitchOntoSegmentSector">
         <Property ID="Scope" Value="ShSs" />
@@ -169,7 +170,7 @@
         <Property ID="ShuttleStRef[1]" Value="ShuttleStereotype_1" />
       </Group>
       <Group ID="MagnetPlateConfigurations">
-        <Selector ID="ShuttleType[1]" Value="8F1SA.100.xxxxxx-x" />
+        <Selector ID="ShuttleType[1]" Value="8F1Sx.100.xxxxxx-x" />
       </Group>
       <Group ID="CollisionAvoidance">
         <Selector ID="Strategy" Value="Constant" />
@@ -231,11 +232,13 @@
       </Group>
     </Group>
     <Group ID="CommonSegmentSettings">
+      <Group ID="Compensation">
+        <Property ID="ElongationCompensation" Value="Inactive" />
+        <Selector ID="CoggingCompensation" Value="Active">
+          <Property ID="UpperVelLimit" Value="1.2" />
+        </Selector>
+      </Group>
       <Property ID="SegmentSimulationOnPLC" Value="On" />
-      <Selector ID="CoggingCompensation" Value="Active">
-        <Property ID="UpperVelLimit" Value="0.5" />
-      </Selector>
-      <Property ID="ElongationCompensation" Value="Inactive" />
       <Selector ID="StopReaction" Value="InductionHalt" />
       <Selector ID="SpeedFilter" Value="NotUsed" />
       <Group ID="ControllerParameters">
@@ -277,7 +280,6 @@
     <Group ID="Shuttles">
       <Property ID="MaxShuttleCount" Value="50" />
       <Property ID="MaxShuttleCommandCount" Value="0" />
-      <Property ID="Deceleration" Value="0.0" />
       <Property ID="UseConvoys" Value="Inactive" />
       <Selector ID="SwitchSectorAfterStop" Value="SwitchOntoSegmentSector">
         <Property ID="Scope" Value="ShSs" />
@@ -290,7 +292,7 @@
         <Property ID="ShuttleStRef[1]" Value="ShuttleStereotype_1" />
       </Group>
       <Group ID="MagnetPlateConfigurations">
-        <Selector ID="ShuttleType[1]" Value="8F1SA.100.xxxxxx-x" />
+        <Selector ID="ShuttleType[1]" Value="8F1Sx.100.xxxxxx-x" />
       </Group>
       <Group ID="CollisionAvoidance">
         <Selector ID="Strategy" Value="Constant" />

@@ -59,9 +59,9 @@ void TD_GetShuttles(struct TD_GetShuttles* inst)
 			inst->fbGetShuttle.AdvancedParameters.VirtualSelectionMode = mcACPTRAK_GET_SH_VIRT_NONVIRTUAL; /* only non-virtual shuttles */
 			inst->fbGetShuttle.AdvancedParameters.SelectionMode = inst->SelectionMode;
 			inst->fbGetShuttle.Next = false;
-			MC_BR_AsmGetShuttleSel_AcpTrak( &inst->fbGetShuttle );
+			MC_BR_AsmGetShuttle_AcpTrak( &inst->fbGetShuttle );
 			inst->fbGetShuttle.Enable = true;
-			MC_BR_AsmGetShuttleSel_AcpTrak( &inst->fbGetShuttle );
+			MC_BR_AsmGetShuttle_AcpTrak( &inst->fbGetShuttle );
 			inst->step = GET_SHUTTLE;
 			break;
 
@@ -73,14 +73,14 @@ void TD_GetShuttles(struct TD_GetShuttles* inst)
 					++inst->Count;
 				}
 				inst->fbGetShuttle.Next = false;
-				MC_BR_AsmGetShuttleSel_AcpTrak( &inst->fbGetShuttle );
+				MC_BR_AsmGetShuttle_AcpTrak( &inst->fbGetShuttle );
 				if( inst->fbGetShuttle.RemainingCount > 0 ){
 					inst->fbGetShuttle.Next = true; /* get next shuttle */
-					MC_BR_AsmGetShuttleSel_AcpTrak( &inst->fbGetShuttle );
+					MC_BR_AsmGetShuttle_AcpTrak( &inst->fbGetShuttle );
 				}
 				else { /* no more shuttles */
 					inst->fbGetShuttle.Enable = false;
-					MC_BR_AsmGetShuttleSel_AcpTrak( &inst->fbGetShuttle );
+					MC_BR_AsmGetShuttle_AcpTrak( &inst->fbGetShuttle );
 					inst->step = DONE;
 				}
 			}
@@ -91,7 +91,7 @@ void TD_GetShuttles(struct TD_GetShuttles* inst)
 				inst->step = INTERNAL_ERROR;
 			}
 			else { /* busy */
-				MC_BR_AsmGetShuttleSel_AcpTrak( &inst->fbGetShuttle );
+				MC_BR_AsmGetShuttle_AcpTrak( &inst->fbGetShuttle );
 			}
 			break;
 

@@ -15,47 +15,6 @@ extern "C"
 #ifndef _BUR_PUBLIC
 #define _BUR_PUBLIC
 #endif
-/* Constants */
-#ifdef _REPLACE_CONST
- #define sdmOPTION_VOLATILE 0U
- #define sdmOPTION_NON_VOLATILE 1U
- #define sdm_APPMODE_ERROR 3U
- #define sdm_APPMODE_WARNING 2U
- #define sdm_APPMODE_OK 1U
- #define sdm_APPMODE_NOTUSED 0U
- #define sdm_SYSTEMDUMP_DATA 1U
- #define sdm_SYSTEMDUMP_PARAM 0U
- #define sdmERR_OPTION_INVALID 34906U
- #define sdmERR_INVALID_VALUE 34905U
- #define sdmERR_INVALID_POINTER 34904U
- #define sdmERR_INVALID_DEVICE 34903U
- #define sdmERR_SYSTEMDUMP 34902U
- #define sdmERR_ARREG 34901U
- #define sdmERR_NOT_EXIST 34900U
-#else
- #ifndef _GLOBAL_CONST
-   #define _GLOBAL_CONST _WEAK const
- #endif
- _GLOBAL_CONST unsigned long sdmOPTION_VOLATILE;
- _GLOBAL_CONST unsigned long sdmOPTION_NON_VOLATILE;
- _GLOBAL_CONST unsigned short sdm_APPMODE_ERROR;
- _GLOBAL_CONST unsigned short sdm_APPMODE_WARNING;
- _GLOBAL_CONST unsigned short sdm_APPMODE_OK;
- _GLOBAL_CONST unsigned short sdm_APPMODE_NOTUSED;
- _GLOBAL_CONST unsigned short sdm_SYSTEMDUMP_DATA;
- _GLOBAL_CONST unsigned short sdm_SYSTEMDUMP_PARAM;
- _GLOBAL_CONST unsigned short sdmERR_OPTION_INVALID;
- _GLOBAL_CONST unsigned short sdmERR_INVALID_VALUE;
- _GLOBAL_CONST unsigned short sdmERR_INVALID_POINTER;
- _GLOBAL_CONST unsigned short sdmERR_INVALID_DEVICE;
- _GLOBAL_CONST unsigned short sdmERR_SYSTEMDUMP;
- _GLOBAL_CONST unsigned short sdmERR_ARREG;
- _GLOBAL_CONST unsigned short sdmERR_NOT_EXIST;
-#endif
-
-
-
-
 /* Datatypes and datatypes of function blocks */
 typedef struct SdmSystemDump
 {
@@ -95,6 +54,44 @@ typedef struct SdmSetAppParam
 /* Prototyping of functions and function blocks */
 _BUR_PUBLIC void SdmSystemDump(struct SdmSystemDump* inst);
 _BUR_PUBLIC void SdmSetAppParam(struct SdmSetAppParam* inst);
+
+
+/* Constants */
+#ifdef _REPLACE_CONST
+ #define sdmOPTION_VOLATILE 0U
+ #define sdmOPTION_NON_VOLATILE 1U
+ #define sdm_APPMODE_ERROR 3U
+ #define sdm_APPMODE_WARNING 2U
+ #define sdm_APPMODE_OK 1U
+ #define sdm_APPMODE_NOTUSED 0U
+ #define sdm_SYSTEMDUMP_DATA 1U
+ #define sdm_SYSTEMDUMP_PARAM 0U
+ #define sdmERR_OPTION_INVALID 34906U
+ #define sdmERR_INVALID_VALUE 34905U
+ #define sdmERR_INVALID_POINTER 34904U
+ #define sdmERR_INVALID_DEVICE 34903U
+ #define sdmERR_SYSTEMDUMP 34902U
+ #define sdmERR_ARREG 34901U
+ #define sdmERR_NOT_EXIST 34900U
+#else
+ _GLOBAL_CONST unsigned long sdmOPTION_VOLATILE;
+ _GLOBAL_CONST unsigned long sdmOPTION_NON_VOLATILE;
+ _GLOBAL_CONST unsigned short sdm_APPMODE_ERROR;
+ _GLOBAL_CONST unsigned short sdm_APPMODE_WARNING;
+ _GLOBAL_CONST unsigned short sdm_APPMODE_OK;
+ _GLOBAL_CONST unsigned short sdm_APPMODE_NOTUSED;
+ _GLOBAL_CONST unsigned short sdm_SYSTEMDUMP_DATA;
+ _GLOBAL_CONST unsigned short sdm_SYSTEMDUMP_PARAM;
+ _GLOBAL_CONST unsigned short sdmERR_OPTION_INVALID;
+ _GLOBAL_CONST unsigned short sdmERR_INVALID_VALUE;
+ _GLOBAL_CONST unsigned short sdmERR_INVALID_POINTER;
+ _GLOBAL_CONST unsigned short sdmERR_INVALID_DEVICE;
+ _GLOBAL_CONST unsigned short sdmERR_SYSTEMDUMP;
+ _GLOBAL_CONST unsigned short sdmERR_ARREG;
+ _GLOBAL_CONST unsigned short sdmERR_NOT_EXIST;
+#endif
+
+
 
 
 #ifdef __cplusplus

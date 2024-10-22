@@ -1375,6 +1375,28 @@ TYPE
 		AnalogInputs : McAPICIOAnInType;
 		AnalogOutputs : McAPICIOAnOutType;
 	END_STRUCT;
+	McBRMntEnum :
+		( (*Mounting selector setting*)
+		mcBRM_VERTICAL := 0, (*Vertical - Braking resistor is mounted vertical*)
+		mcBRM_HORIZONTAL := 1 (*Horizontal - Braking resistor is mounted horizontal*)
+		);
+	McBRMntVerticalType : STRUCT (*Type mcBRM_VERTICAL settings*)
+		ThermalResistance : REAL; (*Thermal resistance [K/W]*)
+	END_STRUCT;
+	McBRMntHorizontalType : STRUCT (*Type mcBRM_HORIZONTAL settings*)
+		ThermalResistance : REAL; (*Thermal resistance [K/W]*)
+	END_STRUCT;
+	McBRMntType : STRUCT (*Mounting variant*)
+		Type : McBRMntEnum; (*Mounting selector setting*)
+		Vertical : McBRMntVerticalType; (*Type mcBRM_VERTICAL settings*)
+		Horizontal : McBRMntHorizontalType; (*Type mcBRM_HORIZONTAL settings*)
+	END_STRUCT;
+	McCfgBrkResType : STRUCT (*Main data type corresponding to McCfgTypeEnum mcCFG_BRK_RES*)
+		Resistance : REAL; (*Electrical resistance [Ohm]*)
+		LimitTemperature : REAL; (*Maximum temperature [°C]*)
+		ThermalCapacity : REAL; (*Thermal capacity [Ws/K]*)
+		Mounting : McBRMntType; (*Mounting variant*)
+	END_STRUCT;
 	McAMEType : STRUCT (*Parameter of hardware elements situated between motor encoder and load which influence the scaling*)
 		Gearbox : McCfgGearBoxType; (*Specifies a gearbox by defining the ratio between a gearbox input and output*)
 		RotaryToLinearTransformation : McCfgRotToLinTrfType; (*Specifies a transformation factor between the output of the gear and the actual load movement*)
@@ -1687,7 +1709,7 @@ TYPE
 	McACMVFCVFAutCfgNotUseType : STRUCT (*Type mcACMVFCVFAC_NOT_USE settings*)
 		BoostVoltage : REAL; (*Boost voltage [V]*)
 		RatedVoltage : REAL; (*Rated voltage [V]*)
-		RatedFrequency : REAL; (*Rated frequency [cps]*)
+		RatedFrequency : REAL; (*Rated frequency [Hz]*)
 	END_STRUCT;
 	McACMVFCVFAutCfgType : STRUCT (*Automatic configuration of parameters*)
 		Type : McACMVFCVFAutCfgEnum; (*Automatic configuration selector setting*)
@@ -1719,7 +1741,6 @@ TYPE
 		mcAHM_SW_GATE := 2, (*Switch gate - Homing with reference switch gate*)
 		mcAHM_LIM_SW := 3, (*Limit switch - Homing with hardware end switch*)
 		mcAHM_ABS := 4, (*Absolute - Homing by setting the home offset*)
-		mcAHM_ABS_INT := 11, (*Absolute internal - Homing by determining the home offset on drive*)
 		mcAHM_ABS_CORR := 5, (*Absolute correction - Homing by setting the home offset with counting range correction*)
 		mcAHM_DIST_C_MARKS := 6, (*Distance coded marks - Homing with distance coded reference marks*)
 		mcAHM_DIST_C_MARKS_CORR := 7, (*Distance coded marks correction - Homing with distance coded reference marks and counting range correction*)
@@ -1812,9 +1833,6 @@ TYPE
 		ReferencePulse : McAHModRefPType; (*Use reference pulse of encoder*)
 	END_STRUCT;
 	McAHModAbsType : STRUCT (*Type mcAHM_ABS settings*)
-		Position : LREAL; (*Home offset [Measurement units]*)
-	END_STRUCT;
-	McAHModAbsIntType : STRUCT (*Type mcAHM_ABS_INT settings*)
 		Position : LREAL; (*Home offset [Measurement units]*)
 	END_STRUCT;
 	McAHModAbsCorrType : STRUCT (*Type mcAHM_ABS_CORR settings*)
@@ -1911,7 +1929,6 @@ TYPE
 		SwitchGate : McAHModSwGateType; (*Type mcAHM_SW_GATE settings*)
 		LimitSwitch : McAHModLimSwType; (*Type mcAHM_LIM_SW settings*)
 		Absolute : McAHModAbsType; (*Type mcAHM_ABS settings*)
-		AbsoluteInternal : McAHModAbsIntType; (*Type mcAHM_ABS_INT settings*)
 		AbsoluteCorrection : McAHModAbsCorrType; (*Type mcAHM_ABS_CORR settings*)
 		DistanceCodedMarks : McAHModDistCMarksType; (*Type mcAHM_DIST_C_MARKS settings*)
 		DistanceCodedMarksCorrection : McAHModDistCMarksCorrType; (*Type mcAHM_DIST_C_MARKS_CORR settings*)
@@ -2033,13 +2050,13 @@ TYPE
 		Variable : McADIAllSrcVarType; (*Type mcADIAS_VAR settings*)
 	END_STRUCT;
 	McADILvlEnum :
-		( (*Level of the digital input hardware which leads to an active level of the functionality*)
+		( (*Level of the digital input hardware which leads to an active level of the functionality, not used with 'Force by function block'*)
 		mcADIL_HIGH := 0, (*High*)
 		mcADIL_LOW := 1 (*Low*)
 		);
 	McADIHomeSwType : STRUCT (*Homing switch input functionality*)
 		Source : McADIHomeSwSrcType; (*Source of the digital input hardware which is used for this functionality*)
-		Level : McADILvlEnum; (*Level of the digital input hardware which leads to an active level of the functionality*)
+		Level : McADILvlEnum; (*Level of the digital input hardware which leads to an active level of the functionality, not used with 'Force by function block'*)
 	END_STRUCT;
 	McADIPosLimSwSrcType : STRUCT (*Source of the digital input hardware which is used for this functionality*)
 		Type : McADIAllSrcEnum; (*Source selector setting*)
@@ -2047,7 +2064,7 @@ TYPE
 	END_STRUCT;
 	McADIPosLimSwType : STRUCT (*Positive limit switch input functionality*)
 		Source : McADIPosLimSwSrcType; (*Source of the digital input hardware which is used for this functionality*)
-		Level : McADILvlEnum; (*Level of the digital input hardware which leads to an active level of the functionality*)
+		Level : McADILvlEnum; (*Level of the digital input hardware which leads to an active level of the functionality, not used with 'Force by function block'*)
 	END_STRUCT;
 	McADINegLimSwSrcType : STRUCT (*Source of the digital input hardware which is used for this functionality*)
 		Type : McADIAllSrcEnum; (*Source selector setting*)
@@ -2055,7 +2072,7 @@ TYPE
 	END_STRUCT;
 	McADINegLimSwType : STRUCT (*Negative limit switch input functionality*)
 		Source : McADINegLimSwSrcType; (*Source of the digital input hardware which is used for this functionality*)
-		Level : McADILvlEnum; (*Level of the digital input hardware which leads to an active level of the functionality*)
+		Level : McADILvlEnum; (*Level of the digital input hardware which leads to an active level of the functionality, not used with 'Force by function block'*)
 	END_STRUCT;
 	McADITrg1SrcType : STRUCT (*Source of the digital input hardware which is used for this functionality*)
 		Type : McADIAllSrcEnum; (*Source selector setting*)
@@ -2063,7 +2080,7 @@ TYPE
 	END_STRUCT;
 	McADITrg1Type : STRUCT (*Trigger 1 input functionality*)
 		Source : McADITrg1SrcType; (*Source of the digital input hardware which is used for this functionality*)
-		Level : McADILvlEnum; (*Level of the digital input hardware which leads to an active level of the functionality*)
+		Level : McADILvlEnum; (*Level of the digital input hardware which leads to an active level of the functionality, not used with 'Force by function block'*)
 	END_STRUCT;
 	McADITrg2SrcType : STRUCT (*Source of the digital input hardware which is used for this functionality*)
 		Type : McADIAllSrcEnum; (*Source selector setting*)
@@ -2071,7 +2088,7 @@ TYPE
 	END_STRUCT;
 	McADITrg2Type : STRUCT (*Trigger 2 input functionality*)
 		Source : McADITrg2SrcType; (*Source of the digital input hardware which is used for this functionality*)
-		Level : McADILvlEnum; (*Level of the digital input hardware which leads to an active level of the functionality*)
+		Level : McADILvlEnum; (*Level of the digital input hardware which leads to an active level of the functionality, not used with 'Force by function block'*)
 	END_STRUCT;
 	McADIQstopInEnum :
 		( (*Digital input functionality triggering an axis quickstop*)
@@ -2139,7 +2156,7 @@ TYPE
 	McASPMComplType : STRUCT (*Type mcASPM_COMPL settings*)
 		LoadModel : McASLMType; (*Parameters of the load simulation model*)
 	END_STRUCT;
-	McASPMType : STRUCT (*Parameters for the simulation of this real axis on the PLC*)
+	McASPMType : STRUCT (*Parameters for the simulation of this real axis on the PLC in case of 'Activate ACOPOS simulation on PLC = On' or ARsim is active*)
 		Type : McASPMEnum; (*Simulation mode on PLC selector setting*)
 		Complete : McASPMComplType; (*Type mcASPM_COMPL settings*)
 	END_STRUCT;
@@ -2157,7 +2174,7 @@ TYPE
 		Complete : McASAMComplType; (*Type mcASAM_COMPL settings*)
 	END_STRUCT;
 	McASType : STRUCT (*Parameters which influence the simulation possibilities of this axis*)
-		ModeOnPLC : McASPMType; (*Parameters for the simulation of this real axis on the PLC*)
+		ModeOnPLC : McASPMType; (*Parameters for the simulation of this real axis on the PLC in case of 'Activate ACOPOS simulation on PLC = On' or ARsim is active*)
 		ModeOnACOPOS : McASAMType; (*Parameters for the motor and load simulation on the drive*)
 	END_STRUCT;
 	McAAFType : STRUCT (*Features for an axis*)

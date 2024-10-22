@@ -139,7 +139,7 @@ FUNCTION_BLOCK TL_StartShuttlesInSector
 			n := 0;
 			step := 40; 
 		ELSIF fbSecReadInfo.Valid THEN
-			IF fbSecReadInfo.SectorInfo.ShuttlesInDisabledCount = 0 THEN
+			IF fbSecReadInfo.SectorInfo.ShuttleCount.InDisabled = 0 THEN
 				fbSecReadInfo( Sector := ADR(Sector), Enable := FALSE ); (* reset fb *)
 				ton( PT := T#1s, IN := FALSE ); (* reset fb *)					
 				n := 0;

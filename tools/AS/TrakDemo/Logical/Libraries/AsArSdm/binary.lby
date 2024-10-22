@@ -1,6 +1,6 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<?AutomationStudio FileVersion="4.9"?>
-<Library SubType="binary" Description="The AsArSdm library supports the System Diagnostics Manager" xmlns="http://br-automation.co.at/AS/Library">
+<?xml version="1.0" encoding="utf-8"?>
+<?AutomationStudio Version=3.0.0.0?>
+<Library xmlns="http://br-automation.co.at/AS/Library" Description="The AsArSdm library supports the System Diagnostics Manager">
   <Files>
     <File>AsArSdm.fun</File>
     <File>AsArSdm.typ</File>

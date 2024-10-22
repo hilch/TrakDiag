@@ -37,6 +37,7 @@ FUNCTION_BLOCK MpAxisBasic
 		Stopped : BOOL; (*Axis stopped*) (* *) (*#CMD#;*)
 		LimitLoadReady : BOOL; (*Torque limitation ready*) (* *) (*#CMD#OPT#;*)
 		BrakeReleased : BOOL; (*Brake released*) (* *) (*#CMD#OPT#;*)
+		AutoTuneDone : BOOL; (*AutoTune command status*)
 		Info : MpAxisBasicInfoType; (*Additional information*) (* *) (*#CMD#;*)
 	END_VAR
 	VAR

@@ -17,11 +17,11 @@
     <Object Type="Library" Language="binary" Description="This library contains FBKs for exchanging and formatting data (message based) via HTTP (TCP).">AsHttp</Object>
     <Object Type="Library" Language="binary" Description="The AsArSdm library supports the System Diagnostics Manager">AsArSdm</Object>
     <Object Type="Library" Language="Binary" Description="Core library for mapp components">MpBase</Object>
-    <Object Type="Library" Language="binary" Description="This library contains functionality to execute traces (to sample numeric values periodically for a defined time-span)">CoTrace</Object>
     <Object Type="Library" Language="binary" Description="[mapp Motion] Base library">McBase</Object>
-    <Object Type="Library" Language="binary" Description="[mapp Motion] Axis library">MpAxis</Object>
     <Object Type="Library" Language="binary" Description="[mapp Motion] ACOPOS axis library">McAcpAx</Object>
-    <Object Type="Library" Language="binary" Description="[mapp Motion] Trak library">McAcpTrak</Object>
     <Object Type="Library" Language="binary" Description="[mapp Motion] PLCopen axis library">McAxis</Object>
+    <Object Type="Library" Language="binary" Description="[mapp Motion] Axis library">MpAxis</Object>
+    <Object Type="Library" Language="binary" Description="[mapp Motion] Trak library">McAcpTrak</Object>
+    <Object Type="Library" Language="binary" Description="This library contains functionality to execute traces (to sample numeric values periodically for a defined time-span)">CoTrace</Object>
   </Objects>
 </Package>

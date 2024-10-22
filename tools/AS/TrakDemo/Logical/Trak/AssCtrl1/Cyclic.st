@@ -57,7 +57,7 @@ PROGRAM _CYCLIC
 		fbLogStep.Signal := 'ASM_ADD_SIM_SHUTTLES';
 		IF fbAddSimShuttle.Done THEN
 			fbAddSimShuttle( Execute := FALSE ); (* reset fb *)
-			IF assemblyCtrl.Status.Info.ShuttlesCount >= assemblyCtrl.Para.NumberOfSimulatedShuttles OR assemblyCtrl.Para.NumberOfSimulatedShuttles = 0 THEN	
+			IF assemblyCtrl.Status.Info.ShuttleCount.Count >= assemblyCtrl.Para.NumberOfSimulatedShuttles OR assemblyCtrl.Para.NumberOfSimulatedShuttles = 0 THEN	
 				step := ASM_POWER_IS_ON;
 			ELSE
 				fbAddSimShuttle.Position := fbAddSimShuttle.Position + 0.06;
@@ -78,7 +78,7 @@ PROGRAM _CYCLIC
 		fbLogStep.Signal := 'ASM_W_POWER_ON';
 		IF fbPowerOn.Done AND assemblyCtrl.Status.Info.PowerOn THEN
 			fbPowerOn( Execute := FALSE );  (* reset fb *)
-			IF assemblyCtrl.Status.Info.ShuttlesCount >= assemblyCtrl.Para.NumberOfSimulatedShuttles THEN	
+			IF assemblyCtrl.Status.Info.ShuttleCount.Count >= assemblyCtrl.Para.NumberOfSimulatedShuttles THEN	
 				step := ASM_POWER_IS_ON;
 			ELSE
 				fbAddSimShuttle( Execute := FALSE ); (* reset fb *)
@@ -212,11 +212,11 @@ PROGRAM _CYCLIC
 	fbReadInfo();
 	assemblyCtrl.Status.Info := fbReadInfo.AssemblyInfo;
 	assemblyCtrl.Status.AllShuttlesMoving := FALSE;
-	IF assemblyCtrl.Status.Info.ShuttlesCount = assemblyCtrl.Para.NumberOfSimulatedShuttles THEN
-		IF assemblyCtrl.Status.Info.ShuttlesInDisabledCount = 0 AND
-			assemblyCtrl.Status.Info.ShuttlesInErrorStopCount = 0 AND
-			assemblyCtrl.Status.Info.ShuttlesInStandstillCount = 0 AND
-			assemblyCtrl.Status.Info.ShuttlesInStoppingCount = 0 THEN
+	IF assemblyCtrl.Status.Info.ShuttleCount.Count = assemblyCtrl.Para.NumberOfSimulatedShuttles THEN
+		IF assemblyCtrl.Status.Info.ShuttleCount.InDisabled = 0 AND
+			assemblyCtrl.Status.Info.ShuttleCount.InErrorStop = 0 AND
+			assemblyCtrl.Status.Info.ShuttleCount.InStandstill = 0 AND
+			assemblyCtrl.Status.Info.ShuttleCount.InStopping = 0 THEN
 			assemblyCtrl.Status.AllShuttlesMoving := TRUE;
 		END_IF
 	END_IF

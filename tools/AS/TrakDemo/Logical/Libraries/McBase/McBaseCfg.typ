@@ -15,7 +15,6 @@ TYPE
 		mcCFG_LIMSET_LIN := 1411, (*Associated with data type McCfgLimSetLinType*)
 		mcCFG_LIMSET_ROT := 1412, (*Associated with data type McCfgLimSetRotType*)
 		mcCFG_CAMLST := 1500, (*Associated with data type McCfgCamLstType*)
-		mcCFG_PROC_PT_LST := 1600, (*Associated with data type McCfgProcPtLstType*)
 		mcCFG_PROC_POINT := 1601, (*Associated with data type McCfgProcPointType*)
 		mcCFG_TRK_PATH := 1700, (*Associated with data type McCfgTrkPathType*)
 		mcCFG_TRK_PATH_SCN := 1701, (*Associated with data type McCfgTrkPathScnType*)
@@ -26,7 +25,7 @@ TYPE
 		mcCFG_AX := 10000, (*Associated with data type McCfgAxType*)
 		mcCFG_AX_BASE_TYP := 10011, (*Associated with data type McCfgAxBaseTypType*)
 		mcCFG_AX_MOVE_LIM := 10012, (*Associated with data type McCfgAxMoveLimType*)
-		mcCFG_AX_FEAT_CAM_AUT_CMN := 10101, (*AxisFeatureCamAutCommon -*)
+		mcCFG_AX_FEAT_CAM_AUT := 10101, (*AxisFeatureCamAut -*)
 		mcCFG_AX_FEAT_PROF_GEN := 10102, (*Associated with data type McCfgAxFeatProfGenType*)
 		mcCFG_AX_FEAT_PG_JERK_FLTR := 10109, (*Associated with data type McCfgAxFeatPgJerkFltrType*)
 		mcCFG_AX_FEAT_PG_ZERO_VIB_FLTR := 10110, (*Associated with data type McCfgAxFeatPgZeroVibFltrType*)
@@ -47,6 +46,7 @@ TYPE
 		mcCFG_ACP_P3_PL_IN_CARD_ENC := 10512, (*Associated with data type McCfgAcpP3PlInCrdEncType*)
 		mcCFG_ACP_P3_SNG_PL_IN_CARD_ENC := 10513, (*Associated with data type McCfgAcpP3SngPlInCrdEncType*)
 		mcCFG_ACP_PL_IN_CARD_IO := 10514, (*Associated with data type McCfgAcpPlInCrdIOType*)
+		mcCFG_BRK_RES := 10530, (*Associated with data type McCfgBrkResType*)
 		mcCFG_ACP_AX := 11000, (*Associated with data type McCfgAcpAxType*)
 		mcCFG_ACP_AX_REF := 11011, (*Associated with data type McCfgAcpAxRefType*)
 		mcCFG_ACP_MECH_ELM := 11012, (*Associated with data type McCfgAcpMechElmType*)
@@ -78,7 +78,6 @@ TYPE
 		mcCFG_ACP_EXT_ENC_AX_ENC_LINK := 11072, (*Associated with data type McCfgAcpExtEncAxEncLinkType*)
 		mcCFG_ACP_EXT_ENC_AX_MECH_ELM := 11073, (*Associated with data type McCfgAcpExtEncAxMechElmType*)
 		mcCFG_ACP_EXT_ENC_AX_HOME := 11074, (*Associated with data type McCfgAcpExtEncAxHomeType*)
-		mcCFG_AX_FEAT_CAM_AUT_ACP := 11101, (*AxisFeatureCamAutAcopos -*)
 		mcCFG_AX_FEAT_A_IN := 11103, (*Associated with data type McCfgAxFeatAInType*)
 		mcCFG_AX_FEAT_ACP_PAR_TBL := 11104, (*Associated with data type McCfgAxFeatAcpParTblType*)
 		mcCFG_PURE_V_AX := 12000, (*Associated with data type McCfgPureVAxType*)
@@ -159,9 +158,20 @@ TYPE
 		mcCFG_AXGRP_FEAT_TRK := 21126, (*Associated with data type McCfgAxGrpFeatTrkType*)
 		mcCFG_AXGRP_FEAT_PIPE_CUT := 21127, (*Associated with data type McCfgAxGrpPipeCutType*)
 		mcCFG_ASM := 31000, (*Associated with data type McCfgAsmType*)
+		mcCFG_ASM_COGG_COMP := 31001, (*Associated with data type McCfgAsmCoggComp*)
+		mcCFG_ASM_ELONG_COMP := 31002, (*Associated with data type McCfgAsmElongComp*)
+		mcCFG_ASM_DEFAULT_CTRL_PARAM := 31003, (*Associated with data type McCfgAsmDefCtrlParam*)
+		mcCFG_ASM_ADD_CTRL_PARAM := 31004, (*Associated with data type McCfgAsmAddCtrlParam*)
+		mcCFG_ASM_STOP_REACTION := 31005, (*Associated with data type McCfgAsmStopReaction*)
+		mcCFG_ASM_SPEED_FILTER := 31006, (*Associated with data type McCfgAsmSpeedFilt*)
+		mcCFG_ASM_MAGNET_PLATE := 31007, (*Associated with data type McCfgAsmMagnetPlate*)
+		mcCFG_ASM_SCOPE_OF_ERR_REAC := 31008, (*Associated with data type McCfgAsmScopeOfErrReaction*)
+		mcCFG_ASM_SH_IDENT_TIME := 31009, (*Associated with data type McCfgAsmShIdentTime*)
+		mcCFG_ASM_POS_CTRL_LAG_MON := 31010, (*Associated with data type McCfgAsmPosCtrlLagMonitor*)
+		mcCFG_ASM_DIVERTER := 31011, (*Associated with data type McCfgAsmDiverter*)
 		mcCFG_ASM_FEAT_CPLG := 31101, (*Associated with data type McCfgAsmFeatCplgType*)
 		mcCFG_ASM_FEAT_SIM_SH_DEF := 31102, (*Associated with data type McCfgAsmFeatSimShDefType*)
-		mcCFG_ASM_FEAT_SH_TRACE := 31103, (*Associated with data type McCfgAsmFeatShTraceType*)
+		mcCFG_ASM_FEAT_SEC_TRACE := 31103, (*Associated with data type McCfgAsmFeatSecTraceType*)
 		mcCFG_ASM_FEAT_SH_AUT_ATT := 31104, (*Associated with data type McCfgAsmFeatShAutAttType*)
 		mcCFG_ASM_FEAT_LOC_LIM := 31105, (*Associated with data type McCfgAsmFeatLocLimType*)
 		mcCFG_ASM_FEAT_EX_SEG := 31106, (*Associated with data type McCfgAsmFeatExSegType*)
@@ -794,40 +804,50 @@ TYPE
 	McCfgCamLstType : STRUCT (*Main data type corresponding to McCfgTypeEnum mcCFG_CAMLST*)
 		Row : McCfgUnboundedArrayType;
 	END_STRUCT;
-	McPPLPtEnum :
-		( (*Process point: {/} selector setting*)
-		mcPPLP_TRAK_PT := 0 (*Trak point - ACOPOSTrak*)
+	McPPTypEnum :
+		( (*Type selector setting*)
+		mcPPT_ACPTRAK_PT := 0 (*AcpTrak point - ACOPOSTrak*)
 		);
-	McPPLPtTrakPtPosRelToEnum :
+	McPPTAcpTrakPtPosRelToEnum :
 		( (*Absolute position from which the position is counted*)
-		mcPPLPTPPRT_ST_OF_SEC := 0, (*Start of sector - Tail of the sector*)
-		mcPPLPTPPRT_END_OF_SEC := 1 (*End of sector - Head of the sector*)
+		mcPPTAPPRT_ST_OF_SEC := 0, (*Start of sector - Tail of the sector*)
+		mcPPTAPPRT_END_OF_SEC := 1 (*End of sector - Head of the sector*)
 		);
-	McPPLPtTrakPtBarrFunEnum :
+	McPPTAcpTrakPtBarrFunEnum :
 		( (*Barrier functionality selector setting*)
-		mcPPLPTPBF_OFF := 0, (*Off - Disable barrier functionality*)
-		mcPPLPTPBF_ON := 1 (*On - Enable barrier functionality*)
+		mcPPTAPBF_OFF := 0, (*Off - Disable barrier functionality*)
+		mcPPTAPBF_ON := 1 (*On - Enable barrier functionality*)
 		);
-	McPPLPtTrakPtBarrFunType : STRUCT (*Enable barrier functionality for process point*)
-		Type : McPPLPtTrakPtBarrFunEnum; (*Barrier functionality selector setting*)
+	McPPTAcpTrakPtBarrFunType : STRUCT (*Enable barrier functionality for process point*)
+		Type : McPPTAcpTrakPtBarrFunEnum; (*Barrier functionality selector setting*)
 	END_STRUCT;
-	McPPLPtTrakPtType : STRUCT (*Type mcPPLP_TRAK_PT settings*)
-		Name : STRING[250]; (*Identifier of point*)
+	McPPTAcpTrakPtPPMMonEnum :
+		( (*Throughput monitor selector setting*)
+		mcPPTAcpTrakPtPPMMon_OFF := 0, (*Off - Disable throughput monitor functionality*)
+		mcPPTAcpTrakPtPPMMon_SH_TRG := 1 (*Shuttle triggered - Enable the shuttle triggered throughput monitor*)
+		);
+	McPPTAcpTrakPtPPMMonShTrgType : STRUCT (*Type mcPPTAcpTrakPtPPMMon_SH_TRG settings*)
+		BatchSize : UINT; (*Number of shuttles based on which the throughput is computed*)
+		PartsPerShuttle : REAL; (*Number of parts transported per shuttle*)
+	END_STRUCT;
+	McPPTAcpTrakPtPPMMonType : STRUCT (*Enable the throughput monitor functionality*)
+		Type : McPPTAcpTrakPtPPMMonEnum; (*Throughput monitor selector setting*)
+		ShuttleTriggered : McPPTAcpTrakPtPPMMonShTrgType; (*Type mcPPTAcpTrakPtPPMMon_SH_TRG settings*)
+	END_STRUCT;
+	McPPTAcpTrakPtType : STRUCT (*Type mcPPT_ACPTRAK_PT settings*)
 		SectorReference : McCfgReferenceType; (*Name of the referenced sector component*)
 		Position : LREAL; (*Position on the sector [Measurement units]*)
-		PositionRelativeTo : McPPLPtTrakPtPosRelToEnum; (*Absolute position from which the position is counted*)
+		PositionRelativeTo : McPPTAcpTrakPtPosRelToEnum; (*Absolute position from which the position is counted*)
 		TriggerEventBufferSize : UINT; (*Amount of maximum saved trigger point events*)
-		BarrierFunctionality : McPPLPtTrakPtBarrFunType; (*Enable barrier functionality for process point*)
+		BarrierFunctionality : McPPTAcpTrakPtBarrFunType; (*Enable barrier functionality for process point*)
+		ThroughputMonitor : McPPTAcpTrakPtPPMMonType; (*Enable the throughput monitor functionality*)
 	END_STRUCT;
-	McPPLPtType : STRUCT
-		Type : McPPLPtEnum; (*Process point: {/} selector setting*)
-		TrakPoint : McPPLPtTrakPtType; (*Type mcPPLP_TRAK_PT settings*)
-	END_STRUCT;
-	McCfgProcPtLstType : STRUCT (*Main data type corresponding to McCfgTypeEnum mcCFG_PROC_PT_LST*)
-		ProcessPoints : McCfgUnboundedArrayType;
+	McPPTypType : STRUCT (*Type of the configured process point*)
+		Type : McPPTypEnum; (*Type selector setting*)
+		AcpTrakPoint : McPPTAcpTrakPtType; (*Type mcPPT_ACPTRAK_PT settings*)
 	END_STRUCT;
 	McCfgProcPointType : STRUCT (*Main data type corresponding to McCfgTypeEnum mcCFG_PROC_POINT*)
-		ProcessPoint : McPPLPtType;
+		Type : McPPTypType; (*Type of the configured process point*)
 	END_STRUCT;
 	McCfgLocLenUnitEnum :
 		( (*Measurement unit for the axis*)
@@ -863,7 +883,7 @@ TYPE
 		Output : DINT; (*Number of rotations on the load side which correspond to the number of rotations on the encoder side [Revolutions]*)
 	END_STRUCT;
 	McCfgRotToLinTrfType : STRUCT (*Specifies a transformation factor between the output of the gear and the actual load movement*)
-		ReferenceDistance : LREAL; (*Reference distance which is considered for an axis positioning [Measurement units/Gearbox output revolution]*)
+		ReferenceDistance : LREAL; (*Distance corresponding to one gearbox output revolution [Measurement units/Gearbox output revolution]*)
 	END_STRUCT;
 	McCfgLimJerkBaseType : STRUCT (*Type mcAGFPDPLIJ_BASIC settings*)
 		Jerk : REAL; (*Jerk limit in any movement direction [Measurement units/s³]*)

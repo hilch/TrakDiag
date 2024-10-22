@@ -7,12 +7,12 @@ TYPE
 		Acceleration : REAL := 50; (*Maximum acceleration [measurement units / s²]*)
 		Deceleration : REAL := 50; (*Maximum deceleration [measurement units / s²]*)
 		Direction : McDirectionEnum := mcDIR_POSITIVE; (*Direction of movement *)
+		Jerk : REAL := 0.0; (*Maximum jerk [measurement units/s³]*)
 		Homing : MpAxisHomingType; (*Homing parameter*)
 		Jog : MpAxisJogType; (*Jog parameter*)
 		Stop : MpAxisStopType; (*Stop parameter*)
 		LimitLoad : MpAxisLimitLoadType; (*Limit load parameter*)
 		AutoTune : MpAxisAutoTuneType;
-		Jerk : REAL := 0.0; (*Maximum jerk [measurement units/s³]*)
 	END_STRUCT;
 	MpAxisHomingType : 	STRUCT 
 		Mode : McHomingModeEnum; (*Selects the mode for homing.*)
@@ -23,8 +23,8 @@ TYPE
 		Velocity : REAL := 2; (*Maximum velocity [measurement units / s]*)
 		Acceleration : REAL := 25; (*Maximum acceleration [measurement units / s²]*)
 		Deceleration : REAL := 50; (*Maximum deceleration [measurement units / s²]*)
-		LimitPosition : MpAxisJogLimitPositionType; (*Limit positions for the jog movement *)
 		Jerk : REAL := 0.0; (*Maximum jerk [measurement units/s³]*)
+		LimitPosition : MpAxisJogLimitPositionType; (*Limit positions for the jog movement *)
 	END_STRUCT;
 	MpAxisStopType : 	STRUCT 
 		Deceleration : REAL := 50; (*Maximum deceleration [measurement units / s²]*)
@@ -40,34 +40,21 @@ TYPE
 		Direction : McDirectionEnum := mcDIR_CURRENT; (*Direction of movement *)
 	END_STRUCT;
 	MpAxisBasicInfoType : 	STRUCT 
-		CommunicationReady : BOOL; (*TRUE if MpAxisBasic is ready to communicate*)
 		ReadyToPowerOn : BOOL; (*TRUE if MpAxisBasic is ready for operation*)
+		CommunicationReady : BOOL; (*TRUE if MpAxisBasic is ready to communicate*)
 		Simulation : BOOL; (*TRUE if axis is operated in simulation mode*)
+		LimitLoadActive : BOOL; (*Limit active*)
 		Jogging : BOOL; (*Performing movement*)
 		JogLimitReached : BOOL; (*Indicates that the axis has reached one of the two position limits *)
-		LimitLoadActive : BOOL; (*Limit active*)
-		PLCopenState : McAxisPLCopenStateEnum; (*PLCopen state*)
-		DigitalInputsStatus : McDigitalInputStatusType; (*Status of the digital inputs*)
-		Diag : MpAxisDiagExtType; (*Diagnostic structure for the status ID*)
+		AxisAdditionalInfo : McAddInfoType; (*Additional information*)
 		LibraryInfo : McLibraryInfoType; (*Library info about the specific axis implementation*)
-		CommunicationState : McCommunicationStateEnum; (*Communication state*)
-		StartupCount : UDINT; (*Number of times the drive was started up since the last PLC start*)
-		AutoTuneDone : BOOL; (*AutoTune command status*)
-		AutoTuneQuality : REAL; (*Quality factor from executed AutoTune command*)
 		HardwareInfo : McHardwareInfoType; (*Hardware info*)
-		AutoTuneState : McAutoTuneStateEnum; (* Status of the auto tune activity on the drive*)
-		MechDeviationCompState : McMechDevCompStateEnum; (*Status of mechanical deviation compensation*)
+		Diag : MpAxisDiagType; (*Diagnostic structure for the status ID*)
+		AutoTuneQuality : REAL; (*Quality factor from executed AutoTune command*)
 	END_STRUCT;
-	MpAxisDiagExtType : 	STRUCT 
+	MpAxisDiagType : 	STRUCT 
 		StatusID : MpAxisStatusIDType; (*StatusID information*)
-		Internal : MpAxisInternalType; (*Internal data*)
 		ExecutingCommand : MpAxisExecutingCmdEnum; (*Command information*)
-	END_STRUCT;
-	MpAxisInternalType : 	STRUCT 
-		ID : DINT; (*ID*)
-		Severity : MpComSeveritiesEnum; (*Severity*)
-		Facility : MpComFacilitiesEnum; (*Facility*)
-		Code : UINT; (*UINT*)
 	END_STRUCT;
 	MpAxisStatusIDType : 	STRUCT 
 		ID : MpAxisErrorEnum; (*Error*)
@@ -78,33 +65,34 @@ TYPE
 		Shift : LREAL; (*Offset shift for slave axis [Measurement Units des Slaves]*)
 		Velocity : REAL := 10; (*Maximum velocity [Measurement units/s]*)
 		Acceleration : REAL := 50.0; (*Maximum acceleration [Measurement units/s²]*)
+		CmdIndependentActivation : BOOL := FALSE; (*Allow to activate the Offset functionality independently from OffsetShift command to avoid latency in shift functionalilty when command is set*)
 		Options : McAdvOffsetParType; (*Structure for using optional  functions
 Note:
 Parameters left at default values disable the associated optional functions.*)
-		CmdIndependentActivation : BOOL := FALSE; (*Allow to activate the Offset functionality independently from OffsetShift command to avoid latency in shift functionalilty when command is set*)
 	END_STRUCT;
 	MpAxisPhasingParType : 	STRUCT 
 		Shift : LREAL; (*Phase shift in the master position of the slave axis [Measurement units].*)
 		Velocity : REAL := 10; (*Maximum velocity [Measurement units/s]*)
 		Acceleration : REAL := 50.0; (*Maximum acceleration [Measurement units/s²]*)
+		CmdIndependentActivation : BOOL := FALSE; (*Allow to activate the Phasing functionality independently from PhaseShift command to avoid latency in shift functionalilty when command is set*)
 		Options : McAdvPhasingParType; (*Structure for using optional  functions
 Note:
 Parameters left at default values disable the associated optional functions.*)
-		CmdIndependentActivation : BOOL := FALSE; (*Allow to activate the Phasing functionality independently from PhaseShift command to avoid latency in shift functionalilty when command is set*)
 	END_STRUCT;
 	MpAxisCouplingInfoType : 	STRUCT 
 		SlaveReady : BOOL; (*Slave axis ready for operation (Powered + IsHomed( when needed ))*)
 		MasterReady : BOOL; (*Master axis ready for operation (CommunicationReady)*)
 		Cam : MpAxisCamInfoType; (*Cam status info type*)
-		ActualOffsetShift : LREAL; (*Offset shift currently being executed [Measurement units]
-*)
-		ActualPhaseShift : LREAL; (*Phase shift currently being executed [Measurement units]
-*)
+		Offset : MpAxisShiftInfoType; (*Offset information*)
+		Phasing : MpAxisShiftInfoType; (*Phasing information*)
 		GetCamPosition : MpAxisGetCamPositionInfoType; (*GetCamPosition command result*)
 		Recovery : MpAxisRecoveryInfoType; (*Recovery command related information*)
-		Diag : MpAxisDiagExtType; (*Diagnostic structure for the status ID*)
-		OffsetValid : BOOL; (*Offset functionality is active and valid*)
-		PhasingValid : BOOL; (*Phasing functionality is active and valid*)
+		Diag : MpAxisDiagType; (*Diagnostic structure for the status ID*)
+	END_STRUCT;
+	MpAxisShiftInfoType : 	STRUCT 
+		ActualShift : LREAL; (*Shift currently being executed [Measurement units]*)
+		Valid : BOOL; (*Functionality is valid and can be used*)
+		Activated : BOOL; (*Functionality is activated, ready to be used as soon as Valid is set*)
 	END_STRUCT;
 	MpAxisGetCamPositionModeEnum : 
 		(
@@ -132,17 +120,14 @@ Parameters left at default values disable the associated optional functions.*)
 	MpAxisCamSequencerInfoType : 	STRUCT 
 		SlaveReady : BOOL; (*Slave axis ready for operation (Powered + IsHomed( when needed ))*)
 		MasterReady : BOOL; (*Master axis ready for operation (CommunicationReady)*)
-		OffsetValid : BOOL; (*Offset functionality is active and valid*)
-		ActualOffsetShift : LREAL; (*Offset shift currently being executed [Measurement units]*)
-		PhasingValid : BOOL; (*Phasing functionality is active and valid*)
-		ActualPhaseShift : LREAL; (*Phase shift currently being executed [Measurement units].
-*)
-		Diag : MpAxisDiagExtType; (*Diagnostic structure for the status ID*)
-		Recovery : MpAxisRecoveryInfoType; (*Recovery command related information*)
 		ActiveSignal1 : BOOL; (*Signal1 status*)
 		ActiveSignal2 : BOOL; (*Signal2 status*)
 		ActiveSignal3 : BOOL; (*Signal3 status*)
 		ActiveSignal4 : BOOL; (*Signal4 status*)
+		Offset : MpAxisShiftInfoType;
+		Phasing : MpAxisShiftInfoType;
+		Recovery : MpAxisRecoveryInfoType; (*Recovery command related information*)
+		Diag : MpAxisDiagType; (*Diagnostic structure for the status ID*)
 	END_STRUCT;
 	MpAxisCamSequencerParType : 	STRUCT 
 		Deceleration : REAL := 0.0; (*Deceleration for Halting CamAutomat in case of sequence end [Measurement units/s²]*)
@@ -151,7 +136,7 @@ Parameters left at default values disable the associated optional functions.*)
 		Offset : MpAxisOffsetParType; (*Offset parameters*)
 		Phasing : MpAxisPhasingParType; (*Phasing parameters*)
 		CamList : ARRAY[0..13]OF MpAxisCamListType; (*List of cam to be send to drive. As alternative cam defined in axis cam list feature can be used*)
-		Recovery : MpAxisSequencerRecoveryParType; (*Recovery parameters*)
+		Recovery : MpAxisRecoveryParType; (*Recovery parameters*)
 	END_STRUCT;
 	MpAxisCamSequenceDataType : 	STRUCT 
 		Data : McCamAutDefineType; (*Cam sequence definition*)
@@ -175,14 +160,14 @@ Parameters left at default values disable the associated optional functions.*)
 		Phasing : MpAxisPhasingParType; (*Phasing parameters*)
 		GetCamPosition : MpAxisGetCamPositionParType; (*GetCamPosition parameters*)
 		CamList : ARRAY[0..13]OF MpAxisCamListType; (*List of cam to be send to drive. As alternative cam defined in axis cam list feature can be used*)
-		Recovery : MpAxisCouplingRecoveryParType;
+		Recovery : MpAxisRecoveryParType;
 	END_STRUCT;
 	MpAxisGetCamPositionInfoType : 	STRUCT 
 		MasterPosition : LREAL; (*GetCamPosition resulting master position*)
 		SlavePosition : LREAL; (*GetCamPosition resulting slave position*)
 	END_STRUCT;
 	MpAxisCamInfoType : 	STRUCT 
-		StandBy : BOOL; (*Cam active in background*)
+		Standby : BOOL; (*Cam active in background*)
 		InLeadIn : BOOL; (*Currently slave axis is in lead in to a cam*)
 		InCam : BOOL; (*Slave is following master with defined cam*)
 		InLeadOut : BOOL; (*Currently slave axis is in lead out from a cam*)
@@ -194,10 +179,11 @@ Parameters left at default values disable the associated optional functions.*)
 		MasterStartPosition : LREAL; (*Master axis start position*)
 		MasterScaling : DINT := 36000; (*Master stretching factor for a cam*)
 		SlaveScaling : DINT := 36000; (*Slave stretching factor for a cam*)
+		UpdateCamListOnStart : BOOL; (*Option to update cam list on start*)
+		Mode : MpAxisCamStartModeEnum; (*Mode of Cam command execution*)
 		Options : McAdvBrCamInParType; (*Structure for using optional  functions
 Note:
 Parameters left at default values disable the associated optional functions.*)
-		Mode : MpAxisCamStartModeEnum; (*Mode of Cam command execution*)
 	END_STRUCT;
 	MpAxisGearInPosParType : 	STRUCT 
 		RatioNumerator : DINT := 36000; (*Gear ratio numerator*)
@@ -243,23 +229,14 @@ Parameters left at default values disable the associated optional functions.*)
 		Index : UINT; (*Index to be set for a Cam*)
 		Cam : McCamDefineType; (*Cam definition*)
 	END_STRUCT;
-	MpAxisSequencerRecoveryParType : 	STRUCT 
+	MpAxisRecoveryParType : 	STRUCT 
 		Mode : McCamAutPrepRestartModeEnum; (* Mode of repositioning*)
 		Velocity : REAL := 10.0; (* Maximum velocity [Measurement units/s]*)
 		Acceleration : REAL := 50.0; (* Maximum acceleration [Measurement units/s²]*)
 		Deceleration : REAL := 50.0; (* Maximum deceleration [Measurement units/s²]*)
 		Jerk : REAL; (* Maximum jerk [Measurement units/s³]*)
-		Options : McAdvCamAutPrepRestartParType; (* Recovery optional parameters*)
 		MasterPositionOffset : LREAL; (*Master position offset used only for Recovery with no CamAutomat used in background*)
-	END_STRUCT;
-	MpAxisCouplingRecoveryParType : 	STRUCT 
-		Mode : McCamAutPrepRestartModeEnum; (* Mode of repositioning*)
-		Velocity : REAL := 10.0; (* Maximum velocity [Measurement units/s]*)
-		Acceleration : REAL := 50.0; (* Maximum acceleration [Measurement units/s²]*)
-		Deceleration : REAL := 50.0; (* Maximum deceleration [Measurement units/s²]*)
-		Jerk : REAL; (* Maximum jerk [Measurement units/s³]*)
 		Options : McAdvCamAutPrepRestartParType; (* Recovery optional parameters*)
-		MasterPositionOffset : LREAL; (*Master position offset used only for Recovery with no CamAutomat used in background*)
 	END_STRUCT;
 	MpAxisSequenceSetModeEnum : 
 		(
@@ -387,7 +364,7 @@ If "0.0F" is used the acceleration is adjusted during the tuning process using a
 	MpAxisCyclicSetInfoType : 	STRUCT 
 		AxisReady : BOOL; (*Axis ready for operation (IsPowered and IsHomed if necessary)*)
 		TorqueControl : MpAxisTorqueControlInfoType; (*TorqueControl command additional information*)
-		Diag : MpAxisDiagExtType; (*Diagnostic information*)
+		Diag : MpAxisDiagType; (*Diagnostic information*)
 	END_STRUCT;
 	MpAxisTorqueControlInfoType : 	STRUCT 
 		InTorque : BOOL; (*Torque setpoint reached*)
@@ -470,7 +447,8 @@ Parameters left at "0" disable the associated advanced function. *)
 	END_STRUCT;
 	MpAxisBasicConfigSectionEnum : 
 		(
-		mcAXB_CFG_SEC_ALL (*Whole configuration structere is used*)
+		mcAXB_CFG_SEC_ALL, (*Whole configuration structere is used*)
+		mcAXB_CFG_SEC_DRIVE_CTRL (*Only Drive.Controller section is used*)
 		);
 	MpAxisBasicConfigCmdEnum : 
 		(
@@ -504,6 +482,7 @@ Parameters left at "0" disable the associated advanced function. *)
 		mcAXB_CFG_MOTOR_IND_ANY := 10501, (*Motor data induction any, McCfgMotInductType*)
 		mcAXB_CFG_MOTOR_STP := 13013 (*Motor data stepper, McSAMType*)
 		);
+
 	MpAXBModuleType : 	STRUCT 
 		ModelNumber : STRING[250];
 		Location : STRING[250];
@@ -511,10 +490,12 @@ Parameters left at "0" disable the associated advanced function. *)
 		Channel : MpAXBModuleChannelEnum;
 		Motor : MpAXBMotorType;
 	END_STRUCT;
-	MpAXBMotorType : 	STRUCT 
-		Type : MpAXBMotorDataTypeEnum;
+
+	MpAXBMotorType : 	STRUCT
+		Type : MpAXBMotorDataTypeEnum; 
 		Data : UDINT;
 	END_STRUCT;
+
 	MpAxisBasicConfigParType : 	STRUCT 
 		Data : REFERENCE TO MpAxisBasicConfigType;
 		Section : MpAxisBasicConfigSectionEnum;

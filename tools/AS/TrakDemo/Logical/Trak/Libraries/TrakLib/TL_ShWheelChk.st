@@ -18,7 +18,7 @@ FUNCTION_BLOCK TL_ShWheelChk
 				CycleTime := 1200e-6;
 			END_IF
 			IF fbTrgPointEnableEntry.Valid THEN
-				fbTrgPointGetInfo( Execute := FALSE );
+				fbTrgPointReadInfo( Execute := FALSE );
 				fbShSelCtrlParSet( Execute := FALSE );
 				Data.AverageLagError := 0.0;
 				Data.PeakLagError := 0.0;
@@ -33,7 +33,7 @@ FUNCTION_BLOCK TL_ShWheelChk
 			fbShReadSectorPos( Enable := FALSE );
 			fbShSelCtrlParSet( Execute := FALSE );
 			fbTrgPointEnableEntry( Enable := FALSE );
-			fbTrgPointGetInfo( Execute := FALSE );
+			fbTrgPointReadInfo( Execute := FALSE );
 			Done := FALSE;
 			Busy := FALSE;
 			Error := FALSE;
@@ -47,7 +47,7 @@ FUNCTION_BLOCK TL_ShWheelChk
 		100: 
 		fbTrgPointEnableEntry();
 		IF fbTrgPointEnableEntry.EventCount <> 0 THEN
-			fbTrgPointGetInfo( ProcessPoint := fbTrgPointEnableEntry.ProcessPoint, Execute := TRUE );
+			fbTrgPointReadInfo( ProcessPoint := fbTrgPointEnableEntry.ProcessPoint, Execute := TRUE );
 			tonTimeout( IN:= FALSE, PT := T#20s ); (* abort timer *)
 			tonTimeout.IN := TRUE; (* start timeout *)
 			peakLagError := 0.0;
@@ -68,9 +68,9 @@ FUNCTION_BLOCK TL_ShWheelChk
 		   ------------------------------------------------------------------------------ *)
 
 		110: 
-		IF fbTrgPointGetInfo.Done THEN
-			axis := fbTrgPointGetInfo.TrgPointInfo.Axis;
-			IF fbTrgPointGetInfo.TrgPointInfo.Event = mcACPTRAK_TP_PASSED_POSITIVE THEN (* only consider shuttles in positive direction *)
+		IF fbTrgPointReadInfo.Done THEN
+			axis := fbTrgPointReadInfo.TrgPointInfo.Axis;
+			IF fbTrgPointReadInfo.TrgPointInfo.Event = mcACPTRAK_TP_PASSED_POSITIVE THEN (* only consider shuttles in positive direction *)
 				(* switch on reading shuttle info (position) *)
 				fbShReadInfo( Axis := ADR(axis), Enable := TRUE ); 
 				(* switch on reading position of sector where triggerpoint is located *)
@@ -83,10 +83,10 @@ FUNCTION_BLOCK TL_ShWheelChk
 			ELSE
 				step := 100;
 			END_IF
-			fbTrgPointGetInfo( Execute := FALSE );
-		ELSIF fbTrgPointGetInfo.Busy THEN
-			fbTrgPointGetInfo();
-		ELSIF fbTrgPointGetInfo.Error THEN
+			fbTrgPointReadInfo( Execute := FALSE );
+		ELSIF fbTrgPointReadInfo.Busy THEN
+			fbTrgPointReadInfo();
+		ELSIF fbTrgPointReadInfo.Error THEN
 			ErrorID := 111;
 			Error := TRUE;
 			step := 9000;
