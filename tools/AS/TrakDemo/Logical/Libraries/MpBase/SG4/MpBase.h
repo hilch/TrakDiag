@@ -1,6 +1,6 @@
 /* Automation Studio generated header file */
 /* Do not edit ! */
-/* MpBase 5.24.1 */
+/* MpBase 6.1.0 */
 
 #ifndef _MPBASE_
 #define _MPBASE_
@@ -9,7 +9,7 @@ extern "C"
 {
 #endif
 #ifndef _MpBase_VERSION
-#define _MpBase_VERSION 5.24.1
+#define _MpBase_VERSION 6.1.0
 #endif
 
 #include <bur/plctypes.h>
@@ -17,33 +17,6 @@ extern "C"
 #ifndef _BUR_PUBLIC
 #define _BUR_PUBLIC
 #endif
-
-
-
-
-
-
-/* Constants */
-#ifdef _REPLACE_CONST
-/*Constant mpCOM_STANDALONE not declared. Initialized constants from structured datatypes cannot be used in ANSI C programs / libraries. See Automation Help for details.*/
-
-/*Constant mpCOM_MAIN not declared. Initialized constants from structured datatypes cannot be used in ANSI C programs / libraries. See Automation Help for details.*/
-
- #define mpCOM_STANDALONE_INT 2U
- #define mpCOM_MAIN_INT 1U
-#else
- #ifndef _GLOBAL_CONST
-   #define _GLOBAL_CONST _WEAK const
- #endif
-
-
- _GLOBAL_CONST unsigned long mpCOM_STANDALONE_INT;
- _GLOBAL_CONST unsigned long mpCOM_MAIN_INT;
-#endif
-
-
-
-
 /* Datatypes and datatypes of function blocks */
 typedef enum MpComFacilitiesEnum
 {	mpCOM_FAC_UNDEFINED = -1,
@@ -91,11 +64,38 @@ typedef struct MpComInternalIDType
 	unsigned short Code;
 } MpComInternalIDType;
 
+typedef struct MpBaseCfgArrayType
+{	unsigned long DataAddress;
+	unsigned long Capacity;
+	unsigned long NumberOfElements;
+} MpBaseCfgArrayType;
+
+typedef struct MpBaseCfgPasswordType
+{	plcbit Valid;
+	plcstring Data[101];
+} MpBaseCfgPasswordType;
 
 
-/* Prototyping of functions and function blocks */
-_BUR_PUBLIC unsigned long MpComHandle(void);
-_BUR_PUBLIC unsigned long MpComVersion(void);
+
+
+
+
+/* Constants */
+#ifdef _REPLACE_CONST
+/*Constant mpCOM_STANDALONE not declared. Initialized constants from structured datatypes cannot be used in ANSI C programs / libraries. See Automation Help for details.*/
+
+/*Constant mpCOM_MAIN not declared. Initialized constants from structured datatypes cannot be used in ANSI C programs / libraries. See Automation Help for details.*/
+
+ #define mpCOM_STANDALONE_INT 2U
+ #define mpCOM_MAIN_INT 1U
+#else
+
+
+ _GLOBAL_CONST unsigned long mpCOM_STANDALONE_INT;
+ _GLOBAL_CONST unsigned long mpCOM_MAIN_INT;
+#endif
+
+
 
 
 #ifdef __cplusplus

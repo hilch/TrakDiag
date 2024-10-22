@@ -27,7 +27,7 @@ The end position must be between 0 and the length of the sector. If not set or s
 		n : {REDUND_UNREPLICABLE} USINT;
 		list : {REDUND_UNREPLICABLE} ARRAY[0..255] OF McAxisType; (*the list of shuttles*)
 		step : {REDUND_UNREPLICABLE} UINT;
-		fbSecGetShuttle : {REDUND_UNREPLICABLE} MC_BR_SecGetShuttleSel_AcpTrak;
+		fbSecGetShuttle : {REDUND_UNREPLICABLE} MC_BR_SecGetShuttle_AcpTrak;
 		fbRoutedMoveVel : {REDUND_UNREPLICABLE} MC_BR_RoutedMoveVel_AcpTrak;
 		fbRoutedMoveAbs : {REDUND_UNREPLICABLE} MC_BR_RoutedMoveAbs_AcpTrak;
 		fbReset : {REDUND_UNREPLICABLE} MC_Reset;
@@ -73,7 +73,7 @@ END_FUNCTION_BLOCK
 	END_VAR
 	VAR
 		fbTrgPointEnableEntry : {REDUND_UNREPLICABLE} MC_BR_TrgPointEnable_AcpTrak;
-		fbTrgPointGetInfo : {REDUND_UNREPLICABLE} MC_BR_TrgPointGetInfo_AcpTrak;
+		fbTrgPointReadInfo : {REDUND_UNREPLICABLE} MC_BR_TrgPointReadInfo_AcpTrak;
 		fbShReadInfo : {REDUND_UNREPLICABLE} MC_BR_ShReadInfo_AcpTrak;
 		fbCopyUserData : {REDUND_UNREPLICABLE} MC_BR_ShCopyUserData_AcpTrak;
 		step : {REDUND_UNREPLICABLE} UINT;
@@ -100,7 +100,7 @@ END_FUNCTION_BLOCK
 	END_VAR
 	VAR
 		fbTrgPointEnableEntry : {REDUND_UNREPLICABLE} MC_BR_TrgPointEnable_AcpTrak;
-		fbTrgPointGetInfo : {REDUND_UNREPLICABLE} MC_BR_TrgPointGetInfo_AcpTrak;
+		fbTrgPointReadInfo : {REDUND_UNREPLICABLE} MC_BR_TrgPointReadInfo_AcpTrak;
 		fbShReadInfo : {REDUND_UNREPLICABLE} MC_BR_ShReadInfo_AcpTrak;
 		fbShReadSegmentInfo : {REDUND_UNREPLICABLE} MC_BR_ShReadSegmentInfo_AcpTrak;
 		fbShReadSectorPos : {REDUND_UNREPLICABLE} MC_BR_ShReadSectorPos_AcpTrak;

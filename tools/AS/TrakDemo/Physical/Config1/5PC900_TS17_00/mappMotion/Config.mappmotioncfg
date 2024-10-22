@@ -4,6 +4,26 @@
   <Element ID="MappMotionConfiguration" Type="mappmotioncfg">
     <Group ID="Processing">
       <Property ID="ProcessingTaskClass" Value="1" />
+      <Group ID="ExplicitComputationOrder">
+        <Selector ID="Axis" Value="NotUsed" />
+      </Group>
+    </Group>
+    <Group ID="Logger">
+      <Selector ID="SelectiveLogging" Value="NotUsed" />
+    </Group>
+    <Group ID="SharedAlarms">
+      <Selector ID="Axis" Value="NotUsed" />
+      <Selector ID="ACOPOSmultiAuxiliarySupplyModule" Value="NotUsed" />
+      <Selector ID="ACOPOSmultiPowerSupplyModule" Value="NotUsed" />
+      <Selector ID="AxesGroup" Value="NotUsed" />
+      <Selector ID="Assembly" Value="NotUsed" />
+      <Selector ID="Segment" Value="NotUsed" />
+      <Selector ID="Sector" Value="NotUsed" />
+      <Selector ID="Shuttle" Value="NotUsed" />
+      <Selector ID="CamOperations" Value="NotUsed" />
+    </Group>
+    <Group ID="McAcpDrv">
+      <Property ID="POWERLINKCyclesPerParID" Value="2" />
     </Group>
   </Element>
 </Configuration>

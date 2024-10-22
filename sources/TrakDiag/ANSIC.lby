@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <?AutomationStudio FileVersion="4.9"?>
-<Library Version="3.00.0" SubType="ANSIC" Description="https://github.com/hilch/TrakDiag" xmlns="http://br-automation.co.at/AS/Library">
+<Library Version="4.0.0" SubType="ANSIC" Description="https://github.com/hilch/TrakDiag" xmlns="http://br-automation.co.at/AS/Library">
   <Objects>
     <Object Type="File" Description="Exported data types">TrakDiagTypes.typ</Object>
     <Object Type="File" Description="Exported constants">TrakDiagConstants.var</Object>
@@ -26,9 +26,9 @@
     <Dependency ObjectName="ArEventLog" />
     <Dependency ObjectName="astime" />
     <Dependency ObjectName="DataObj" />
-    <Dependency ObjectName="McAcpTrak" FromVersion="5.27.1" />
+    <Dependency ObjectName="McAcpTrak" FromVersion="6.0.0" />
     <Dependency ObjectName="standard" />
-    <Dependency ObjectName="McBase" />
+    <Dependency ObjectName="McBase" FromVersion="6.0.0" />
     <Dependency ObjectName="sys_lib" />
     <Dependency ObjectName="brsystem" />
     <Dependency ObjectName="FileIO" />

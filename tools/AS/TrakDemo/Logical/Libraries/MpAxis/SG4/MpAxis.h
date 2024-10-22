@@ -1,6 +1,6 @@
 /* Automation Studio generated header file */
 /* Do not edit ! */
-/* MpAxis 5.27.1 */
+/* MpAxis 6.0.0 */
 
 #ifndef _MPAXIS_
 #define _MPAXIS_
@@ -9,7 +9,7 @@ extern "C"
 {
 #endif
 #ifndef _MpAxis_VERSION
-#define _MpAxis_VERSION 5.27.1
+#define _MpAxis_VERSION 6.0.0
 #endif
 
 #include <bur/plctypes.h>
@@ -128,7 +128,8 @@ typedef enum MpAxisMoveCyclicVelocityModeEnum
 } MpAxisMoveCyclicVelocityModeEnum;
 
 typedef enum MpAxisBasicConfigSectionEnum
-{	mcAXB_CFG_SEC_ALL
+{	mcAXB_CFG_SEC_ALL,
+	mcAXB_CFG_SEC_DRIVE_CTRL
 } MpAxisBasicConfigSectionEnum;
 
 typedef enum MpAxisBasicConfigCmdEnum
@@ -325,8 +326,8 @@ typedef struct MpAxisJogType
 {	float Velocity;
 	float Acceleration;
 	float Deceleration;
-	struct MpAxisJogLimitPositionType LimitPosition;
 	float Jerk;
+	struct MpAxisJogLimitPositionType LimitPosition;
 } MpAxisJogType;
 
 typedef struct MpAxisStopAtPositionType
@@ -378,12 +379,12 @@ typedef struct MpAxisBasicParType
 	float Acceleration;
 	float Deceleration;
 	enum McDirectionEnum Direction;
+	float Jerk;
 	struct MpAxisHomingType Homing;
 	struct MpAxisJogType Jog;
 	struct MpAxisStopType Stop;
 	struct MpAxisLimitLoadType LimitLoad;
 	struct MpAxisAutoTuneType AutoTune;
-	float Jerk;
 } MpAxisBasicParType;
 
 typedef struct MpAxisStatusIDType
@@ -392,63 +393,55 @@ typedef struct MpAxisStatusIDType
 	unsigned short Code;
 } MpAxisStatusIDType;
 
-typedef struct MpAxisInternalType
-{	signed long ID;
-	enum MpComSeveritiesEnum Severity;
-	enum MpComFacilitiesEnum Facility;
-	unsigned short Code;
-} MpAxisInternalType;
-
-typedef struct MpAxisDiagExtType
+typedef struct MpAxisDiagType
 {	struct MpAxisStatusIDType StatusID;
-	struct MpAxisInternalType Internal;
 	enum MpAxisExecutingCmdEnum ExecutingCommand;
-} MpAxisDiagExtType;
+} MpAxisDiagType;
 
 typedef struct MpAxisBasicInfoType
-{	plcbit CommunicationReady;
-	plcbit ReadyToPowerOn;
+{	plcbit ReadyToPowerOn;
+	plcbit CommunicationReady;
 	plcbit Simulation;
+	plcbit LimitLoadActive;
 	plcbit Jogging;
 	plcbit JogLimitReached;
-	plcbit LimitLoadActive;
-	enum McAxisPLCopenStateEnum PLCopenState;
-	struct McDigitalInputStatusType DigitalInputsStatus;
-	struct MpAxisDiagExtType Diag;
+	struct McAddInfoType AxisAdditionalInfo;
 	struct McLibraryInfoType LibraryInfo;
-	enum McCommunicationStateEnum CommunicationState;
-	unsigned long StartupCount;
-	plcbit AutoTuneDone;
-	float AutoTuneQuality;
 	struct McHardwareInfoType HardwareInfo;
-	enum McAutoTuneStateEnum AutoTuneState;
-	enum McMechDevCompStateEnum MechDeviationCompState;
+	struct MpAxisDiagType Diag;
+	float AutoTuneQuality;
 } MpAxisBasicInfoType;
 
 typedef struct MpAxisOffsetParType
 {	double Shift;
 	float Velocity;
 	float Acceleration;
-	struct McAdvOffsetParType Options;
 	plcbit CmdIndependentActivation;
+	struct McAdvOffsetParType Options;
 } MpAxisOffsetParType;
 
 typedef struct MpAxisPhasingParType
 {	double Shift;
 	float Velocity;
 	float Acceleration;
-	struct McAdvPhasingParType Options;
 	plcbit CmdIndependentActivation;
+	struct McAdvPhasingParType Options;
 } MpAxisPhasingParType;
 
 typedef struct MpAxisCamInfoType
-{	plcbit StandBy;
+{	plcbit Standby;
 	plcbit InLeadIn;
 	plcbit InCam;
 	plcbit InLeadOut;
 	plcbit EndOfProfile;
 	plcbit DataInitialized;
 } MpAxisCamInfoType;
+
+typedef struct MpAxisShiftInfoType
+{	double ActualShift;
+	plcbit Valid;
+	plcbit Activated;
+} MpAxisShiftInfoType;
 
 typedef struct MpAxisGetCamPositionInfoType
 {	double MasterPosition;
@@ -463,13 +456,11 @@ typedef struct MpAxisCouplingInfoType
 {	plcbit SlaveReady;
 	plcbit MasterReady;
 	struct MpAxisCamInfoType Cam;
-	double ActualOffsetShift;
-	double ActualPhaseShift;
+	struct MpAxisShiftInfoType Offset;
+	struct MpAxisShiftInfoType Phasing;
 	struct MpAxisGetCamPositionInfoType GetCamPosition;
 	struct MpAxisRecoveryInfoType Recovery;
-	struct MpAxisDiagExtType Diag;
-	plcbit OffsetValid;
-	plcbit PhasingValid;
+	struct MpAxisDiagType Diag;
 } MpAxisCouplingInfoType;
 
 typedef struct MpAxisGetCamPositionMoveParType
@@ -494,16 +485,14 @@ typedef struct MpAxisGetCamPositionParType
 typedef struct MpAxisCamSequencerInfoType
 {	plcbit SlaveReady;
 	plcbit MasterReady;
-	plcbit OffsetValid;
-	double ActualOffsetShift;
-	plcbit PhasingValid;
-	double ActualPhaseShift;
-	struct MpAxisDiagExtType Diag;
-	struct MpAxisRecoveryInfoType Recovery;
 	plcbit ActiveSignal1;
 	plcbit ActiveSignal2;
 	plcbit ActiveSignal3;
 	plcbit ActiveSignal4;
+	struct MpAxisShiftInfoType Offset;
+	struct MpAxisShiftInfoType Phasing;
+	struct MpAxisRecoveryInfoType Recovery;
+	struct MpAxisDiagType Diag;
 } MpAxisCamSequencerInfoType;
 
 typedef struct MpAxisCamSequenceGetType
@@ -528,15 +517,15 @@ typedef struct MpAxisCamListType
 	struct McCamDefineType Cam;
 } MpAxisCamListType;
 
-typedef struct MpAxisSequencerRecoveryParType
+typedef struct MpAxisRecoveryParType
 {	enum McCamAutPrepRestartModeEnum Mode;
 	float Velocity;
 	float Acceleration;
 	float Deceleration;
 	float Jerk;
-	struct McAdvCamAutPrepRestartParType Options;
 	double MasterPositionOffset;
-} MpAxisSequencerRecoveryParType;
+	struct McAdvCamAutPrepRestartParType Options;
+} MpAxisRecoveryParType;
 
 typedef struct MpAxisCamSequencerParType
 {	float Deceleration;
@@ -545,7 +534,7 @@ typedef struct MpAxisCamSequencerParType
 	struct MpAxisOffsetParType Offset;
 	struct MpAxisPhasingParType Phasing;
 	struct MpAxisCamListType CamList[14];
-	struct MpAxisSequencerRecoveryParType Recovery;
+	struct MpAxisRecoveryParType Recovery;
 } MpAxisCamSequencerParType;
 
 typedef struct MpAxisGearParType
@@ -563,8 +552,9 @@ typedef struct MpAxisCamParType
 	double MasterStartPosition;
 	signed long MasterScaling;
 	signed long SlaveScaling;
-	struct McAdvBrCamInParType Options;
+	plcbit UpdateCamListOnStart;
 	enum MpAxisCamStartModeEnum Mode;
+	struct McAdvBrCamInParType Options;
 } MpAxisCamParType;
 
 typedef struct MpAxisGearInPosParType
@@ -582,16 +572,6 @@ typedef struct MpAxisGearInPosParType
 	struct McAdvGearInPosParType Options;
 } MpAxisGearInPosParType;
 
-typedef struct MpAxisCouplingRecoveryParType
-{	enum McCamAutPrepRestartModeEnum Mode;
-	float Velocity;
-	float Acceleration;
-	float Deceleration;
-	float Jerk;
-	struct McAdvCamAutPrepRestartParType Options;
-	double MasterPositionOffset;
-} MpAxisCouplingRecoveryParType;
-
 typedef struct MpAxisCouplingParType
 {	struct MpAxisGearParType Gear;
 	struct MpAxisCamParType Cam;
@@ -600,7 +580,7 @@ typedef struct MpAxisCouplingParType
 	struct MpAxisPhasingParType Phasing;
 	struct MpAxisGetCamPositionParType GetCamPosition;
 	struct MpAxisCamListType CamList[14];
-	struct MpAxisCouplingRecoveryParType Recovery;
+	struct MpAxisRecoveryParType Recovery;
 } MpAxisCouplingParType;
 
 typedef struct MpAxisTorqueControlInfoType
@@ -613,7 +593,7 @@ typedef struct MpAxisTorqueControlInfoType
 typedef struct MpAxisCyclicSetInfoType
 {	plcbit AxisReady;
 	struct MpAxisTorqueControlInfoType TorqueControl;
-	struct MpAxisDiagExtType Diag;
+	struct MpAxisDiagType Diag;
 } MpAxisCyclicSetInfoType;
 
 typedef struct MpAxisMoveCyclicPositionParType
@@ -671,6 +651,13 @@ typedef struct MpAXBModuleType
 	enum MpAXBModuleChannelEnum Channel;
 	struct MpAXBMotorType Motor;
 } MpAXBModuleType;
+
+typedef struct MpAxisBasicConfigParType
+{	struct MpAxisBasicConfigType* Data;
+	enum MpAxisBasicConfigSectionEnum Section;
+	plcstring AxisName[251];
+	struct MpAXBModuleType Module;
+} MpAxisBasicConfigParType;
 
 typedef struct MpAXBAxMoveLimPosType
 {	double LowerLimit;
@@ -946,13 +933,6 @@ typedef struct MpAxisBasicConfigType
 	struct MpAXBDrvType Drive;
 } MpAxisBasicConfigType;
 
-typedef struct MpAxisBasicConfigParType
-{	struct MpAxisBasicConfigType* Data;
-	enum MpAxisBasicConfigSectionEnum Section;
-	plcstring AxisName[251];
-	struct MpAXBModuleType Module;
-} MpAxisBasicConfigParType;
-
 typedef struct MpAxisBasic
 {
 	/* VAR_INPUT (analog) */
@@ -996,6 +976,7 @@ typedef struct MpAxisBasic
 	plcbit Stopped;
 	plcbit LimitLoadReady;
 	plcbit BrakeReleased;
+	plcbit AutoTuneDone;
 } MpAxisBasic_typ;
 
 typedef struct MpAxisCamSequencer

@@ -96,11 +96,11 @@ void SendResponse_AssemblyInformation(struct TD_WebServices* inst){
 			JavascriptBoolean[inst->asmInfo.CommunicationReady],
 			JavascriptBoolean[inst->asmInfo.ReadyForPowerOn],
 			JavascriptBoolean[inst->asmInfo.PowerOn],
-			inst->asmInfo.SegmentsInDisabledCount,
-			inst->asmInfo.SegmentsInStoppingCount,
-			inst->asmInfo.SegmentsInErrorStopCount,
-			inst->asmInfo.ShuttlesCount,
-			inst->asmInfo.ShuttlesInErrorStopCount
+			inst->asmInfo.SegmentCount.InDisabled,
+			inst->asmInfo.SegmentCount.InStopping,
+			inst->asmInfo.SegmentCount.InErrorStop,
+			inst->asmInfo.ShuttleCount.Count,
+			inst->asmInfo.ShuttleCount.InErrorStop
 	);
 	SendResponse( inst, "application/json; charset=iso-8859-1" );
 }

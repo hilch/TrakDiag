@@ -211,7 +211,7 @@ END_FUNCTION_BLOCK
 	END_VAR
 	VAR
 		step : UINT;
-		fbGetShuttle : MC_BR_AsmGetShuttleSel_AcpTrak;
+		fbGetShuttle : MC_BR_AsmGetShuttle_AcpTrak;
 	END_VAR
 END_FUNCTION_BLOCK
 
