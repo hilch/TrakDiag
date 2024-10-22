@@ -1,0 +1,11 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<?AutomationStudio FileVersion="4.9"?>
+<Package xmlns="http://br-automation.co.at/AS/Package">
+  <Objects>
+    <Object Type="File">TD_Recorder.h</Object>
+    <Object Type="File">TD_Recorder.cpp</Object>
+    <Object Type="File">recorder_html.h</Object>
+    <Object Type="File">Record.h</Object>
+    <Object Type="File">Record.cpp</Object>
+  </Objects>
+</Package>

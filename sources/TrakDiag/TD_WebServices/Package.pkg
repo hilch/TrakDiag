@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<?AutomationStudio FileVersion="4.9"?>
+<Package xmlns="http://br-automation.co.at/AS/Package">
+  <Objects>
+    <Object Type="File">TD_WebServices.cpp</Object>
+    <Object Type="File">TD_WebServices.h</Object>
+    <Object Type="File">utils.h</Object>
+    <Object Type="File">utils.cpp</Object>
+    <Object Type="File">responses.h</Object>
+    <Object Type="File">responses.cpp</Object>
+    <Object Type="File">index_css.h</Object>
+    <Object Type="File">index_js.h</Object>
+    <Object Type="File">panzoom_js.h</Object>
+    <Object Type="File">index_html.h</Object>
+  </Objects>
+</Package>

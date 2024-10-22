@@ -37,7 +37,6 @@ tools/codegen/.vscode/launch.json
 # Obsolete Automation Studio files
 tools/AS/TrakDemo/Binaries/
 tools/AS/TrakDemo/Temp/
-tools/AS/TrakDemo/USER/
 tools/AS/TrakDemo/Diagnosis/
 tools/AS/TrakDemo/*.set
 *.isopen

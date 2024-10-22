@@ -32,6 +32,7 @@
   <Module Name="5PC900_TS17_00" Type="5PC900.TS17-00" Version="2.1.0.0">
     <Connection Connector="SY" TargetModule="5PC910.SX05-00" TargetConnector="SY1" />
     <Parameter ID="ConfigurationID" Value="TrakDemo_Config1" />
+    <Parameter ID="ConfigVersion" Value="1.2.3" />
     <Parameter ID="Simulation" Value="1" />
     <Parameter ID="MotionLoggerSize" Value="2048000" />
     <Parameter ID="SystemTick" Value="2000" />
