@@ -1,6 +1,8 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Made For B&R](https://github.com/hilch/BandR-badges/blob/main/Made-For-BrAutomation.svg)](https://www.br-automation.com)
 
+⚠️ This project is deprecated
+
 # TrakDiag
 Library for ACOPOStrak diagnosis.
 Included are some function blocks that can be used to easily make entries in application specific loggers. 
